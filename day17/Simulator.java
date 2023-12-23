@@ -10,54 +10,20 @@ class Pyroclastic {
 	// show is a boolean which determines whether the chamber is shown after each rock is dropped
 
 	public static void main(String[] args) {
-
-		String dataFile = args[0];
-		int maxRocks = Integer.parseInt(args[1]);
-		boolean show = Boolean.parseBoolean(args[2]);
-
-		if (args.length == 1) {
-			Pyroclastic obj = new Pyroclastic(dataFile);
-		}
-		else if (args.length == 2) {
-			Pyroclastic obj = new Pyroclastic(dataFile, maxRocks);
-		}
-		else if (args.length == 3) {
-			System.out.println("SSSS " + dataFile + " " + args[1] + " " + args[2] + " " + show + " SSSS");
-			Pyroclastic obj = new Pyroclastic(dataFile, maxRocks, show);
-		}
-		else {
-			Pyroclastic obj = new Pyroclastic();
-		}
+			Pyroclastic obj = new Pyroclastic(args);
 	}
 
-	public Pyroclastic() {
-		System.out.println("Pyroclastic object created");
+	public Pyroclastic(String[] args) {
+		ArgumentProcessor argProcessor = new ArgumentProcessor(args);
+		if (argMap.containsKey("dataFile")) {
+			this.dataFile = argMap.get("dataFile");
+			this.dataObj = new Data();
+			this.data = this.dataObj.getData(dataFile);
+		}
+		argMap = argProcessor.process();
 	}
 
-	public Pyroclastic(String dataFile) {
-		data = this.dataObj.getData(dataFile);
-	}
-
-	public Pyroclastic(String dataFile, int maxRocks) {
-		data = this.dataObj.getData(dataFile);
-		this.maxRocks = maxRocks;
-	}
-
-	public Pyroclastic(String dataFile, int maxRocks, boolean show) {
-		System.out.println("SSSS");
-		data = this.dataObj.getData(dataFile);
-		this.maxRocks = maxRocks;
-		if (show) {
-			this.show = show;
-		}
-		try {
-		System.out.println("SSSS");
-			this.runSimulation();
-		}
-		catch (Exception e) {
-			System.out.println("Failure: " + e);
-		}
-	}
+	HashMap<String, String> argMap;
 
 	Logger logger = new Logger(this);
 
@@ -242,60 +208,60 @@ class Pyroclastic {
 		return this.chamber.getCurrentHeight();
 	}
 
-	// Accepts an ArrayList of rocks and a second smaller ArrayList of rocks. Loops through the first list
-	// looking for occurrences of the second list. Stops when it finds numOccurrences occurrences of the second list.
-	// The second ArrayList will often be first few elements of the first ArrayList
-	public ArrayList<Integer> isSet(ArrayList<Rock> allRocks, ArrayList<Rock> targetSet, int numOccurrences) {
-		System.out.println("Start isSet() size of allRocks=" + allRocks.size() + " size of targetSet=" + targetSet.size());
-		int k = targetSet.size();
-		int numOccurrencesFound = 0;
-		int height = 0;
-
-		ArrayList<Integer> returnValues = new ArrayList<Integer>();
-		returnValues.add(0);
-		returnValues.add(0);
-		returnValues.add(0);
-
-		for (int i=0; i<allRocks.size(); i++) {
-			// System.out.println("isSet() Outer loop i=" + i);
-			boolean same = true;
-			int j;
-			for (j=0; j<k; j++) {
-				// System.out.println("isSet() Inner loop j=" + j);
-				if (i+j>allRocks.size()-1) {
-					break;
-				}
-				// System.out.println("isSet() Inner loop call hasSameXCoords");
-				Rock tmp = allRocks.get(i+j);
-				// System.out.println("xxxx");
-				if (! allRocks.get(i+j).hasSameXCoords(targetSet.get(j))) {
-					same=false;
-					break;
-				}
-				// System.out.println("isSet() Inner loop bottom");
-			}
-			if (same == false) {
-				continue;
-			}
-			if (j>=k) {
-				numOccurrencesFound++;
-				if (numOccurrencesFound >= numOccurrences) {
-				    System.out.println(allRocks.get(i));
-				    System.out.println(targetSet.get(0));
-					returnValues.set(0, 1);
-					returnValues.set(1, i);
-					int maxY = allRocks.get(i).maxY();
-					if (maxY > height) {
-						height = maxY;
-					}	
-					returnValues.set(2, height);
-				    System.out.println("FOUND!!!! found, i, height. "+returnValues);
-				    return returnValues;
-				}
-			}
-		}
-		System.out.println("isSet returning false");
-		return returnValues;
-	}
+//	// Accepts an ArrayList of rocks and a second smaller ArrayList of rocks. Loops through the first list
+//	// looking for occurrences of the second list. Stops when it finds numOccurrences occurrences of the second list.
+//	// The second ArrayList will often be first few elements of the first ArrayList
+//	public ArrayList<Integer> isSet(ArrayList<Rock> allRocks, ArrayList<Rock> targetSet, int numOccurrences) {
+//		System.out.println("Start isSet() size of allRocks=" + allRocks.size() + " size of targetSet=" + targetSet.size());
+//		int k = targetSet.size();
+//		int numOccurrencesFound = 0;
+//		int height = 0;
+//
+//		ArrayList<Integer> returnValues = new ArrayList<Integer>();
+//		returnValues.add(0);
+//		returnValues.add(0);
+//		returnValues.add(0);
+//
+//		for (int i=0; i<allRocks.size(); i++) {
+//			// System.out.println("isSet() Outer loop i=" + i);
+//			boolean same = true;
+//			int j;
+//			for (j=0; j<k; j++) {
+//				// System.out.println("isSet() Inner loop j=" + j);
+//				if (i+j>allRocks.size()-1) {
+//					break;
+//				}
+//				// System.out.println("isSet() Inner loop call hasSameXCoords");
+//				Rock tmp = allRocks.get(i+j);
+//				// System.out.println("xxxx");
+//				if (! allRocks.get(i+j).hasSameXCoords(targetSet.get(j))) {
+//					same=false;
+//					break;
+//				}
+//				// System.out.println("isSet() Inner loop bottom");
+//			}
+//			if (same == false) {
+//				continue;
+//			}
+//			if (j>=k) {
+//				numOccurrencesFound++;
+//				if (numOccurrencesFound >= numOccurrences) {
+//				    System.out.println(allRocks.get(i));
+//				    System.out.println(targetSet.get(0));
+//					returnValues.set(0, 1);
+//					returnValues.set(1, i);
+//					int maxY = allRocks.get(i).maxY();
+//					if (maxY > height) {
+//						height = maxY;
+//					}	
+//					returnValues.set(2, height);
+//				    System.out.println("FOUND!!!! found, i, height. "+returnValues);
+//				    return returnValues;
+//				}
+//			}
+//		}
+//		System.out.println("isSet returning false");
+//		return returnValues;
+//	}
 
 }
