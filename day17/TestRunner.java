@@ -12,9 +12,9 @@ public class TestRunner {
 
 	  testClasses.put("TestRock", TestRock.class);
 	  testClasses.put("TestChamber", TestChamber.class);
-	  testClasses.put("TestPyroclastic01Basic", TestPyroclastic01Basic.class);
-	  testClasses.put("TestPyroclastic02PartOne", TestPyroclastic02PartOne.class);
-	  testClasses.put("TestPyroclastic03Repetition", TestPyroclastic03Repetition.class);
+	  testClasses.put("TestSimulator01Basic", TestSimulator01Basic.class);
+	  testClasses.put("TestSimulator02PartOne", TestSimulator02PartOne.class);
+	  testClasses.put("TestSimulator03Repetition", TestSimulator03Repetition.class);
 	  testClasses.put("TestCycle", TestCycle.class);
 
 	  if (args.length > 0) {

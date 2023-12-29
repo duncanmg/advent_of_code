@@ -15,6 +15,7 @@ class Horizontal extends Rock {
 	}
 
 	public Horizontal(Chamber chamber) throws Exception {
+		chamber.logger.log("Horizontal constructor called");
 		chamber.logger.log("startX=" + chamber.startX + " startY=" + chamber.startY);
 		this.addCoord(chamber.startX, chamber.startY);
 		this.addCoord(chamber.startX+1, chamber.startY);

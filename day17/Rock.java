@@ -74,6 +74,15 @@ class Rock {
 		this.coords = newCoords;
 	}
 
+	void moveUp() throws Exception {
+		ArrayList<Coords> newCoords = new ArrayList<Coords>();
+		for (int i=0; i<this.coords.size(); i++) {
+			Coords current = this.coords.get(i);
+			newCoords.add(current.moveY(1));
+		}
+		this.coords = newCoords;
+	}
+
 	boolean overlapsWith(Rock rock) {
 		for (int i=0; i<rock.coords.size(); i++) {
 			for (int j=0; j< this.coords.size(); j++) {

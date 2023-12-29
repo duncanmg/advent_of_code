@@ -19,7 +19,7 @@ public class TestCycle {
 	public void TestSimulation() throws Exception {
 
 		System.out.println("Hello");
-		Pyroclastic p = new Pyroclastic("test_data.txt");
+		Simulator p = new Simulator(new String[] {"test_data.txt"});
 		p.maxRocks = 100;
 		p.debug = false;
 		p.maxJets = 100;
@@ -33,7 +33,7 @@ public class TestCycle {
 	//   @Test
 	//   public void TestSimulationJets() throws Exception {
 	//
-	//     Pyroclastic p = new Pyroclastic("test_data.txt");
+	//     Simulator p = new Simulator(new String[] {"test_data.txt"});
 	//	 p.maxRocks = 1;
 	//	 p.debug = true;
 	//	 p.maxJets = 3;

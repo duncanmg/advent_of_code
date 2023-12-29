@@ -27,19 +27,34 @@ class Chamber {
 
 	public ArrayList<Rock> rocks = new ArrayList<Rock>(0);
 
-	// Highest with an occupied slot.
+	// Highest row in the grid which has an occupied slot.
 	public int getCurrentHeight() {
 		ArrayList<ArrayList<Character>> grid = this.buildGrid();
+		int gridSize = grid.size();
+		ArrayList<Character> emptyRow = this.getEmptyRow();
+		this.logger.log("01 getCurrentHeight " + grid.toString());
+		if (gridSize > 0) {
+			this.logger.log("getCurrentHeight() grid.size=" + grid.size() + " row=" + grid.get(gridSize-1) + " emptyRow=" + emptyRow.toString());
+		}
+		while (gridSize > 0 && grid.get(gridSize-1).equals(emptyRow) == true) {
+			this.logger.log("Decrement gridSise");
+			gridSize--;
+		}
+		this.logger.log("02 getCurrentHeight");
 		return grid.size();
 	}
 
-	public Logger logger = new Logger(this);
+	public Logger logger = new Logger(this, true);
 
+	// Adds a new rock to the chamber.
 	public void addRock(Rock rock) {
 		this.rocks.add(rock);
 	}
 
-	public void moveRock(Rock rock) throws RocksOverlapException {
+	// Accepts the latest version of the last rock to be added to the chamber
+	// (the falling rock) and replaces the old version provided that it won't
+	// overlap with another rock.
+	public void updateFallingRock(Rock rock) throws RocksOverlapException {
 
 		int indexOfFallingRock = this.rocks.size() - 1;
 
@@ -86,16 +101,14 @@ class Chamber {
 	}
 
 	ArrayList<ArrayList<Character>> buildGrid() {
+		this.logger.log("Start buildGrid() " + this.rocks.size() + " rocks.");
 		ArrayList<ArrayList<Character>> grid = new ArrayList<ArrayList<Character>>();
 		for (int i=this.rocks.size()-1; i>=0; i--) {
 			Rock current = this.rocks.get(i);
-			if (current.label == 'h') {
-				// this.logger.log("                        " + current);
-			}
-			// System.out.println("In buildGrid() i=" + i + " current.coords=" + current.coords);
 			for (int j=0; j<current.size(); j++) {
 				grid = addToGrid(grid, current.coords.get(j), current.label);
 			}
+			// this.logger.log("In buildGrid() i=" + i + " rocks.size=" + this.rocks.size() + " grid.size=" + grid.size() + " current=" + current);
 		}
 		return grid;
 	}
@@ -110,18 +123,22 @@ class Chamber {
 	// 	char							label - The label of the rock being added eg "v".
 	ArrayList<ArrayList<Character>> addToGrid(ArrayList<ArrayList<Character>> grid, Coords coords, char label) {
 
-		// If the y coordinate is greate than the size of the grid
+		// If the y coordinate is greater than the size of the grid
 		// then one or more empty rows must be added.
 		for (int i=grid.size()-1; i< coords.y; i++) {
 			// Add a row of dots representing an empty line.
-			ArrayList<Character> line = new ArrayList<Character>();
-			for (int j=0; j<7; j++) {
-				line.add('.');
-			}
-			grid.add(line);
+			grid.add(this.getEmptyRow());
 		}
 		// Set the position representing the coordinates to the value of the label eg "v".
+		// this.logger.log("addToGrid. Setting " + coords.toString() + " to " + label);
 		grid.get(coords.y).set(coords.x,label);
 		return grid;
+	}
+
+	ArrayList<Character> getEmptyRow() {
+		ArrayList<Character> emptyRow = new ArrayList<Character>(
+				Arrays.asList('.','.','.','.','.','.','.')
+				);
+		return emptyRow;
 	}
 }

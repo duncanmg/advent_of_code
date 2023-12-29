@@ -9,14 +9,19 @@ class Logger {
 		Logger obj = new Logger();
 	}
 
-    public Logger() {
+	public Logger() {
 		name = "";
-    }
+	}
 
-    public Logger(Object o) {
+	public Logger(Object o) {
 		this.name = o.getClass().getName();
 		this.loggerEnabled = this.readConf();
-    }
+	}
+
+	public Logger(Object o, Boolean dbg) {
+		this(o);
+		this.debug = dbg;
+	}
 
 	public Boolean debug = false;
 
@@ -40,9 +45,9 @@ class Logger {
 	}
 
 	public void log(String msg) {
-       if (this.debug && this.loggerEnabled) {
-		   System.out.println(this.name + ": " + msg);
-	   }
+		if (this.debug && this.loggerEnabled) {
+			System.out.println(this.name + ": " + msg);
+		}
 	}
 
 }
