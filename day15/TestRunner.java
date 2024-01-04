@@ -1,0 +1,23 @@
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
+
+public class TestRunner {
+   public static void main(String[] args) {
+
+	  runTests(TestSensor.class);
+	  runTests(TestGenericGrid.class);
+	  runTests(TestGrid.class);
+   }
+
+   static void runTests(Class testClass) {
+      Result result = JUnitCore.runClasses(testClass);
+		
+      for (Failure failure : result.getFailures()) {
+         System.out.println(failure.toString());
+      }
+		
+      System.out.println(testClass.getName() + ": " + result.getRunCount() + " tests run. " + (result.wasSuccessful() ? "Success" : "Failure"));
+
+   }
+}  	
