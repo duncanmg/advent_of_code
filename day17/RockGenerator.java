@@ -22,12 +22,15 @@ class RockGenerator {
 
 	Logger logger = new Logger(this, true);
 
-	int rockNo = 0;
+	int currentRockNo = 0;
+
+	long totalRocksGenerated = 0;
+
 	public Rock next() throws Exception {
 		Rock r;
-		this.logger.log("01 nextRock " + this.rockNo);
+		this.logger.log("01 nextRock " + this.currentRockNo);
 		this.chamber.startY = this.chamber.getCurrentHeight() + 3;
-		switch (this.rockNo) {
+		switch (this.currentRockNo) {
 			case 0:
 				r = new Horizontal(this.chamber);
 				break;
@@ -44,11 +47,12 @@ class RockGenerator {
 				r = new Square(this.chamber);
 				break;
 			default:
-				throw new Exception("No Rock for " + rockNo);
+				throw new Exception("No Rock for " + currentRockNo);
 		}
-		this.rockNo++;
-		if (this.rockNo>4) {
-			this.rockNo=0;
+		this.currentRockNo++;
+		this.totalRocksGenerated++;
+		if (this.currentRockNo>4) {
+			this.currentRockNo=0;
 		}
 		return r;
 	}

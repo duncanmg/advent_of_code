@@ -14,7 +14,7 @@ public class TestRunner {
 	  testClasses.put("TestChamber", TestChamber.class);
 	  testClasses.put("TestSimulator01Basic", TestSimulator01Basic.class);
 	  testClasses.put("TestSimulator02PartOne", TestSimulator02PartOne.class);
-	  testClasses.put("TestSimulator03Repetition", TestSimulator03Repetition.class);
+	  // testClasses.put("TestSimulator03Repetition", TestSimulator03Repetition.class); Very slow! 36 hours! 4 Jan 24.
 	  testClasses.put("TestCycle", TestCycle.class);
 
 	  if (args.length > 0) {

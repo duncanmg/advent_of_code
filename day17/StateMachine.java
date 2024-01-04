@@ -100,7 +100,7 @@ class StateMachine {
 		catch (RocksOverlapException e) {                                                                                                              
 			this.rock.moveRight();
 			this.chamber.updateFallingRock(this.rock);                                                                                                    
-			this.nextAction = Action.NEW_ROCK;
+			// this.nextAction = Action.NEW_ROCK;
 			return;
 		}
 	}
@@ -117,7 +117,7 @@ class StateMachine {
 		catch (RocksOverlapException e) {                                                                                                              
 			this.rock.moveLeft();
 			this.chamber.updateFallingRock(this.rock);                                                                                                    
-			this.nextAction = Action.NEW_ROCK;
+			// this.nextAction = Action.NEW_ROCK;
 		}
 	}
 

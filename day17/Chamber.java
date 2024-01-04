@@ -28,13 +28,16 @@ class Chamber {
 	public ArrayList<Rock> rocks = new ArrayList<Rock>(0);
 
 	// Highest row in the grid which has an occupied slot.
-	public int getCurrentHeight() {
+	public int getCurrentHeight() throws Exception{
 		ArrayList<ArrayList<Character>> grid = this.buildGrid();
 		int gridSize = grid.size();
 		ArrayList<Character> emptyRow = this.getEmptyRow();
 		this.logger.log("01 getCurrentHeight " + grid.toString());
 		if (gridSize > 0) {
 			this.logger.log("getCurrentHeight() grid.size=" + grid.size() + " row=" + grid.get(gridSize-1) + " emptyRow=" + emptyRow.toString());
+		}
+		if (gridSize > 0 && grid.get(gridSize-1).equals(emptyRow) == true) {
+			throw new Exception("getCurrentHeight() called when rock is not at rest.");
 		}
 		while (gridSize > 0 && grid.get(gridSize-1).equals(emptyRow) == true) {
 			this.logger.log("Decrement gridSise");
@@ -82,7 +85,7 @@ class Chamber {
 		return out;
 	}
 
-	void show() {
+	void show() throws Exception {
 		this.logger.log("In show(). size=" + this.rocks.size() + " currentHeight=" + this.getCurrentHeight());
 
 		ArrayList<ArrayList<Character>> grid = buildGrid();

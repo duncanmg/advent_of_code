@@ -49,7 +49,7 @@ class Simulator {
 
 	RockGenerator rockGenerator = new RockGenerator(this.chamber);
 
-	public int maxRocks = 0;
+	EndTester endTester = new EndTester(this.chamber);
 
 	public int runSimulation(String dataFile) throws Exception {
 		this.dataObj = new Data();
@@ -63,14 +63,14 @@ class Simulator {
 			throw new Exception("No data and no jets!");
 		}
 
-		EndTester endTester = new EndTester(this.chamber);
-		endTester.maxRocks = this.maxRocks;
-
 		StateMachine stateMachine = new StateMachine();
 		stateMachine.jetGenerator = this.jetGenerator;
 		stateMachine.rockGenerator = this.rockGenerator;
 		stateMachine.chamber = this.chamber;
 		stateMachine.endTester = endTester;
+
+		endTester.rockGenerator = this.rockGenerator;
+		endTester.jetGenerator = this.jetGenerator;
 
 		stateMachine.run();
 

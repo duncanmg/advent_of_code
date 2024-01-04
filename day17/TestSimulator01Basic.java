@@ -79,7 +79,7 @@ public class TestSimulator01Basic {
 		public void TestSimulation() throws Exception {
 
 			Simulator p = new Simulator(new String[] {"--dataFile=test_data.txt"});
-			p.maxRocks = 1;
+			p.endTester.maxRocks = 1;
 			p.debug = false;
 			int out = p.runSimulation();
 			System.out.println("TestSimulation out = " + out);
@@ -94,7 +94,7 @@ public class TestSimulator01Basic {
 
 			System.out.println("Start TestSimulationOneRock()");
 			Simulator p = new Simulator(new String[] {"--dataFile=test_data.txt"});
-			p.maxRocks = 1;
+			p.endTester.maxRocks = 1;
 			p.debug = true;
 			int out = p.runSimulation();
 			p.chamber.logger.debug = true;
@@ -108,7 +108,7 @@ public class TestSimulator01Basic {
 
 			System.out.println("Start TestSimulationTwoRocks()");
 			Simulator p = new Simulator(new String[] {"--dataFile=test_data.txt"});
-			p.maxRocks = 2;
+			p.endTester.maxRocks = 2;
 			p.debug = false;
 			int out = p.runSimulation();
 			p.chamber.logger.debug = false;
@@ -121,7 +121,7 @@ public class TestSimulator01Basic {
 		public void TestSimulationThreeRocks() throws Exception {
 
 			Simulator p = new Simulator(new String[] {"--dataFile=test_data.txt"});
-			p.maxRocks = 3;
+			p.endTester.maxRocks = 3;
 			p.debug = false;
 			int out = p.runSimulation();
 			// p.chamber.logger.debug = true;
@@ -134,10 +134,10 @@ public class TestSimulator01Basic {
 		public void TestSimulationFourRocks() throws Exception {
 
 			Simulator p = new Simulator(new String[] {"--dataFile=test_data.txt"});
-			p.maxRocks = 4;
+			p.endTester.maxRocks = 4;
 			p.debug = false;
 			int out = p.runSimulation();
-			p.chamber.logger.debug = true;
+			p.chamber.logger.debug = false;
 			System.out.println("4 Rocks ==================================");
 			p.chamber.show();
 			System.out.println("4 Rocks ==================================");
@@ -149,7 +149,7 @@ public class TestSimulator01Basic {
 		public void TestSimulationFiveRocks() throws Exception {
 
 			Simulator p = new Simulator(new String[] {"--dataFile=test_data.txt"});
-			p.maxRocks = 5;
+			p.endTester.maxRocks = 5;
 			p.debug = false;
 			int out = p.runSimulation();
 			System.out.println("5 Rocks ==================================");
@@ -164,7 +164,7 @@ public class TestSimulator01Basic {
 		public void TestSimulation10Rocks() throws Exception {
 
 			Simulator p = new Simulator(new String[] {"--dataFile=test_data.txt"});
-			p.maxRocks = 10;
+			p.endTester.maxRocks = 10;
 			p.debug = false;
 			int out = p.runSimulation();
 			p.chamber.logger.debug = false;
@@ -175,19 +175,19 @@ public class TestSimulator01Basic {
 
 		}
 
-//	@Test
-//		public void TestSimulation10RocksSmallData() throws Exception {
-//
-//			Simulator p = new Simulator(new String[] {"--dataFile=small_data.txt"});
-//			p.maxRocks = 10;
-//			System.out.println("SmallData 10 Rocks ==================================");
-//			p.debug = false;
-//			int out = p.runSimulation();
-//			p.chamber.logger.debug = false;
-//			p.chamber.show();
-//			System.out.println("SmallData End 10 Rocks ==================================");
-//			assertEquals(17, out);
-//
-//		}
+	@Test
+		public void TestSimulation10RocksSmallData() throws Exception {
+
+			Simulator p = new Simulator(new String[] {"--dataFile=small_data.txt"});
+			p.endTester.maxRocks = 10;
+			System.out.println("SmallData 10 Rocks ==================================");
+			p.debug = false;
+			int out = p.runSimulation();
+			p.chamber.logger.debug = false;
+			p.chamber.show();
+			System.out.println("SmallData End 10 Rocks ==================================");
+			assertEquals(17, out);
+
+		}
 
 }

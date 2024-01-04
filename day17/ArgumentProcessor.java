@@ -12,7 +12,7 @@ class ArgumentProcessor {
 
      	public ArgumentProcessor(String[] args) {
 		this.argString = Arrays.copyOf(args, args.length);
-                System.out.println("ArgumentProcessor object created");
+                System.out.println("ArgumentProcessor object created. " + args.length + " arguments passed.");
         }       
 
 	String[] argString;

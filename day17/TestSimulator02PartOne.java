@@ -12,20 +12,24 @@ import org.junit.jupiter.api.BeforeEach;
 // This test confirms the correct answers for part one using the test data
 // and the real data.
 
-public class TestPyroclastic02PartOne {
+public class TestSimulator02PartOne {
 
 	public static void main(String[] args) throws Exception {
-		TestPyroclastic obj = new TestPyroclastic();
+		TestSimulator02PartOne obj = new TestSimulator02PartOne();
 	}
 
 	// 3068 is the correct answer for part one using the test data.
 	@Test
 	public void TestSimulation2022Rocks() throws Exception {
 
-		Pyroclastic p = new Pyroclastic("test_data.txt");
-		p.maxRocks = 2022;
+		System.out.println("01 YYYYYYYYYYYYYYY");
+		Simulator p = new Simulator(new String[] {"--dataFile=test_data.txt"});
+		System.out.println("02 YYYYYYYYYYYYYYY");
+		p.endTester.maxRocks = 2022;
 		p.debug = false;
+		System.out.println("03 YYYYYYYYYYYYYYY");
 		int out = p.runSimulation();
+		System.out.println("04 YYYYYYYYYYYYYYY");
 		p.chamber.logger.debug = false;
 		p.chamber.show();
 		assertEquals(3068, out);
@@ -36,8 +40,8 @@ public class TestPyroclastic02PartOne {
 	@Test
 	public void TestSimulation2022RocksRealData() throws Exception {
 
-		Pyroclastic p = new Pyroclastic("data.txt");
-		p.maxRocks = 2022;
+		Simulator p = new Simulator(new String[] {"--dataFile=data.txt"});
+		p.endTester.maxRocks = 2022;
 		p.debug = false;
 		int out = p.runSimulation();
 		p.chamber.logger.debug = false;
