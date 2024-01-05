@@ -7,10 +7,29 @@ class Simulator {
 
 	// dataFile is a containing a single line which represents a list of jets. eg ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>"
 	// maxRocks is the maximum number of rocks to drop
-	// show is a boolean which determines whether the chamber is shown after each rock is dropped
+	// show is a boolean which determines whether the chamber is shown after the run has finished.
+	// debug is a boolean which determines whether log messages are shown
+
+	// If "run" is present, it causes the simulation to be executed from the command line. It must have a value.
+	// eg ./run.sh Simulator --dataFile=data.txt --maxRocks=2022 --run=1
+
+	// eg ./run.sh Simulator --dataFile=data.txt --maxRocks=2022 --run=1 --show=chamber_2022rocks.txt
 
 	public static void main(String[] args) {
-			Simulator obj = new Simulator(args);
+		Simulator obj = new Simulator(args);
+		try {
+			if (obj.argMap.containsKey("run")) {
+				System.out.println("Running simulation");
+				System.out.println(obj.runSimulation());
+				if (obj.argMap.containsKey("show")) {
+					System.out.println("Showing chamber");
+					obj.chamber.showRaw(obj.argMap.get("show"));
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("Error running simulation");
+			System.out.println(e.getMessage());
+		}
 	}
 
 	public Simulator(String[] args) {
@@ -22,6 +41,14 @@ class Simulator {
 			this.dataObj = new Data();
 			this.data = this.dataObj.getData(dataFile);
 			this.jetGenerator = new JetGenerator(this.argMap.get("dataFile"));
+		}
+		if (argMap.containsKey("maxRocks")) {
+			String maxRocks = argMap.get("maxRocks");
+			this.endTester.maxRocks = Integer.parseInt(maxRocks);
+		}
+		if (argMap.containsKey("maxHeight")) {
+			String maxHeight = argMap.get("maxHeight");
+			this.endTester.maxHeight = Integer.parseInt(maxHeight);
 		}
 	}
 

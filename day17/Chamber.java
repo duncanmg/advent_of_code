@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
@@ -101,6 +102,26 @@ class Chamber {
 			this.logger.log(i + "\t(" + rockNo + ")\t" + line);
 			rockNo--;
 		}
+	}
+
+	void showRaw(String fileName) throws Exception {
+		this.logger.log("In show(). size=" + this.rocks.size() + " currentHeight=" + this.getCurrentHeight());
+
+		ArrayList<ArrayList<Character>> grid = buildGrid();
+
+		FileWriter writer = new FileWriter(fileName);
+		Collections.reverse(grid);
+		int rockNo = grid.size();
+		for (int i=0; i<grid.size(); i++) {
+			ArrayList<Character> chars = grid.get(i);
+			String line = new String();
+			for (int j=0; j<chars.size(); j++) {
+				line = line + chars.get(j);
+			}
+			writer.write(i + "\t(" + rockNo + ")\t" + line + "\n");
+			rockNo--;
+		}
+		writer.close();
 	}
 
 	ArrayList<ArrayList<Character>> buildGrid() {

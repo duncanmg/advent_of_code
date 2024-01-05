@@ -28,4 +28,4 @@ Simulator.class: Chamber.class Rock.class Square.class Horizontal.class Cross.cl
 
 TestChamber.class: TestChamber.java Chamber.class
 
-TestRunner.class: TestRunner.java TestSimulator01Basic.class TestSimulator02PartOne.class TestSimulator03Repetition.class TestChamber.class TestRock.class TestCycle.class Simulator.class
+TestRunner.class: TestRunner.java TestSimulator01Basic.class TestSimulator02PartOne.class TestSimulator03Repetition.class TestChamber.class TestRock.class TestCycle.class Simulator.class TestRepetitionFinder.class

@@ -25,6 +25,7 @@ class RepetitionFinder {
 	//
 	// The offset is the number of lines to skip before starting to look for the repetition.
 	//
+	// eg ./run.sh RepetitionFinder chamber_2022rocks.txt 25 1
 	public static void main(String[] args) {
 
 		String cavernMapFile = args[0];
@@ -52,30 +53,23 @@ class RepetitionFinder {
 		System.out.println("RepetitionFinder object created");
 	}
 
-	public RepetitionFinder(String dataFile) {
-		data = this.dataObj.getData(dataFile);
+	public RepetitionFinder(String cavernMapFile) {
+		cavernMap = this.cavernMapObj.getData(cavernMapFile);
 	}
 
-	public RepetitionFinder(String dataFile, int maxRocks) {
-		data = this.dataObj.getData(dataFile);
+	public RepetitionFinder(String cavernMapFile, int maxRocks) {
+		cavernMap = this.cavernMapObj.getData(cavernMapFile);
 	}
 
-	public RepetitionFinder(String dataFile, int maxRocks, boolean show) {
-		data = this.dataObj.getData(dataFile);
+	public RepetitionFinder(String cavernMapFile, int maxRocks, boolean show) {
+		cavernMap = this.cavernMapObj.getData(cavernMapFile);
 	}
 
-	Logger logger = new Logger(this);
+	Logger logger = new Logger(this, true);
 
-	Boolean debug = false;
+	Data cavernMapObj = new Data();
 
-	void log(String msg) {
-		this.logger.debug = this.debug;
-		this.logger.log(msg);
-	}
-
-	Data dataObj = new Data();
-
-	public ArrayList<String> data = new ArrayList<String>(0);
+	public ArrayList<String> cavernMap = new ArrayList<String>(0);
 
 	ArrayList<String> targetPatterns = new ArrayList<String>(0);
 
@@ -84,19 +78,28 @@ class RepetitionFinder {
 	public boolean  findRepetition(String cavernMapFile, int repetitionSize, int offset) throws Exception {
 
 		// Load the cavernMap and reverse it so it starts from the ground.
-		data = this.dataObj.getData(cavernMapFile);
-		Collections.reverse(data);
+		cavernMap = this.cavernMapObj.getData(cavernMapFile);
+		Collections.reverse(cavernMap);
+
+		this.buildPatternArrayLists(repetitionSize, offset);
+
+		// System.out.println("Size allPatterns=" + allPatterns.size() + " targetPatterns=" + targetPatterns.size());
+		return this.search(offset);
+	}
+
+	public void  buildPatternArrayLists(int repetitionSize, int offset) throws Exception {
 
 		String patternRegEx = "^[.hcqsv]{7}$";
 		Pattern patternMatcher = Pattern.compile(patternRegEx);
 
 		targetPatterns = new ArrayList<String>(0);
 		allPatterns = new ArrayList<String>(0);
-		// Each row in data looks like: Chamber: 30636  (31)    ...v...
-		for (int i=0; i<data.size(); i++) {
+
+		// Each row in cavernMap looks like: Chamber: 30636  (31)    ...v...
+		for (int i=0; i<cavernMap.size(); i++) {
 
 			// Split on tabs. Get 3 bits. Last bit is the pattern eg ...v...
-			String[] bits = data.get(i).split("\t");
+			String[] bits = cavernMap.get(i).split("\t");
 			String pattern = bits[2];
 
 			Matcher matcher = patternMatcher.matcher(pattern);
@@ -112,22 +115,21 @@ class RepetitionFinder {
 
 		}
 
-		// System.out.println("Size allPatterns=" + allPatterns.size() + " targetPatterns=" + targetPatterns.size());
-		return this.search(offset);
 	}
 
+	// Repeatedely call findRepetition with increasing offsets until a repetition is found or the chamber has been traversed.
 	void movingFindRepetition( String cavernMapFile, int repetitionSize) throws Exception {
 		boolean more = true;
-		int i = 0;
+		int offset = 0;
 		while (more) {
-			System.out.println("i=" + i);
-			boolean found = this.findRepetition(cavernMapFile, repetitionSize, i);
+			System.out.println("offset=" + offset);
+			boolean found = this.findRepetition(cavernMapFile, repetitionSize, offset);
 			if (found) {
-				System.out.println("Found at offset " + i);
+				System.out.println("Found at offset " + offset);
 				break;
 			}
-			i++;
-			if (i >= this.allPatterns.size() - repetitionSize) {
+			offset++;
+			if (offset >= this.allPatterns.size() - repetitionSize) {
 				more = false;
 			}
 		}
@@ -141,31 +143,47 @@ class RepetitionFinder {
 
 		int repetitionSize = this.targetPatterns.size();
 
+		if (repetitionSize <= 0 ) {
+			this.logger.log("repetitionSize must be greater than 0 for a match.");
+			return false;
+		}
+
+		if (repetitionSize * 2 > this.allPatterns.size() ) {
+			this.logger.log("repetitionSize cannot be more than half the number of patterns for a match.");
+			return false;
+		}
+
 		// eg If the repetition size is 2 then the earliest possible match
 		// is at positions 2 to 3 (abab).
 		// So we would start at position 3 and compare 0 and 2, 1 and 3.
-		int start = (repetitionSize * 2) + offset;
+		int start = repetitionSize + offset;
 
-		// System.out.println("Repetition size=" + repetitionSize);
-		System.out.println("Start=" + start);
+		System.out.println("Repetition size=" + repetitionSize);
+		System.out.println("Start=" + start + " allPatterns.size()=" + this.allPatterns.size());
 		// Iterate across all the patterns.
 		for (int i = start; i<this.allPatterns.size(); i++) {
 
 			int patternNo = 0;
 			int numMatches = 0;
 
-			for (int j = i - repetitionSize; j < i; j++) {
-				// System.out.println("i=" + i + " compare " + this.allPatterns.get(j) + " and " + this.targetPatterns.get(patternNo));
-				// System.out.println("j=" + j + " patternNo=" + patternNo);
+			for (int j = i; j < i + repetitionSize; j++) {
+
+				if (j >= this.allPatterns.size()) {
+					break;
+				}	
+
+				// System.out.println("i=" + i + " j=" + j + " patternNo=" + patternNo);
+				// System.out.println("Compare allPatterns.get(j) " + this.allPatterns.get(j) 
+				// 	+ " and targetPatterns.get(patternNo) " + this.targetPatterns.get(patternNo));
 				if (this.allPatterns.get(j).equals(this.targetPatterns.get(patternNo))) {
-					// System.out.println("Match " + numMatches);
+					// System.out.println("Got a match. numMatches was " + numMatches + " now " + (numMatches + 1));
 					numMatches++;
 				}
 				patternNo++;
 			}
 
 			if (numMatches == repetitionSize) {
-				System.out.println("numMatches=" + numMatches + " repetitionSize=" + repetitionSize);
+				// System.out.println("numMatches=" + numMatches + " repetitionSize=" + repetitionSize);
 				int repStart = i - repetitionSize;
 				System.out.println("Match starts at " + repStart + " zero based or " + (repStart + 1) + " counting from 1");
 				return true;

@@ -190,18 +190,19 @@ public class TestSimulator03Repetition {
 			testSimulation(400 * 2, 608 * 2, true, "test_data.txt");
 		}
 
-	// There are 5 rocks. There are 10091 movements in data.txt. Is a set/cycle 5 * 10091 * 2?
-	// 100910
-	@Test
-		public void TestTheoryOneRep() throws Exception{
-			testSimulation(100910, 3085, false, "data.txt");
-		}
-
-	@Test
-		public void TestTheoryTwoReps() throws Exception{
-			testSimulation(100910 * 2, 3085, false, "data.txt");
-		}
-
+//	// These two tests are slow!
+//	// There are 5 rocks. There are 10091 movements in data.txt. Is a set/cycle 5 * 10091 * 2?
+//	// 100910
+//	@Test
+//		public void TestTheoryOneRep() throws Exception{
+//			testSimulation(100910, 3085, false, "data.txt");
+//		}
+//
+//	@Test
+//		public void TestTheoryTwoReps() throws Exception{
+//			testSimulation(100910 * 2, 3085, false, "data.txt");
+//		}
+//
 	//	public void runSimulationForRepetitions(int lastIndex, int numRepetitions) throws Exception {
 	//
 	//		Simulator p = getP(2022);
