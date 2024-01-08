@@ -54,32 +54,38 @@ class RepetitionFinder {
 	}
 
 	public RepetitionFinder(String cavernMapFile) {
-		cavernMap = this.cavernMapObj.getData(cavernMapFile);
+		reversedCavernMap = this.cavernMapObj.getData(cavernMapFile);
+		Collections.reverse(this.reversedCavernMap);
 	}
 
 	public RepetitionFinder(String cavernMapFile, int maxRocks) {
-		cavernMap = this.cavernMapObj.getData(cavernMapFile);
+		reversedCavernMap = this.cavernMapObj.getData(cavernMapFile);
+		Collections.reverse(this.reversedCavernMap);
 	}
 
 	public RepetitionFinder(String cavernMapFile, int maxRocks, boolean show) {
-		cavernMap = this.cavernMapObj.getData(cavernMapFile);
+		reversedCavernMap = this.cavernMapObj.getData(cavernMapFile);
+		Collections.reverse(this.reversedCavernMap);
 	}
 
 	Logger logger = new Logger(this, true);
 
 	Data cavernMapObj = new Data();
 
-	public ArrayList<String> cavernMap = new ArrayList<String>(0);
+	public ArrayList<String> reversedCavernMap = new ArrayList<String>(0);
 
 	ArrayList<String> targetPatterns = new ArrayList<String>(0);
 
 	ArrayList<String> allPatterns = new ArrayList<String>(0);
 
+	// Zero based.
+	int repetitionStartsAt = -1;
+
 	public boolean  findRepetition(String cavernMapFile, int repetitionSize, int offset) throws Exception {
 
 		// Load the cavernMap and reverse it so it starts from the ground.
-		cavernMap = this.cavernMapObj.getData(cavernMapFile);
-		Collections.reverse(cavernMap);
+		reversedCavernMap = this.cavernMapObj.getData(cavernMapFile);
+		Collections.reverse(reversedCavernMap);
 
 		this.buildPatternArrayLists(repetitionSize, offset);
 
@@ -87,6 +93,9 @@ class RepetitionFinder {
 		return this.search(offset);
 	}
 
+	// Note that the cavernMap has bee reversed so it starts from the ground.
+	// Chamber: 76760  (1)     ..hhhh.
+	// Chamber: 76759  (2)     ..c....
 	public void  buildPatternArrayLists(int repetitionSize, int offset) throws Exception {
 
 		String patternRegEx = "^[.hcqsv]{7}$";
@@ -95,11 +104,11 @@ class RepetitionFinder {
 		targetPatterns = new ArrayList<String>(0);
 		allPatterns = new ArrayList<String>(0);
 
-		// Each row in cavernMap looks like: Chamber: 30636  (31)    ...v...
-		for (int i=0; i<cavernMap.size(); i++) {
+		// Each row in reversedCavernMap looks like: Chamber: 30636  (31)    ...v...
+		for (int i=0; i<reversedCavernMap.size(); i++) {
 
 			// Split on tabs. Get 3 bits. Last bit is the pattern eg ...v...
-			String[] bits = cavernMap.get(i).split("\t");
+			String[] bits = reversedCavernMap.get(i).split("\t");
 			String pattern = bits[2];
 
 			Matcher matcher = patternMatcher.matcher(pattern);
@@ -158,8 +167,8 @@ class RepetitionFinder {
 		// So we would start at position 3 and compare 0 and 2, 1 and 3.
 		int start = repetitionSize + offset;
 
-		System.out.println("Repetition size=" + repetitionSize);
-		System.out.println("Start=" + start + " allPatterns.size()=" + this.allPatterns.size());
+		// System.out.println("Repetition size=" + repetitionSize + " offset=" + offset);
+		// System.out.println("Start=" + start + " allPatterns.size()=" + this.allPatterns.size());
 		// Iterate across all the patterns.
 		for (int i = start; i<this.allPatterns.size(); i++) {
 
@@ -176,16 +185,16 @@ class RepetitionFinder {
 				// System.out.println("Compare allPatterns.get(j) " + this.allPatterns.get(j) 
 				// 	+ " and targetPatterns.get(patternNo) " + this.targetPatterns.get(patternNo));
 				if (this.allPatterns.get(j).equals(this.targetPatterns.get(patternNo))) {
-					// System.out.println("Got a match. numMatches was " + numMatches + " now " + (numMatches + 1));
+					// System.out.println("i=" + i + " j=" + j + " Got a match. numMatches was " + numMatches + " now " + (numMatches + 1));
 					numMatches++;
 				}
 				patternNo++;
 			}
 
 			if (numMatches == repetitionSize) {
-				// System.out.println("numMatches=" + numMatches + " repetitionSize=" + repetitionSize);
-				int repStart = i - repetitionSize;
-				System.out.println("Match starts at " + repStart + " zero based or " + (repStart + 1) + " counting from 1");
+				this.logger.log("i=" + i + " numMatches=" + numMatches + " repetitionSize=" + repetitionSize);
+				this.repetitionStartsAt = i;
+				System.out.println("Match starts at " + this.repetitionStartsAt + " zero based or " + (this.repetitionStartsAt + 1) + " counting from 1");
 				return true;
 			}
 		}

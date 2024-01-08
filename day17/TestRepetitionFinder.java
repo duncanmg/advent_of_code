@@ -65,9 +65,9 @@ public class TestRepetitionFinder {
 	@Test
 		public void TestSearchEmptyArrayLists() throws Exception {
 
-			ArrayList<String> cavernMap = new ArrayList<String>(0);
+			ArrayList<String> reversedCavernMap = new ArrayList<String>(0);
 
-			this.testSearch(cavernMap, 0, 0, false);
+			this.testSearch(reversedCavernMap, 0, 0, false, -1);
 
 		}
 
@@ -75,10 +75,10 @@ public class TestRepetitionFinder {
 		public void TestSearchRepetitionZero() throws Exception {
 
 
-			ArrayList<String> cavernMap = new ArrayList<String>(Arrays.asList("0	(2)	.c.....",
+			ArrayList<String> reversedCavernMap = new ArrayList<String>(Arrays.asList("0	(2)	.c.....",
 						"1	(1)	.c...h."));
 
-			this.testSearch(cavernMap, 0, 0, false);
+			this.testSearch(reversedCavernMap, 0, 0, false, -1);
 			RepetitionFinder rf = new RepetitionFinder();
 
 		}
@@ -87,57 +87,135 @@ public class TestRepetitionFinder {
 		public void TestSearchShortArrayListsWithMatch() throws Exception {
 
 
-			ArrayList<String> cavernMap = new ArrayList<String>(Arrays.asList("0	(2)	.c.....",
+			ArrayList<String> reversedCavernMap = new ArrayList<String>(Arrays.asList("0	(2)	.c.....",
 						"1	(1)	.c....."));
 
-			this.testSearch(cavernMap, 1, 0, true);
+			this.testSearch(reversedCavernMap, 1, 0, true, 1);
 		}
 
 	@Test
 		public void TestSearchShortArrayListsNoMatch() throws Exception {
 
-			ArrayList<String> cavernMap = new ArrayList<String>(Arrays.asList("0	(2)	.c.....",
+			ArrayList<String> reversedCavernMap = new ArrayList<String>(Arrays.asList("0	(2)	.c.....",
 						"1	(1)	.c...h."));
 
-			this.testSearch(cavernMap, 1, 0, false);
+			this.testSearch(reversedCavernMap, 1, 0, false, -1);
 		}
 
 	@Test
 		public void TestSearchArrayListsRep2Match() throws Exception {
 
-			ArrayList<String> cavernMap = new ArrayList<String>(Arrays.asList("0	(6)	.c.....",
-						"1	(5)	.c...h.",
-						"2	(4)	.c.....",
+			ArrayList<String> reversedCavernMap = new ArrayList<String>(Arrays.asList("5	(1)	.c.....",
+						"4	(2)	.c...h.",
 						"3	(3)	.c.....",
-						"4	(2)	.c.....",
-						"5	(1)	.c...h."));
+						"2	(4)	.c.....",
+						"1	(5)	.c.....",
+						"0	(6)	.c...h."));
 
-			this.testSearch(cavernMap, 2, 0, true);
+			this.testSearch(reversedCavernMap, 2, 0, true, 4);
 		}
 
 	@Test
 		public void TestSearchArrayListsRep2NoMatch() throws Exception {
 
-			ArrayList<String> cavernMap = new ArrayList<String>(Arrays.asList("0	(6)	.c.....",
-						"1	(5)	.c...h.",
-						"2	(4)	.c.....",
+			ArrayList<String> reversedCavernMap = new ArrayList<String>(Arrays.asList("5	(1)	.c.....",
+						"4	(2)	.c...h.",
 						"3	(3)	.c.....",
-						"4	(2)	.c...s.",
-						"5	(1)	.c...h."));
+						"2	(4)	.c.....",
+						"1	(5)	.c...s.",
+						"0	(6)	.c...h."));
 
-			this.testSearch(cavernMap, 2, 0, false);
+			this.testSearch(reversedCavernMap, 2, 0, false, -1);
 		}
 
-	void testSearch(ArrayList<String>cavernMap, int repetitionSize, int offset, boolean expectedResult) throws Exception {
+	@Test
+		public void TestSearchArrayListsRep1Offset1NoMatch() throws Exception {
+
+			ArrayList<String> reversedCavernMap = new ArrayList<String>(Arrays.asList("5	(1)	.c.....",
+						"4	(2)	.c...h.",
+						"3	(3)	.c.....",
+						"2	(4)	.c.....",
+						"1	(5)	.c...s.",
+						"0	(6)	.c...s."));
+
+			this.testSearch(reversedCavernMap, 1, 1, false, -1);
+		}
+
+	@Test
+		public void TestSearchArrayListsRep1Offset1Match() throws Exception {
+
+			ArrayList<String> reversedCavernMap = new ArrayList<String>(Arrays.asList("5	(1)	.c.....",
+						"4	(2)	.c...h.",
+						"3	(3)	.c.....",
+						"2	(4)	.c.....",
+						"1	(5)	.c...h.",
+						"0	(6)	.c...s."));
+
+			this.testSearch(reversedCavernMap, 1, 1, true, 4);
+		}
+
+	@Test
+		public void TestSearchArrayListsRep2Offset3NoMatch() throws Exception {
+
+			ArrayList<String> reversedCavernMap = new ArrayList<String>(Arrays.asList("5	(1)	.c.....",
+						"4	(2)	.c...h.",
+						"3	(3)	.c.....",
+						"2	(4)	.c.....",
+						"1	(5)	.c...h.",
+						"0	(6)	.c...s."));
+
+			this.testSearch(reversedCavernMap, 2, 2, false, -1);
+		}
+
+	@Test
+		public void TestSearchArrayListsRep2Offset3Match() throws Exception {
+
+			ArrayList<String> reversedCavernMap = new ArrayList<String>(Arrays.asList("7	(1)	.c.....",
+						"6	(2)	.c...h.",
+						"5	(3)	.cv....",
+						"4	(4)	.ch....",
+						"3	(5)	.cv..h.",
+						"2	(6)	.cv..h.",
+						"1	(7)	.cv....",
+						"0	(8)	.ch...."));
+
+			this.testSearch(reversedCavernMap, 2, 2, true, 6);
+		}
+
+	void testSearch(ArrayList<String>reversedCavernMap, int repetitionSize, int offset, boolean expectedResult, int expectedRepetitionStartsAt) throws Exception {
 			System.out.println("----------");
 			RepetitionFinder rf = new RepetitionFinder();
 
-			rf.cavernMap = cavernMap;
+			rf.reversedCavernMap = reversedCavernMap;
 
 			rf.buildPatternArrayLists(repetitionSize, offset);
 
 			assertEquals(repetitionSize, rf.targetPatterns.size());
-			assertEquals(cavernMap.size(), rf.allPatterns.size());
-			assertEquals(expectedResult, rf.search(offset));
+			assertEquals(reversedCavernMap.size(), rf.allPatterns.size());
+
+			Boolean found = rf.search(offset);
+
+			assertEquals(expectedResult, found);
+			assertEquals(expectedRepetitionStartsAt, rf.repetitionStartsAt);
 	}
+
+	@Test
+		public void TestRepetitionFinderMatch() throws Exception {
+
+			RepetitionFinder rf = new RepetitionFinder();
+
+			// The file has 40 lines, 2 identical sets of 20. 0-19 and 20-39.
+			assertEquals(true, rf.findRepetition("test_repetition_finder01.txt", 2, 0));
+			assertEquals(20, rf.repetitionStartsAt);
+		}
+
+	@Test
+		public void TestRepetitionFinderNoMatch() throws Exception {
+
+			RepetitionFinder rf = new RepetitionFinder();
+
+			// The file has 40 lines, no repetition.
+			assertEquals(false, rf.findRepetition("test_repetition_finder02.txt", 2, 0));
+			assertEquals(-1, rf.repetitionStartsAt);
+		}
 }
