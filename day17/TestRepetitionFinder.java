@@ -218,4 +218,38 @@ public class TestRepetitionFinder {
 			assertEquals(false, rf.findRepetition("test_repetition_finder02.txt", 2, 0));
 			assertEquals(-1, rf.repetitionStartsAt);
 		}
+
+	void testMovingRepetition(String cavernMapFile, int repetitionSize, boolean expectedResult, 
+		int expectedRepetitionStartsAt, int expectedOffsetWhenMatchFound) throws Exception {
+
+			System.out.println("----------");
+
+			RepetitionFinder rf = new RepetitionFinder();
+
+			rf.movingFindRepetition(cavernMapFile, repetitionSize);
+
+			assertEquals(repetitionSize, rf.targetPatterns.size());
+
+			assertEquals(expectedRepetitionStartsAt, rf.repetitionStartsAt);
+
+			assertEquals(expectedOffsetWhenMatchFound, rf.offsetWhenMatchFound);
+	}
+
+	@Test
+		public void TestMovingRepetitionFinderNoMatch() throws Exception {
+
+			this.testMovingRepetition("test_moving_repetition_finder01.txt", 2, false, -1, -1);
+		}
+
+	@Test
+		public void TestMovingRepetitionFinderMatch() throws Exception {
+
+			this.testMovingRepetition("test_moving_repetition_finder02.txt", 2, true, 18, 10);
+		}
+
+	@Test
+		public void TestMovingRepetitionFinderEdge() throws Exception {
+
+			this.testMovingRepetition("test_moving_repetition_finder03.txt", 2, true, 20, 18);
+		}
 }

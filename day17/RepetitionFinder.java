@@ -81,6 +81,9 @@ class RepetitionFinder {
 	// Zero based.
 	int repetitionStartsAt = -1;
 
+	// Zero based.
+	int offsetWhenMatchFound = -1;
+
 	public boolean  findRepetition(String cavernMapFile, int repetitionSize, int offset) throws Exception {
 
 		// Load the cavernMap and reverse it so it starts from the ground.
@@ -127,25 +130,27 @@ class RepetitionFinder {
 	}
 
 	// Repeatedely call findRepetition with increasing offsets until a repetition is found or the chamber has been traversed.
-	void movingFindRepetition( String cavernMapFile, int repetitionSize) throws Exception {
-		boolean more = true;
+	public boolean movingFindRepetition( String cavernMapFile, int repetitionSize) throws Exception {
+
+		boolean found = false;
 		int offset = 0;
-		while (more) {
-			System.out.println("offset=" + offset);
-			boolean found = this.findRepetition(cavernMapFile, repetitionSize, offset);
+		while (! found) {
+			this.logger.log("offset=" + offset);
+			found = this.findRepetition(cavernMapFile, repetitionSize, offset);
 			if (found) {
 				System.out.println("Found at offset " + offset);
-				break;
+				return true;
 			}
 			offset++;
 			if (offset >= this.allPatterns.size() - repetitionSize) {
-				more = false;
+				return false;
 			}
 		}
-		if (! more) {
+		if (! found) {
 			System.out.println("Not found");
 		}
 		System.out.println("Finished");
+		return found;
 	}
 
 	boolean search(int offset) {
@@ -194,6 +199,7 @@ class RepetitionFinder {
 			if (numMatches == repetitionSize) {
 				this.logger.log("i=" + i + " numMatches=" + numMatches + " repetitionSize=" + repetitionSize);
 				this.repetitionStartsAt = i;
+				this.offsetWhenMatchFound = offset;
 				System.out.println("Match starts at " + this.repetitionStartsAt + " zero based or " + (this.repetitionStartsAt + 1) + " counting from 1");
 				return true;
 			}
