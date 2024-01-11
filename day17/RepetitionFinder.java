@@ -28,20 +28,26 @@ class RepetitionFinder {
 	// eg ./run.sh RepetitionFinder chamber_2022rocks.txt 25 1
 	public static void main(String[] args) {
 
-		String cavernMapFile = args[0];
-		int repetitionSize = Integer.parseInt(args[1]);
-		int offset = Integer.parseInt(args[2]);
 
 		try { 
 			if (args.length == 2) {
+				String cavernMapFile = args[0];
+				int repetitionSize = Integer.parseInt(args[1]);
+				System.out.println("cavernMapFile=" + cavernMapFile + " repetitionSize=" + repetitionSize);
 				RepetitionFinder obj = new RepetitionFinder();
 				obj.movingFindRepetition(cavernMapFile, repetitionSize);
 			}
 			else if (args.length == 3) {
+				String cavernMapFile = args[0];
+				int repetitionSize = Integer.parseInt(args[1]);
+				int offset = Integer.parseInt(args[2]);
+				System.out.println("cavernMapFile=" + cavernMapFile + " repetitionSize=" + repetitionSize + " offset=" + offset);
+				System.out.println("About to call obj.findRepetition(cavernMapFile, repetitionSize, offset)");
 				RepetitionFinder obj = new RepetitionFinder();
 				obj.findRepetition(cavernMapFile, repetitionSize, offset);
 			}
 			else {
+				System.out.println("Call with no arguments");
 				RepetitionFinder obj = new RepetitionFinder();
 			}
 		} catch (Exception e) {
@@ -92,7 +98,7 @@ class RepetitionFinder {
 
 		this.buildPatternArrayLists(repetitionSize, offset);
 
-		// System.out.println("Size allPatterns=" + allPatterns.size() + " targetPatterns=" + targetPatterns.size());
+		this.logger.log("Size allPatterns=" + allPatterns.size() + " targetPatterns=" + targetPatterns.size());
 		return this.search(offset);
 	}
 
@@ -172,8 +178,8 @@ class RepetitionFinder {
 		// So we would start at position 3 and compare 0 and 2, 1 and 3.
 		int start = repetitionSize + offset;
 
-		// System.out.println("Repetition size=" + repetitionSize + " offset=" + offset);
-		// System.out.println("Start=" + start + " allPatterns.size()=" + this.allPatterns.size());
+		System.out.println("Repetition size=" + repetitionSize + " offset=" + offset);
+		System.out.println("Start=" + start + " allPatterns.size()=" + this.allPatterns.size());
 		// Iterate across all the patterns.
 		for (int i = start; i<this.allPatterns.size(); i++) {
 
@@ -204,6 +210,7 @@ class RepetitionFinder {
 				return true;
 			}
 		}
+		System.out.println("No match found");
 		return false;
 	}
 
