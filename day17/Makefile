@@ -1,4 +1,4 @@
-all:Data.class Logger.class TestRunner.class Chamber.class Rock.class Square.class Horizontal.class Cross.class Step.class Vertical.class Coords.class RepetitionFinder.class ArgumentProcessor.class StateMachine.class Simulator.class JetGenerator.class RockGenerator.class EndTester.class
+all:Data.class Logger.class TestRunner.class Chamber.class Rock.class Square.class Horizontal.class Cross.class Step.class Vertical.class Coords.class RepetitionFinder.class ArgumentProcessor.class StateMachine.class Simulator.class JetGenerator.class RockGenerator.class EndTester.class Calculator.class
 
 .SUFFIXES: .java .class
 
@@ -27,6 +27,8 @@ Simulator.class: Chamber.class Rock.class Square.class Horizontal.class Cross.cl
 # TestSimulator.class: TestSimulator.java Simulator.class TestChamber.class TestCycle.class
 
 RepetitionFinder.class: RepetitionFinder.java Chamber.class
+
+Calculator.class: Calculator.java Simulator.class;
 
 TestRepetitionFinder.class: TestRepetitionFinder.java RepetitionFinder.class
 
