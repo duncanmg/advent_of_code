@@ -50,6 +50,14 @@ class Simulator {
 			String maxHeight = argMap.get("maxHeight");
 			this.endTester.maxHeight = Integer.parseInt(maxHeight);
 		}
+		if (argMap.containsKey("lastRockShape")) {
+			String lastRockShape = argMap.get("lastRockShape");
+			this.endTester.lastRockShape = lastRockShape.charAt(0);
+		}
+		if (argMap.containsKey("numRockShapes")) {
+			String numRockShapes = argMap.get("numRockShapes");
+			this.rockGenerator.numRockShapes = Integer.parseInt(numRockShapes);
+		}
 	}
 
 	HashMap<String, String> argMap;
