@@ -24,6 +24,8 @@ class EndTester {
 
 	public Integer maxHeight;
 
+	public char lastRockShape = ' ';
+
 	public Integer maxJets;
 
 	public RockGenerator rockGenerator;
@@ -53,6 +55,10 @@ class EndTester {
 		if (this.maxHeight != null && currentHeight >= this.maxHeight) {
 			if (currentHeight != this.maxHeight) {
 				// throw new Exception("maxHeight exceeded. maxHeight=" + this.maxHeight + ", currentHeight=" + currentHeight + ".");
+			}
+			if (this.lastRockShape != ' ' && fallingRockLabel != this.lastRockShape) {
+				this.logger.log("End. maxHeight reached, but lastRockShape is not correct.");
+				return false;
 			}
 			this.logger.log("End. maxHeight reached.");
 			return true;
