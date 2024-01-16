@@ -84,6 +84,7 @@ class StateMachine {
 
 	void newJet() {
 		this.jet = this.jetGenerator.next();
+		this.logger.log("currentJetNo: " + this.jetGenerator.currentJetNo + " currentRockNo: " + this.rockGenerator.currentRockNo);
 		this.nextAction = this.jet.equals(">") ? Action.BLOW_RIGHT : Action.BLOW_LEFT;
 	}
 
