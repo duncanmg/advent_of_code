@@ -222,7 +222,7 @@ public class TestRepetitionFinder {
 	void testMovingRepetition(String cavernMapFile, int repetitionSize, boolean expectedResult, 
 		int expectedRepetitionStartsAt, int expectedOffsetWhenMatchFound) throws Exception {
 
-			System.out.println("----------");
+			System.out.println("---------- " + cavernMapFile + " ----------");
 
 			RepetitionFinder rf = new RepetitionFinder();
 
@@ -247,7 +247,7 @@ public class TestRepetitionFinder {
 			this.testMovingRepetition("test_moving_repetition_finder02.txt", 2, true, 18, 10);
 		}
 
-	@Test
+	@Test	// This is the edge case where the repetition is at the end of the file.
 		public void TestMovingRepetitionFinderEdge() throws Exception {
 
 			this.testMovingRepetition("test_moving_repetition_finder03.txt", 2, true, 20, 18);

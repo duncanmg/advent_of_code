@@ -98,11 +98,21 @@ class RepetitionFinder {
 
 		this.buildPatternArrayLists(repetitionSize, offset);
 
+		this.logger.log("Test first element of targetPatterns");
+		String patternRegEx = ".*hhhh.*";
+		Pattern patternMatcher = Pattern.compile(patternRegEx);
+		Matcher matcher = patternMatcher.matcher(this.targetPatterns.get(0));
+		if (! matcher.matches()) {
+			this.logger.log("First element of targetPatterns does not match. hhhh - " + this.targetPatterns.get(0));
+			return false;
+		}
+
+		this.logger.log("this.targetPatterns.get(0)=" + this.targetPatterns.get(0));
 		this.logger.log("Size allPatterns=" + allPatterns.size() + " targetPatterns=" + targetPatterns.size());
 		return this.search(offset);
 	}
 
-	// Note that the cavernMap has bee reversed so it starts from the ground.
+	// Note that the cavernMap has been reversed so it starts from the ground.
 	// Chamber: 76760  (1)     ..hhhh.
 	// Chamber: 76759  (2)     ..c....
 	public void  buildPatternArrayLists(int repetitionSize, int offset) throws Exception {
@@ -113,6 +123,7 @@ class RepetitionFinder {
 		targetPatterns = new ArrayList<String>(0);
 		allPatterns = new ArrayList<String>(0);
 
+		this.logger.log("buildPatternArrayLists offset=" + offset);
 		// Each row in reversedCavernMap looks like: Chamber: 30636  (31)    ...v...
 		for (int i=0; i<reversedCavernMap.size(); i++) {
 
@@ -206,7 +217,8 @@ class RepetitionFinder {
 				this.logger.log("i=" + i + " numMatches=" + numMatches + " repetitionSize=" + repetitionSize);
 				this.repetitionStartsAt = i;
 				this.offsetWhenMatchFound = offset;
-				System.out.println("Match starts at " + this.repetitionStartsAt + " zero based or " + (this.repetitionStartsAt + 1) + " counting from 1");
+				System.out.println("Match starts at " + this.repetitionStartsAt + " zero based or " + (this.repetitionStartsAt + 1) + " counting from 1."
+						+ " First line of targetPatterns is " + this.targetPatterns.get(0));
 				return true;
 			}
 		}
