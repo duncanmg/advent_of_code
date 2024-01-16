@@ -42,7 +42,7 @@ class JetGenerator {
 
 	String[] jets = {};
 
-	int currentJetNo = 0;
+	int currentJetNo = -1;
 
 	public long totalJetsGenerated = 0;
 
@@ -54,12 +54,14 @@ class JetGenerator {
 
 	public String next() {
 		this.initializeJets();
+
+		this.currentJetNo++;
+		this.totalJetsGenerated++;
+		int numJets = jets.length;
+		this.currentJetNo = this.currentJetNo % numJets == 0 ? 0 : this.currentJetNo;
+
 		this.logger.log("currentJetNo=" + this.currentJetNo + " jets.length=" + this.jets.length);
 		String nj = this.jets[this.currentJetNo];
-		int numJets = jets.length;
-		this.currentJetNo++;
-		this.currentJetNo = this.currentJetNo % numJets == 0 ? 0 : this.currentJetNo;
-		this.totalJetsGenerated++;
 		return nj;
 	}
 

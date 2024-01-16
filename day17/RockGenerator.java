@@ -22,12 +22,20 @@ class RockGenerator {
 
 	Logger logger = new Logger(this, true);
 
-	int currentRockNo = 0;
+	int currentRockNo = -1;
+
+	// Number of rock shapes. Normally 5. Can be reduced for testing.
+	public int numRockShapes = 5;
 
 	long totalRocksGenerated = 0;
 
 	public Rock next() throws Exception {
 		Rock r;
+		this.currentRockNo++;
+		this.totalRocksGenerated++;
+		if (this.currentRockNo>=this.numRockShapes) {
+			this.currentRockNo=0;
+		}
 		this.logger.log("01 nextRock " + this.currentRockNo);
 		this.chamber.startY = this.chamber.getCurrentHeight() + 3;
 		switch (this.currentRockNo) {
@@ -48,11 +56,6 @@ class RockGenerator {
 				break;
 			default:
 				throw new Exception("No Rock for " + currentRockNo);
-		}
-		this.currentRockNo++;
-		this.totalRocksGenerated++;
-		if (this.currentRockNo>4) {
-			this.currentRockNo=0;
 		}
 		return r;
 	}
