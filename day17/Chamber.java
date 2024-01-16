@@ -28,22 +28,34 @@ class Chamber {
 
 	public ArrayList<Rock> rocks = new ArrayList<Rock>(0);
 
-	// Highest row in the grid which has an occupied slot.
+	public Rock getFallingRock() {
+		System.out.println("In getFallingRock() rocks.size=" + this.rocks.size());
+		return this.rocks.get(this.rocks.size()-1);
+	}
+
+	// Highest row in the grid which has an occupied slot. Will only return the correct answer if the falling rock is at rest.
 	public int getCurrentHeight() throws Exception{
 		ArrayList<ArrayList<Character>> grid = this.buildGrid();
 		int gridSize = grid.size();
 		ArrayList<Character> emptyRow = this.getEmptyRow();
-		this.logger.log("01 getCurrentHeight " + grid.toString());
+
 		if (gridSize > 0) {
 			this.logger.log("getCurrentHeight() grid.size=" + grid.size() + " row=" + grid.get(gridSize-1) + " emptyRow=" + emptyRow.toString());
 		}
+
+		// Is this a valid check? Empty rows are added but immediately populated with the latest rock.
+		// If the rock is not at rest then there may be an empty row, but it won't be the top one.
+		// Could maybe check the top ten rows for an empty row. Even then, it would just be a guide.
+		// The rock is not necessarily at rest because there aren't any empty rows.
 		if (gridSize > 0 && grid.get(gridSize-1).equals(emptyRow) == true) {
 			throw new Exception("getCurrentHeight() called when rock is not at rest.");
 		}
+
 		while (gridSize > 0 && grid.get(gridSize-1).equals(emptyRow) == true) {
-			this.logger.log("Decrement gridSise");
+			this.logger.log("Decrement gridSize");
 			gridSize--;
 		}
+
 		this.logger.log("02 getCurrentHeight");
 		return grid.size();
 	}
@@ -87,7 +99,7 @@ class Chamber {
 	}
 
 	void show() throws Exception {
-		this.logger.log("In show(). size=" + this.rocks.size() + " currentHeight=" + this.getCurrentHeight());
+		System.out.println("In show(). numRocks=" + this.rocks.size() + " currentHeight=" + this.getCurrentHeight());
 
 		ArrayList<ArrayList<Character>> grid = buildGrid();
 
@@ -105,7 +117,7 @@ class Chamber {
 	}
 
 	void showRaw(String fileName) throws Exception {
-		this.logger.log("In show(). size=" + this.rocks.size() + " currentHeight=" + this.getCurrentHeight());
+		System.out.println("In showRaw(). numRocks=" + this.rocks.size() + " currentHeight=" + this.getCurrentHeight());
 
 		ArrayList<ArrayList<Character>> grid = buildGrid();
 
@@ -124,20 +136,28 @@ class Chamber {
 		writer.close();
 	}
 
+	ArrayList<ArrayList<Character>> grid = new ArrayList<ArrayList<Character>>();
+
+	int lastNumRocks = 0;
+
 	ArrayList<ArrayList<Character>> buildGrid() {
-		this.logger.log("Start buildGrid() " + this.rocks.size() + " rocks.");
-		ArrayList<ArrayList<Character>> grid = new ArrayList<ArrayList<Character>>();
-		for (int i=this.rocks.size()-1; i>=0; i--) {
+		int numRocks = this.rocks.size();
+		this.logger.log("Start buildGrid() numRocks " + numRocks + " rocks. lastNumRocks " + this.lastNumRocks);
+		if (numRocks == lastNumRocks) {
+			return this.grid;
+		}
+
+		for (int i=this.rocks.size()-1; i>=this.lastNumRocks; i--) {
 			Rock current = this.rocks.get(i);
 			for (int j=0; j<current.size(); j++) {
 				grid = addToGrid(grid, current.coords.get(j), current.label);
 			}
-			// this.logger.log("In buildGrid() i=" + i + " rocks.size=" + this.rocks.size() + " grid.size=" + grid.size() + " current=" + current);
 		}
+		this.lastNumRocks = numRocks;
 		return grid;
 	}
 
-	// This accepts of of the coordinates of a rock and sets the appropriate position in the
+	// This accepts the coordinates of a rock and sets the appropriate position in the
 	// grid to the label of the rock eg "v".
 	//
 	// It accepts three parameters:
