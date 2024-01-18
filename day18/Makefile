@@ -1,4 +1,4 @@
-all: TestRunner.class Boulder.class SurfaceAreaCalculator.class
+all: TestRunner.class Boulder.class SurfaceAreaCalculator.class AirPocket.class
 
 .SUFFIXES: .java .class
 
@@ -8,6 +8,6 @@ export CLASSPATH=.:${JAR_DIR}/junit/junit-4.10.jar:${JAR_DIR}/junit/junit-jupite
 .java.class:
 	javac $< -classpath ${CLASSPATH} -Xlint
 
-SurfaceAreaCalculator.class: SurfaceAreaCalculator.java Boulder.class
+SurfaceAreaCalculator.class: SurfaceAreaCalculator.java Boulder.class AirPocket.class
 
 TestRunner.class: TestRunner.java

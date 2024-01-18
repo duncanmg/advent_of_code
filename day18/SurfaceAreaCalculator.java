@@ -30,6 +30,8 @@ class SurfaceAreaCalculator {
 
 	HashMap<String, Boulder> boulderMap = new HashMap<String, Boulder>();
 
+	HashMap<String, AirPocket> potentialAirPockets = new HashMap<String, AirPocket>();
+
 	void buildBoulderMap() {
 		this.logger.log("Building Boulder Map. No of lines: " + this.data.size());
 		for (String line : this.data) {
@@ -45,15 +47,37 @@ class SurfaceAreaCalculator {
 	void calculateSurfaceArea() {
 		int totalSurfaceArea = 0;
 		this.logger.log("Calculating Surface Area");
-		for (String key : this.boulderMap.keySet()) {
-			Boulder boulder = this.boulderMap.get(key);
+		for (String boulderId : this.boulderMap.keySet()) {
+			Boulder boulder = this.boulderMap.get(boulderId);
 			int boulderSurfaceArea = 6;
-			for (String neighbor : boulder.getPossibleNeighbours()) {
-				if (this.boulderMap.containsKey(neighbor)) {
+			for (Boulder neighbour : boulder.getPossibleNeighbours()) {
+				if (this.boulderMap.containsKey(neighbour.id)) {
 					boulderSurfaceArea--;
+				}
+				else {
+					AirPocket airPocket = this.potentialAirPockets.get(neighbour.id);
+					if (airPocket != null) {
+						airPocket.sidesCovered++;
+						// this.logger.log("Air Pocket: " + airPocket.id + " already exists. " + airPocket.sidesCovered);
+					}
+					else {
+						airPocket = new AirPocket(neighbour);
+						airPocket.sidesCovered++;
+						// this.logger.log("Air Pocket: " + airPocket.id + " created. " + airPocket.sidesCovered);
+						this.potentialAirPockets.put(airPocket.id, airPocket);
+					}
 				}
 			}
 			totalSurfaceArea += boulderSurfaceArea;
+		}
+		logger.log("Number Of Empty Neighbours: " + potentialAirPockets.size());
+
+		for (String pocketId : this.potentialAirPockets.keySet()) {
+			AirPocket airPocket = this.potentialAirPockets.get(pocketId);
+			if (airPocket.isCovered()) {
+				this.logger.log("Air Pocket: " + airPocket.id + " Sides Covered: " + airPocket.sidesCovered);
+				totalSurfaceArea -= 6;
+			}
 		}
 		logger.log("Total Surface Area: " + totalSurfaceArea);
 	}

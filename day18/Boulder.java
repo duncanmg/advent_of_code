@@ -46,16 +46,16 @@ class Boulder {
 		Boulder b = new Boulder(x, y, z);
 		return b.id;
 	}
-	private ArrayList<String> possibleNeighbours = new ArrayList<String>();
+	private ArrayList<Boulder> possibleNeighbours = new ArrayList<Boulder>();
 
-	public ArrayList<String> getPossibleNeighbours() {
+	public ArrayList<Boulder> getPossibleNeighbours() {
 		if (this.possibleNeighbours.size() == 0) {
-			this.possibleNeighbours.add(this.getIdFromCoords((this.x + 1), this.y, this.z));
-			this.possibleNeighbours.add(this.getIdFromCoords((this.x - 1), this.y, this.z));
-			this.possibleNeighbours.add(this.getIdFromCoords(this.x, (this.y + 1), this.z));
-			this.possibleNeighbours.add(this.getIdFromCoords(this.x, (this.y - 1), this.z));
-			this.possibleNeighbours.add(this.getIdFromCoords(this.x, this.y, (this.z + 1)));
-			this.possibleNeighbours.add(this.getIdFromCoords(this.x, this.y, (this.z - 1)));
+			this.possibleNeighbours.add(new Boulder((this.x + 1), this.y, this.z));
+			this.possibleNeighbours.add(new Boulder((this.x - 1), this.y, this.z));
+			this.possibleNeighbours.add(new Boulder(this.x, (this.y + 1), this.z));
+			this.possibleNeighbours.add(new Boulder(this.x, (this.y - 1), this.z));
+			this.possibleNeighbours.add(new Boulder(this.x, this.y, (this.z + 1)));
+			this.possibleNeighbours.add(new Boulder(this.x, this.y, (this.z - 1)));
 		}
 		return this.possibleNeighbours;
 	}
