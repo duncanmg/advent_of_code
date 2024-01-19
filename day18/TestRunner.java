@@ -14,6 +14,7 @@ public class TestRunner {
 	  testClasses.put("TestLava", TestLava.class);
 	  testClasses.put("TestAir", TestAir.class);
 	  testClasses.put("TestContext", TestContext.class);
+	  testClasses.put("TestAirPocketIdentifier", TestAirPocketIdentifier.class);
 
 	  if (args.length > 0) {
 	  	for (int i=0; i<args.length; i++) {

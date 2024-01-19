@@ -28,4 +28,23 @@ class Context {
 
 	HashMap<String, Air> potentialAirs = new HashMap<String, Air>();
 
+	HashMap<String, Outside> outsideMap = new HashMap<String, Outside>();
+
+	boolean isLava(Cube cube) {
+		return lavaMap.containsKey(cube.id);
+	}
+
+	boolean isPotentialAir(Cube cube) {
+		return potentialAirs.containsKey(cube.id);
+	}
+
+	// Cube is not lava and not part of the sealed air pocket. It is either outside
+	// the droplet or open to the outside.
+	boolean isOutside(Cube cube) {
+		return outsideMap.containsKey(cube.id);
+	}
+
+	boolean isOutOfRange(Cube cube) {
+		return cube.x < minX || cube.x > maxX || cube.y < minY || cube.y > maxY || cube.z < minZ || cube.z > maxZ;
+	}
 }

@@ -5,6 +5,10 @@ import java.util.*;
 
 class SurfaceAreaCalculator {
 
+	// ./run.sh SurfaceAreaCalculator --dataFile=data.txt 2>&1
+	// ...
+	// SurfaceAreaCalculator: Total Surface Area: 4482
+	// SurfaceAreaCalculator: Total Surface Area Excluding Air Pockets: 2576
 	public static void main(String[] args) {
 		SurfaceAreaCalculator obj = new SurfaceAreaCalculator(args);
 	}
@@ -65,7 +69,7 @@ class SurfaceAreaCalculator {
 		int totalSurfaceArea = 0;
 		this.logger.log("Calculating Surface Area");
 
-		// This calculates the surface area of the lavas excluding air pockets. It
+		// This calculates the surface area of the lavas including air pockets. It
 		// also build a HashMap of objects that could be air pockets.
 		for (String lavaId : this.c.lavaMap.keySet()) {
 			Lava lava = this.c.lavaMap.get(lavaId);
@@ -76,41 +80,36 @@ class SurfaceAreaCalculator {
 				}
 				else {
 					Air air = this.c.potentialAirs.get(neighbour.id);
-					if (air != null) {
-						air.addLavaNeighbour(lava);
-						// this.logger.log("Air Pocket: " + air.id + " already exists. " + air.sidesCovered);
-					}
-					else {
+					if (air == null) {
 						air = new Air(neighbour);
-						air.addLavaNeighbour(lava);
-						// this.logger.log("Air Pocket: " + air.id + " created. " + air.sidesCovered);
 						this.c.potentialAirs.put(air.id, air);
 					}
 				}
 			}
 			totalSurfaceArea += lavaSurfaceArea;
 		}
-		logger.log("Number Of Empty Neighbours: " + c.potentialAirs.size());
 
-		// This subtracts the surface area of single air pockets that are completely covered.
-		ArrayList<String> airsToRemove = new ArrayList<String>();
-		for (String pocketId : this.c.potentialAirs.keySet()) {
-			Air air = this.c.potentialAirs.get(pocketId);
-			if (air.isCovered()) {
-				this.logger.log("Air Pocket: " + air.id + " Sides Covered: " + air.sidesCovered);
-				airsToRemove.add(pocketId);
-				totalSurfaceArea -= 6;
+		logger.log("Number Of Airs: " + c.potentialAirs.size());
+
+		AirPocketIdentifier largeAirPocketFinder = new AirPocketIdentifier(this.c);
+		largeAirPocketFinder.find();
+
+		// This calculates the surface area of the air pockets.
+		int totalAirSurfaceArea = 0;
+		for (String airId : this.c.potentialAirs.keySet()) {
+			Air air = this.c.potentialAirs.get(airId);
+			int airSurfaceArea = 6;
+			for (Cube neighbour : air.getPossibleNeighbours()) {
+				if (this.c.potentialAirs.containsKey(neighbour.id)) {
+					airSurfaceArea--;
+				}
 			}
+			totalAirSurfaceArea += airSurfaceArea;
 		}
 
-		// Remove single air pockets to leave ones which are part of larger pockets or
-		// are part of the outer surface.
-		for (String airId : airsToRemove){
-			this.c.potentialAirs.remove(airId);
-		}
-
-		logger.log("Number Of Empty Neighbours After Removing Single Pockets: " + c.potentialAirs.size());
+		logger.log("Number Of Airs After Running AirPocketIdentifier: " + c.potentialAirs.size());
 		logger.log("Total Surface Area: " + totalSurfaceArea);
+		logger.log("Total Surface Area Excluding Air Pockets: " + (totalSurfaceArea - totalAirSurfaceArea));
 	}
 
 }

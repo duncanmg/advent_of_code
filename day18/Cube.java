@@ -49,10 +49,6 @@ class Cube {
 		return String.format("I%06d%06d%06d", x, y, z);
 	}
 
-	String getIdFromCoords(int x, int y, int z) {
-		Cube b = new Cube(x, y, z);
-		return b.id;
-	}
 	private ArrayList<Cube> possibleNeighbours = new ArrayList<Cube>();
 
 	public ArrayList<Cube> getPossibleNeighbours() {

@@ -3,22 +3,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-class Air extends Cube {
+class Outside extends Cube {
 
 	public static void main(String[] args) {
-		Air obj = new Air();
+		Outside obj = new Outside();
 	}
 
-	public Air() {
+	public Outside() {
 		super(1, 1, 1);
 	}
 
-	public Air(Cube cube) {
+	public Outside(Cube cube) {
 		super(cube);
-	}
-
-	public Air(int x, int y, int z) {
-		super(x, y, z);
 	}
 
 }
