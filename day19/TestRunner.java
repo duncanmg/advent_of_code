@@ -13,6 +13,7 @@ public class TestRunner {
 	  testClasses.put("TestBlueprintFactory", TestBlueprintFactory.class);
 	  testClasses.put("TestBlueprint", TestBlueprint.class);
 	  testClasses.put("TestRobotStrategy", TestRobotStrategy.class);
+	  testClasses.put("TestStrategyIterator", TestStrategyIterator.class);
 
 	  if (args.length > 0) {
 	  	for (int i=0; i<args.length; i++) {

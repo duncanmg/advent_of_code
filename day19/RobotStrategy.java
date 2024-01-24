@@ -93,6 +93,26 @@ class RobotStrategy {
 		return false;
 	}
 
+	public boolean canBuildTheseRobots(boolean ore, boolean clay, boolean obsidian, boolean geode) {
+		if (ore && !canBuildOreRobot()) {
+			return false;
+		}
+		if (clay && !canBuildClayRobot()) {
+			return false;
+		}
+		if (obsidian && !canBuildObsidianRobot()) {
+			return false;
+		}
+		if (geode && !canBuildGeodeRobot()) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean canBuildTheseRobots(boolean[] requested) {
+		return canBuildTheseRobots(requested[0], requested[1], requested[2], requested[3]);
+	}
+
 	// Request robots to be built
 	public void requestOreRobot() {
 		numOreRobotsRequested++;
