@@ -18,6 +18,8 @@ public class TestRobotStrategy {
 
 	RobotStrategy strategy;
 
+	Logger logger = new Logger(this);
+
 	@Before
 		public void setUp() throws Exception {
 			strategy = new RobotStrategy();
@@ -25,6 +27,7 @@ public class TestRobotStrategy {
 
 			ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(4, 2, 3, 14, 2, 7));
 			strategy.blueprint = new Blueprint(1, values);
+			logger.log("End setUp");
 		}
 
 	@Test public void TestRawMaterialTotals() throws Exception {
@@ -134,7 +137,9 @@ public class TestRobotStrategy {
 
 	@Test public void TestRobotCreation() throws Exception {
 
+		logger.log("------ minute: " + strategy.minute + " blueprint id " + strategy.blueprint.id);
 		runNextMinutes(6);
+		logger.log("------ minute: " + strategy.minute);
 
 		testMaterialTotals(6, 0, 0, 0);
 		testNumRobots(1, 0, 0, 0);
@@ -150,58 +155,66 @@ public class TestRobotStrategy {
 		testNumRobotsRequested(1, 1, 0, 0);
 
 		runNextMinutes(1);
+		logger.log("z------ minute: " + strategy.minute + " blueprint id " + strategy.blueprint.id + " " + strategy.blueprint.clayRobotCost);
 
-		testMaterialTotals(1, 0, 0, 0);
-		testDecisions(false, false, false, false);
-		testNumRobots(2, 1, 0, 0);
-		testNumRobotsRequested(0, 0, 0, 0);
-
-		runNextMinutes(1);
-
-		testMaterialTotals(3, 1, 0, 0);
+		testMaterialTotals(2, 1, 0, 0);
 		testDecisions(false, true, false, false);
 		testNumRobots(2, 1, 0, 0);
 		testNumRobotsRequested(0, 0, 0, 0);
 
+		runNextMinutes(1);
+		logger.log("------ minute: " + strategy.minute);
+
+		testMaterialTotals(4, 2, 0, 0);
+		testDecisions(true, true, false, false);
+		testNumRobots(2, 1, 0, 0);
+		testNumRobotsRequested(0, 0, 0, 0);
+
 		runNextMinutes(13);
-		testMaterialTotals(29, 14, 0, 0);
+		logger.log("------ minute: " + strategy.minute);
+		testMaterialTotals(30, 15, 0, 0);
 		testDecisions(true, true, true, false);
 
 		// Request obsidian robot.
 		strategy.requestObsidianRobot();
-		testMaterialTotals(26, 0, 0, 0);
+		testMaterialTotals(27, 1, 0, 0);
 		testDecisions(true, true, false, false);
 		testNumRobots(2, 1, 0, 0);
 		testNumRobotsRequested(0, 0, 1, 0);
 
 		runNextMinutes(1);
+		logger.log("a------ minute: " + strategy.minute);
 		testNumRobots(2, 1, 1, 0);
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		runNextMinutes(1);
-		testMaterialTotals(30, 2, 1, 0);
+		testMaterialTotals(31, 3, 2, 0);
 
 		runNextMinutes(6);
-		testMaterialTotals(42, 8, 7, 0);
+		logger.log("------ minute: " + strategy.minute);
+		testMaterialTotals(43, 9, 8, 0);
 		testDecisions(true, true, false, true);
 
 		// Request geode robot.
 		strategy.requestGeodeRobot();
-		testMaterialTotals(40, 8, 0, 0);
+		testMaterialTotals(41, 9, 1, 0);
 		testDecisions(true, true, false, false);
 		testNumRobots(2, 1, 1, 0);
 		testNumRobotsRequested(0, 0, 0, 1);
 
 		runNextMinutes(1);
-		testMaterialTotals(42, 9, 1, 0);
+		logger.log("------ minute: " + strategy.minute);
+		testMaterialTotals(43, 10, 2, 1);
 		testNumRobots(2, 1, 1, 1);
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		runNextMinutes(1);
-		testMaterialTotals(44, 10, 2, 1);
+		logger.log("q------ minute: " + strategy.minute);
+		testMaterialTotals(45, 11, 3, 2);
 		testNumRobots(2, 1, 1, 1);
 		testNumRobotsRequested(0, 0, 0, 0);
 
+		// Test the cloning.
 		RobotStrategy clonedRobotStategy = (RobotStrategy) strategy.clone();
 		assertEquals(clonedRobotStategy.getClass().getName(), "RobotStrategy");
 
@@ -220,6 +233,7 @@ public class TestRobotStrategy {
 		assertEquals(clonedRobotStategy.numObsidianRobotsRequested, strategy.numObsidianRobotsRequested);
 		assertEquals(clonedRobotStategy.numGeodeRobotsRequested, strategy.numGeodeRobotsRequested);
 
+		// Shallow copy of blueprint.
 		assertEquals(clonedRobotStategy.blueprint, strategy.blueprint);
 
 		assertEquals(clonedRobotStategy.blueprint.oreRobotCost, strategy.blueprint.oreRobotCost);
@@ -244,10 +258,15 @@ public class TestRobotStrategy {
 	}
 
 	void testDecisions(boolean canBuildOreRobot, boolean canBuildClayRobot, boolean canBuildObsidianRobot, boolean canBuildGeodeRobot) {
+		logger.log("01 testDecision");
 		assertEquals(canBuildOreRobot, strategy.canBuildOreRobot());
+		logger.log("02 testDecision");
 		assertEquals(canBuildClayRobot, strategy.canBuildClayRobot());
+		logger.log("03 testDecision");
 		assertEquals(canBuildObsidianRobot, strategy.canBuildObsidianRobot());
+		logger.log("04 testDecision");
 		assertEquals(canBuildGeodeRobot, strategy.canBuildGeodeRobot());
+		logger.log("05 testDecision");
 	}
 
 	void testNumRobots(int numOreRobots, int numClayRobots, int numObsidianRobots, int numGeodeRobots) {
@@ -277,37 +296,40 @@ public class TestRobotStrategy {
 
 		runNextMinutes(5);
 		testNumRobots(1, 1, 0, 0);
-		testMaterialTotals(5, 4, 0, 0);
+		testMaterialTotals(5, 5, 0, 0);
 
 		assertEquals(true, strategy.canBuildObsidianRobot());
 		strategy.requestObsidianRobot();
 		runNextMinutes(2);
 		testNumRobots(1, 1, 1, 0);
-		testMaterialTotals(6, 5, 1, 0);
+		testMaterialTotals(6, 6, 2, 0);
 
 		assertEquals(true, strategy.canBuildGeodeRobot());
 		strategy.requestGeodeRobot();
 		runNextMinutes(2);
 		testNumRobots(1, 1, 1, 1);
-		testMaterialTotals(7, 7, 2, 1);
+		testMaterialTotals(7, 8, 3, 2);
 	}
 
 	@Test public void  TestCanBuildTheseRobots() {
 		strategy = getSimpleStrategy();
 
-		assertEquals(false, strategy.canBuildTheseRobots(false, false, false, false));
+		assertEquals(true, strategy.canBuildTheseRobots(false, false, false, false));
 
+		logger.log("00");
 		setMaterialTotals(1, 0, 0, 0);
 		assertEquals(true, strategy.canBuildTheseRobots(true, false, false, false));
 		assertEquals(true, strategy.canBuildTheseRobots(false, true, false, false));
 		assertEquals(false, strategy.canBuildTheseRobots(true, true, false, false));
 
+		logger.log("01");
 		setMaterialTotals(1, 1, 0, 0);
 		assertEquals(true, strategy.canBuildTheseRobots(true, false, false, false));
 		assertEquals(true, strategy.canBuildTheseRobots(false, false, true, false));
 		assertEquals(false, strategy.canBuildTheseRobots(true, false, true, false));
 		assertEquals(false, strategy.canBuildTheseRobots(false, false, false, true));
 
+		logger.log("02");
 		setMaterialTotals(1, 0, 1, 0);
 		assertEquals(true, strategy.canBuildTheseRobots(true, false, false, false));
 		assertEquals(true, strategy.canBuildTheseRobots(false, false, false, true));
@@ -332,14 +354,14 @@ public class TestRobotStrategy {
 
 			}
 		}
-		assertEquals(5, strategy.minute);
+		assertEquals(3, strategy.minute);
 		assertEquals(0, strategy.geodeTotal);
 
 		strategy.requestGeodeRobot();
 		while (strategy.minute < 1000 && strategy.geodeTotal == 0) {
 			strategy.nextMinute();
 		}
-		assertEquals(7, strategy.minute);
+		assertEquals(4, strategy.minute);
 		assertEquals(1, strategy.geodeTotal);
 	}
 
@@ -353,8 +375,7 @@ public class TestRobotStrategy {
 	public RobotStrategy getSimpleStrategy() {
 		RobotStrategy strategy = new RobotStrategy();
 		ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(1, 1, 1, 1, 1, 1));
-		strategy.blueprint = new Blueprint(1, values);
+		strategy.blueprint = new Blueprint(10, values);
 		return strategy;
 	}
 }
-

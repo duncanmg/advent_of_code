@@ -24,18 +24,7 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 	public void nextMinute() {
 		minute++;
 
-		oreTotal += numOreRobots;
-
-		clayTotal += numClayRobots;
-
-		obsidianTotal += numObsidianRobots;
-
-		geodeTotal += numGeodeRobots;
-
-		// Estimate/project what the final number of geodes collected will be.
-		projectedGeodeTotal = geodeTotal + (numGeodeRobots * (maxMinutes - minute));
-
-		// Requested robots don't contribute yet.
+		// Robots requested in the previous minute are now built and collecting.
 		numClayRobots += numClayRobotsRequested;
 		numClayRobotsRequested = 0;
 
@@ -47,6 +36,19 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 
 		numGeodeRobots += numGeodeRobotsRequested;
 		numGeodeRobotsRequested = 0;
+
+		// Update raw materials totals
+		oreTotal += numOreRobots;
+
+		clayTotal += numClayRobots;
+
+		obsidianTotal += numObsidianRobots;
+
+		geodeTotal += numGeodeRobots;
+
+		// Estimate/project what the final number of geodes collected will be.
+		projectedGeodeTotal = geodeTotal + (numGeodeRobots * (maxMinutes - minute));
+
 	}
 
 	// Raw materials
@@ -104,10 +106,8 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 	public boolean canBuildTheseRobots(boolean ore, boolean clay, boolean obsidian, boolean geode) {
 		// Operate on the clone so that we don't change the original inventory.
 		RobotStrategy clone = (RobotStrategy) this.clone();
-		int numToBuild = 0;
 		if (ore) {
 			if (clone.canBuildOreRobot()) {
-				numToBuild++;
 				clone.requestOreRobot();
 			} else {
 				return false;
@@ -115,7 +115,6 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 		}
 		if (clay) {
 			if (clone.canBuildClayRobot()) {
-				numToBuild++;
 				clone.requestClayRobot();
 			} else {
 				return false;
@@ -123,7 +122,6 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 		}
 		if (obsidian) {
 			if (clone.canBuildObsidianRobot()) {
-				numToBuild++;
 				clone.requestObsidianRobot();
 			} else {
 				return false;
@@ -132,13 +130,12 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 		if (geode) {
 			logTotals();
 			if (clone.canBuildGeodeRobot()) {
-				numToBuild++;
 				clone.requestGeodeRobot();
 			} else {
 				return false;
 			}
 		}
-		return numToBuild > 0 ? true : false;
+		return true;
 	}
 
 	public void logTotals() {
@@ -192,11 +189,6 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 		requestTheseRobots(requested[0], requested[1], requested[2], requested[3]);
 	}
 
-	public String sortCode() {
-		String formatString = "%06d%06d%06d%06d";
-		return String.format(formatString, projectedGeodeTotal, numObsidianRobots, numClayRobots, numOreRobots);
-	}
-
 	// Shallow clone
 	@Override
 		public Object clone() {
@@ -213,6 +205,38 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 	// s1 < s2 : The method returns a negative value.
 	@Override
 		public int compareTo(RobotStrategy s) {
-			return this.sortCode().compareTo(s.sortCode());
+			if (this.projectedGeodeTotal > s.projectedGeodeTotal) {
+				return 1;
+			}
+			else if (this.projectedGeodeTotal  == s.projectedGeodeTotal) {
+				if (this.numObsidianRobots > s.numObsidianRobots) {
+					return 1;
+				}
+				else if (this.numObsidianRobots == s.numObsidianRobots) {
+					if (this.numClayRobots > s.numClayRobots) {
+						return 1;
+					}
+					else if (this.numClayRobots == s.numClayRobots) {
+						if (this.numOreRobots > s.numOreRobots) {
+							return 1;
+						}
+						else if (this.numOreRobots == s.numOreRobots) {
+							return 0;
+						}
+						else {
+							return -1;
+						}
+					}
+					else {
+						return -1;
+					}
+				}
+				else {
+					return -1;
+				}
+			}
+			else {
+				return -1;
+			}	
 		}
 }

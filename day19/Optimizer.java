@@ -44,10 +44,11 @@ class Optimizer {
 		ArrayList<RobotStrategy> robotStrategies = new ArrayList<RobotStrategy>();
 		RobotStrategy firstRobotStrategy = new RobotStrategy();
 		firstRobotStrategy.blueprint = blueprint;
+		firstRobotStrategy.maxMinutes = maxMinutes;
 		firstRobotStrategy.nextMinute();
 		robotStrategies.add(firstRobotStrategy);
 
-		for (int minute = 1; minute < maxMinutes; minute++) {
+		for (int minute = 1; minute <= maxMinutes; minute++) {
 
 			ArrayList<RobotStrategy> newRobotStrategies = new ArrayList<RobotStrategy>();
 
@@ -61,14 +62,23 @@ class Optimizer {
 					boolean[] strategy = strategyIterator.next();
 
 					if (robotStrategy.canBuildTheseRobots(strategy)) {
-						// logger.log("Add");
 						RobotStrategy newRobotStrategy = (RobotStrategy) robotStrategy.clone();
 						newRobotStrategy.requestTheseRobots(strategy);
-						newRobotStrategy.nextMinute();
 						if (newRobotStrategy.geodeTotal > maxGeodes) {
 							maxGeodes = newRobotStrategy.geodeTotal;
-							logger.log("New maxGeodes = " + maxGeodes + " from " + newRobotStrategy.numGeodeRobots + " geode robots");
+							logger.log("New maxGeodes = " + maxGeodes + " from " 
+								+ newRobotStrategy.numGeodeRobots + " geode robots"
+								+ " and " + newRobotStrategy.numObsidianRobots + " obsidian robots"
+								+ " and " + newRobotStrategy.numClayRobots + " clay robots"
+								+ " and " + newRobotStrategy.numOreRobots + " ore robots"
+							);
+							logger.log("Requested robots: " + newRobotStrategy.numGeodeRobotsRequested + " geode robots"
+								+ " and " + newRobotStrategy.numObsidianRobotsRequested + " obsidian robots"
+								+ " and " + newRobotStrategy.numClayRobotsRequested + " clay robots"
+								+ " and " + newRobotStrategy.numOreRobotsRequested + " ore robots"
+							);
 						}
+						newRobotStrategy.nextMinute();
 						newRobotStrategies.add(newRobotStrategy);
 					}
 				}
