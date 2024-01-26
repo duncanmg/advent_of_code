@@ -75,6 +75,10 @@ class StrategyIterator {
 		}
 	}
 
+	public boolean hasNext() {
+		return counter < 16;
+	}
+
 	public boolean[] next() {
 		boolean[] out = new boolean[4];
 		out[0] = nextOre();
@@ -83,10 +87,6 @@ class StrategyIterator {
 		out[3] = nextGeode();
 
 		counter++;
-
-		if (counter >= 16) {
-			init();
-		}
 
 		return out;
 	}

@@ -201,6 +201,33 @@ public class TestRobotStrategy {
 		testMaterialTotals(44, 10, 2, 1);
 		testNumRobots(2, 1, 1, 1);
 		testNumRobotsRequested(0, 0, 0, 0);
+
+		RobotStrategy clonedRobotStategy = (RobotStrategy) strategy.clone();
+		assertEquals(clonedRobotStategy.getClass().getName(), "RobotStrategy");
+
+		assertEquals(clonedRobotStategy.minute, strategy.minute);
+		assertEquals(clonedRobotStategy.oreTotal, strategy.oreTotal);
+		assertEquals(clonedRobotStategy.clayTotal, strategy.clayTotal);
+		assertEquals(clonedRobotStategy.obsidianTotal, strategy.obsidianTotal);
+		assertEquals(clonedRobotStategy.geodeTotal, strategy.geodeTotal);
+		assertEquals(clonedRobotStategy.numOreRobots, strategy.numOreRobots);	
+		assertEquals(clonedRobotStategy.numClayRobots, strategy.numClayRobots);
+
+		assertEquals(clonedRobotStategy.numObsidianRobots, strategy.numObsidianRobots);
+		assertEquals(clonedRobotStategy.numGeodeRobots, strategy.numGeodeRobots);
+		assertEquals(clonedRobotStategy.numOreRobotsRequested, strategy.numOreRobotsRequested);
+		assertEquals(clonedRobotStategy.numClayRobotsRequested, strategy.numClayRobotsRequested);
+		assertEquals(clonedRobotStategy.numObsidianRobotsRequested, strategy.numObsidianRobotsRequested);
+		assertEquals(clonedRobotStategy.numGeodeRobotsRequested, strategy.numGeodeRobotsRequested);
+
+		assertEquals(clonedRobotStategy.blueprint, strategy.blueprint);
+
+		assertEquals(clonedRobotStategy.blueprint.oreRobotCost, strategy.blueprint.oreRobotCost);
+		assertEquals(clonedRobotStategy.blueprint.clayRobotCost, strategy.blueprint.clayRobotCost);
+		assertEquals(clonedRobotStategy.blueprint.obsidianRobotOreCost, strategy.blueprint.obsidianRobotOreCost);
+		assertEquals(clonedRobotStategy.blueprint.obsidianRobotClayCost, strategy.blueprint.obsidianRobotClayCost);
+		assertEquals(clonedRobotStategy.blueprint.geodeRobotOreCost, strategy.blueprint.geodeRobotOreCost);
+		assertEquals(clonedRobotStategy.blueprint.geodeRobotObsidianCost, strategy.blueprint.geodeRobotObsidianCost);
 	}
 
 	void runNextMinutes(int num) {
@@ -236,4 +263,98 @@ public class TestRobotStrategy {
 		assertEquals(numObsidianRobotsRequested, strategy.numObsidianRobotsRequested);
 		assertEquals(numGeodeRobotsRequested, strategy.numGeodeRobotsRequested);
 	}
+
+	@Test public void TestRobotCreationWithSimpleBlueprint() throws Exception {
+
+		// Override the default strategy created by setUp().
+		strategy = getSimpleStrategy();
+
+		assertEquals(false, strategy.canBuildClayRobot());
+		runNextMinutes(1);
+		assertEquals(true, strategy.canBuildClayRobot());
+
+		strategy.requestClayRobot();
+
+		runNextMinutes(5);
+		testNumRobots(1, 1, 0, 0);
+		testMaterialTotals(5, 4, 0, 0);
+
+		assertEquals(true, strategy.canBuildObsidianRobot());
+		strategy.requestObsidianRobot();
+		runNextMinutes(2);
+		testNumRobots(1, 1, 1, 0);
+		testMaterialTotals(6, 5, 1, 0);
+
+		assertEquals(true, strategy.canBuildGeodeRobot());
+		strategy.requestGeodeRobot();
+		runNextMinutes(2);
+		testNumRobots(1, 1, 1, 1);
+		testMaterialTotals(7, 7, 2, 1);
+	}
+
+	@Test public void  TestCanBuildTheseRobots() {
+		strategy = getSimpleStrategy();
+
+		assertEquals(false, strategy.canBuildTheseRobots(false, false, false, false));
+
+		setMaterialTotals(1, 0, 0, 0);
+		assertEquals(true, strategy.canBuildTheseRobots(true, false, false, false));
+		assertEquals(true, strategy.canBuildTheseRobots(false, true, false, false));
+		assertEquals(false, strategy.canBuildTheseRobots(true, true, false, false));
+
+		setMaterialTotals(1, 1, 0, 0);
+		assertEquals(true, strategy.canBuildTheseRobots(true, false, false, false));
+		assertEquals(true, strategy.canBuildTheseRobots(false, false, true, false));
+		assertEquals(false, strategy.canBuildTheseRobots(true, false, true, false));
+		assertEquals(false, strategy.canBuildTheseRobots(false, false, false, true));
+
+		setMaterialTotals(1, 0, 1, 0);
+		assertEquals(true, strategy.canBuildTheseRobots(true, false, false, false));
+		assertEquals(true, strategy.canBuildTheseRobots(false, false, false, true));
+		assertEquals(false, strategy.canBuildTheseRobots(true, false, false, true));
+	}
+
+	@Test
+	public void  TestWhenCollectingGeodesStarts() {
+
+		strategy = getSimpleStrategy();
+		while (strategy.minute < 1000 && strategy.geodeTotal == 0) {
+			strategy.nextMinute();
+
+			if (strategy.canBuildClayRobot() && strategy.numClayRobots == 0) {
+				strategy.requestClayRobot();
+			}
+			if (strategy.canBuildObsidianRobot() && strategy.numObsidianRobots == 0) {
+				strategy.requestObsidianRobot();
+			}
+			if (strategy.canBuildGeodeRobot()) {
+				break;
+
+			}
+		}
+		assertEquals(5, strategy.minute);
+		assertEquals(0, strategy.geodeTotal);
+
+		strategy.requestGeodeRobot();
+		while (strategy.minute < 1000 && strategy.geodeTotal == 0) {
+			strategy.nextMinute();
+		}
+		assertEquals(7, strategy.minute);
+		assertEquals(1, strategy.geodeTotal);
+	}
+
+	public void setMaterialTotals(int oreTotal, int clayTotal, int obsidianTotal, int geodeTotal) {
+		strategy.oreTotal = oreTotal;
+		strategy.clayTotal = clayTotal;
+		strategy.obsidianTotal = obsidianTotal;
+		strategy.geodeTotal = geodeTotal;
+	}
+
+	public RobotStrategy getSimpleStrategy() {
+		RobotStrategy strategy = new RobotStrategy();
+		ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(1, 1, 1, 1, 1, 1));
+		strategy.blueprint = new Blueprint(1, values);
+		return strategy;
+	}
 }
+

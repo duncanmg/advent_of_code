@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-class RobotStrategy {
+class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 
 	public static void main(String[] args) {
 		RobotStrategy obj = new RobotStrategy();
@@ -13,13 +13,16 @@ class RobotStrategy {
 	public RobotStrategy() {
 	}
 
+	Logger logger = new Logger(this, true);
+
 	public Blueprint blueprint;
 
 	public int minute = 0;
 
+	public int maxMinutes = 24;
+
 	public void nextMinute() {
 		minute++;
-
 
 		oreTotal += numOreRobots;
 
@@ -28,6 +31,9 @@ class RobotStrategy {
 		obsidianTotal += numObsidianRobots;
 
 		geodeTotal += numGeodeRobots;
+
+		// Estimate/project what the final number of geodes collected will be.
+		projectedGeodeTotal = geodeTotal + (numGeodeRobots * (maxMinutes - minute));
 
 		// Requested robots don't contribute yet.
 		numClayRobots += numClayRobotsRequested;
@@ -51,6 +57,8 @@ class RobotStrategy {
 	public int obsidianTotal = 0;
 
 	public int geodeTotal = 0;
+
+	public int projectedGeodeTotal = 0;
 
 	// Robots collecting raw material
 	public int numOreRobots = 1;
@@ -94,19 +102,48 @@ class RobotStrategy {
 	}
 
 	public boolean canBuildTheseRobots(boolean ore, boolean clay, boolean obsidian, boolean geode) {
-		if (ore && !canBuildOreRobot()) {
-			return false;
+		// Operate on the clone so that we don't change the original inventory.
+		RobotStrategy clone = (RobotStrategy) this.clone();
+		int numToBuild = 0;
+		if (ore) {
+			if (clone.canBuildOreRobot()) {
+				numToBuild++;
+				clone.requestOreRobot();
+			} else {
+				return false;
+			}
 		}
-		if (clay && !canBuildClayRobot()) {
-			return false;
+		if (clay) {
+			if (clone.canBuildClayRobot()) {
+				numToBuild++;
+				clone.requestClayRobot();
+			} else {
+				return false;
+			}
 		}
-		if (obsidian && !canBuildObsidianRobot()) {
-			return false;
+		if (obsidian) {
+			if (clone.canBuildObsidianRobot()) {
+				numToBuild++;
+				clone.requestObsidianRobot();
+			} else {
+				return false;
+			}
 		}
-		if (geode && !canBuildGeodeRobot()) {
-			return false;
+		if (geode) {
+			logTotals();
+			if (clone.canBuildGeodeRobot()) {
+				numToBuild++;
+				clone.requestGeodeRobot();
+			} else {
+				return false;
+			}
 		}
-		return true;
+		return numToBuild > 0 ? true : false;
+	}
+
+	public void logTotals() {
+		logger.log("Minute: " + minute + " Num Robots: " + numOreRobots + " " + numClayRobots + " " + numObsidianRobots + " " + numGeodeRobots);
+		logger.log("Minute: " + minute + " Totals: " + oreTotal + " " + clayTotal + " " + obsidianTotal + " " + geodeTotal);
 	}
 
 	public boolean canBuildTheseRobots(boolean[] requested) {
@@ -136,4 +173,46 @@ class RobotStrategy {
 		obsidianTotal -= blueprint.geodeRobotObsidianCost;
 	}
 
+	public void requestTheseRobots(boolean ore, boolean clay, boolean obsidian, boolean geode) {
+		if (ore) {
+			requestOreRobot();
+		}
+		if (clay) {
+			requestClayRobot();
+		}
+		if (obsidian) {
+			requestObsidianRobot();
+		}
+		if (geode) {
+			requestGeodeRobot();
+		}
+	}
+
+	public void requestTheseRobots(boolean[] requested) {
+		requestTheseRobots(requested[0], requested[1], requested[2], requested[3]);
+	}
+
+	public String sortCode() {
+		String formatString = "%06d%06d%06d%06d";
+		return String.format(formatString, projectedGeodeTotal, numObsidianRobots, numClayRobots, numOreRobots);
+	}
+
+	// Shallow clone
+	@Override
+		public Object clone() {
+			try {
+				return super.clone();
+			}
+			catch (CloneNotSupportedException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+	// s1 == s2 : The method returns 0.
+	// s1 > s2 : The method returns a positive value.
+	// s1 < s2 : The method returns a negative value.
+	@Override
+		public int compareTo(RobotStrategy s) {
+			return this.sortCode().compareTo(s.sortCode());
+		}
 }

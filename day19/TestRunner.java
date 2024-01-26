@@ -14,6 +14,8 @@ public class TestRunner {
 	  testClasses.put("TestBlueprint", TestBlueprint.class);
 	  testClasses.put("TestRobotStrategy", TestRobotStrategy.class);
 	  testClasses.put("TestStrategyIterator", TestStrategyIterator.class);
+	  testClasses.put("TestOptimizer", TestOptimizer.class);
+	  testClasses.put("TestOptimizerBlueprintOne", TestOptimizerBlueprintOne.class);
 
 	  if (args.length > 0) {
 	  	for (int i=0; i<args.length; i++) {
