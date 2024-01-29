@@ -37,6 +37,9 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 		numGeodeRobots += numGeodeRobotsRequested;
 		numGeodeRobotsRequested = 0;
 
+	}
+
+	public void collectResources() throws RuntimeException {
 		// Update raw materials totals
 		oreTotal += numOreRobots;
 
@@ -148,29 +151,41 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 	}
 
 	// Request robots to be built
-	public void requestOreRobot() {
+	public void requestOreRobot() throws RuntimeException{
+		if (!canBuildOreRobot()) {
+			throw new RuntimeException("Cannot build ore robot");
+		}
 		numOreRobotsRequested++;
 		oreTotal -= blueprint.oreRobotCost;
 	}
 
-	public void requestClayRobot() {
+	public void requestClayRobot() throws RuntimeException{
+		if (!canBuildClayRobot()) {
+			throw new RuntimeException("Cannot build clay robot");
+		}
 		numClayRobotsRequested++;
 		oreTotal -= blueprint.clayRobotCost;
 	}
 
-	public void requestObsidianRobot() {
+	public void requestObsidianRobot() throws RuntimeException{
+		if (!canBuildObsidianRobot()) {
+			throw new RuntimeException("Cannot build obsidian robot");
+		}
 		numObsidianRobotsRequested++;
 		oreTotal -= blueprint.obsidianRobotOreCost;
 		clayTotal -= blueprint.obsidianRobotClayCost;
 	}
 
-	public void requestGeodeRobot() {
+	public void requestGeodeRobot() throws RuntimeException{
+		if (!canBuildGeodeRobot()) {
+			throw new RuntimeException("Cannot build geode robot");
+		}
 		numGeodeRobotsRequested++;
 		oreTotal -= blueprint.geodeRobotOreCost;
 		obsidianTotal -= blueprint.geodeRobotObsidianCost;
 	}
 
-	public void requestTheseRobots(boolean ore, boolean clay, boolean obsidian, boolean geode) {
+	public void requestTheseRobots(boolean ore, boolean clay, boolean obsidian, boolean geode) throws RuntimeException {
 		if (ore) {
 			requestOreRobot();
 		}
@@ -205,38 +220,127 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 	// s1 < s2 : The method returns a negative value.
 	@Override
 		public int compareTo(RobotStrategy s) {
-			if (this.projectedGeodeTotal > s.projectedGeodeTotal) {
-				return 1;
-			}
-			else if (this.projectedGeodeTotal  == s.projectedGeodeTotal) {
-				if (this.numObsidianRobots > s.numObsidianRobots) {
-					return 1;
-				}
-				else if (this.numObsidianRobots == s.numObsidianRobots) {
-					if (this.numClayRobots > s.numClayRobots) {
-						return 1;
-					}
-					else if (this.numClayRobots == s.numClayRobots) {
-						if (this.numOreRobots > s.numOreRobots) {
-							return 1;
-						}
-						else if (this.numOreRobots == s.numOreRobots) {
-							return 0;
-						}
-						else {
-							return -1;
-						}
-					}
-					else {
-						return -1;
-					}
-				}
-				else {
-					return -1;
-				}
-			}
-			else {
-				return -1;
-			}	
+			logger.log("compareTo: " + this + " " + s);
+			return compareProjectedGeodeTotal(s);
 		}
+
+	private int compareProjectedGeodeTotal(RobotStrategy s) {
+		logger.log("compareProjectedGeodeTotal: " + this.projectedGeodeTotal + " " + s.projectedGeodeTotal);
+		if (this.projectedGeodeTotal > s.projectedGeodeTotal) {
+			return 1;
+		}
+		else if (this.projectedGeodeTotal  == s.projectedGeodeTotal) {
+			return compareNumGeodeRobots(s);
+		}
+		else {
+			return -1;
+		}
+	}
+
+	private int compareNumGeodeRobots(RobotStrategy s) {
+		logger.log("compareNumGeodeRobots: " + this.numGeodeRobots + " " + s.numGeodeRobots);
+		if (this.numGeodeRobots > s.numGeodeRobots) {
+			return 1;
+		}
+		else if (this.numGeodeRobots == s.numGeodeRobots) {
+			return compareNumObsidianRobots(s);
+		}
+		else {
+			return -1;
+		}
+	}
+
+	private int compareNumObsidianRobots(RobotStrategy s) {
+		logger.log("compareNumObsidianRobots: " + this.numObsidianRobots + " " + s.numObsidianRobots);
+		if (this.numObsidianRobots > s.numObsidianRobots) {
+			return 1;
+		}
+		else if (this.numObsidianRobots == s.numObsidianRobots) {
+			return compareNumClayRobots(s);
+		}
+		else {
+			return -1;
+		}
+	}
+
+	private int compareNumClayRobots(RobotStrategy s) {
+		logger.log("compareNumClayRobots: " + this.numClayRobots + " " + s.numClayRobots);
+		if (this.numClayRobots > s.numClayRobots) {
+			return 1;
+		}
+		else if (this.numClayRobots == s.numClayRobots) {
+			return compareNumOreRobots(s);
+		}
+		else {
+			return -1;
+		}
+	}
+
+	private int compareNumOreRobots(RobotStrategy s) {
+		logger.log("compareNumOreRobots: " + this.numOreRobots + " " + s.numOreRobots);
+		if (this.numOreRobots > s.numOreRobots) {
+			return 1;
+		}
+		else if (this.numOreRobots == s.numOreRobots) {
+			return compareNumGeodeRobotsRequested(s);
+		}
+		else {
+			return -1;
+		}
+	}
+
+	private int compareNumGeodeRobotsRequested(RobotStrategy s) {
+		logger.log("compareNumGeodeRobotsRequested: " + this.numGeodeRobotsRequested + " " + s.numGeodeRobotsRequested);
+		if (this.numGeodeRobotsRequested > s.numGeodeRobotsRequested) {
+			return 1;
+		}
+		else if (this.numGeodeRobotsRequested == s.numGeodeRobotsRequested) {
+			return compareNumObsidianRobotsRequested(s);
+		}
+		else {
+			return -1;
+		}
+	}
+
+	private int compareNumObsidianRobotsRequested(RobotStrategy s) {
+		logger.log("compareNumObsidianRobotsRequested: " + this.numObsidianRobotsRequested + " " + s.numObsidianRobotsRequested);
+		if (this.numObsidianRobotsRequested > s.numObsidianRobotsRequested) {
+			return 1;
+		}
+		else if (this.numObsidianRobotsRequested == s.numObsidianRobotsRequested) {
+			return compareNumClayRobotsRequested(s);
+		}
+		else {
+			return -1;
+		}
+	}
+
+	private int compareNumClayRobotsRequested(RobotStrategy s) {
+		logger.log("compareNumClayRobotsRequested: " + this.numClayRobotsRequested + " " + s.numClayRobotsRequested);
+		if (this.numClayRobotsRequested > s.numClayRobotsRequested) {
+			return 1;
+		}
+		else if (this.numClayRobotsRequested == s.numClayRobotsRequested) {
+			return compareNumOreRobotsRequested(s);
+		}
+		else {
+			return -1;
+		}
+	}
+
+	private int compareNumOreRobotsRequested(RobotStrategy s) {
+		if (this.numOreRobotsRequested > s.numOreRobotsRequested) {
+			return 1;
+		}
+		else if (this.numOreRobotsRequested == s.numOreRobotsRequested) {
+			return 0;
+		}
+		else {
+			return -1;
+		}
+	}
+
+	public String toString() {
+		return "Minute: " + minute + " Num Robots: " + numOreRobots + " " + numClayRobots + " " + numObsidianRobots + " " + numGeodeRobots + " Num Robots Requested: " + numOreRobotsRequested + " " + numClayRobotsRequested + " " + numObsidianRobotsRequested + " " + numGeodeRobotsRequested + " Totals: " + oreTotal + " " + clayTotal + " " + obsidianTotal + " " + geodeTotal + " Projected: " + projectedGeodeTotal;
+	}
 }

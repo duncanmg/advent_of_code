@@ -9,6 +9,7 @@ import java.lang.reflect.*;
 import java.util.*;
 import org.junit.Before;
 
+// This tests the optimizer using one very simple blueprint.
 public class TestOptimizer {
 
 	public static void main(String[] args) throws Exception {
@@ -39,16 +40,34 @@ public class TestOptimizer {
 		assertEquals(0, maxGeodes);
 	}
 
+	@Test public void testSimple2min() throws Exception {
+
+		int maxGeodes = runSimpleBlueprint(2);
+		assertEquals(0, maxGeodes);
+	}
+
+	@Test public void testSimple3min() throws Exception {
+
+		int maxGeodes = runSimpleBlueprint(3);
+		assertEquals(0, maxGeodes);
+	}
+
+	@Test public void testSimple4min() throws Exception {
+
+		int maxGeodes = runSimpleBlueprint(4);
+		assertEquals(1, maxGeodes);
+	}
+
 	@Test public void testSimple6min() throws Exception {
 
 		int maxGeodes = runSimpleBlueprint(6);
-		assertEquals(0, maxGeodes);
+		assertEquals(6, maxGeodes);
 	}
 
 	@Test public void testSimple7min() throws Exception {
 
 		int maxGeodes = runSimpleBlueprint(7);
-		assertEquals(1, maxGeodes);
+		assertEquals(10, maxGeodes);
 	}
 
 	@Test public void testSimple8min() throws Exception {
@@ -57,21 +76,15 @@ public class TestOptimizer {
 		// So, once we have an obsidian robot and an ore robot we can add another geode robot every minute!
 		// Here we have 2 geode robots collecting and one requested.
 		int maxGeodes = runSimpleBlueprint(8);
-		assertEquals(3, maxGeodes);
+		assertEquals(15, maxGeodes);
 	}
 
 	@Test public void testSimple9min() throws Exception {
 
 		// Here we have 3 geode robots collecting and one requested.
 		int maxGeodes = runSimpleBlueprint(9);
-		assertEquals(6, maxGeodes);
+		assertEquals(21, maxGeodes);
 	}
-
-	// Blueprint 1:
-	// Each ore robot costs 4 ore.
-	// Each clay robot costs 2 ore.
-	// Each obsidian robot costs 3 ore and 14 clay.
-	// Each geode robot costs 2 ore and 7 obsidian.
 
 	@Test public void testSimple() throws Exception {
 
@@ -79,7 +92,7 @@ public class TestOptimizer {
 		blueprints.add(bp);
 		optimizer.blueprints = blueprints;
 		int maxGeodes = optimizer.optimize();
-		assertEquals(0, maxGeodes);
+		assertEquals(231, maxGeodes);
 	}
 
 	// Simple Blueprint:

@@ -36,22 +36,19 @@ public class TestStrategyIterator {
                 testResult(result, false, true, false, false);
 
                 result = iterator.next();
-                testResult(result, true, true, false, false);
+                testResult(result, false, false, true, false);
 
                 result = iterator.next();
-                testResult(result, false, false, true, false);
+                testResult(result, false, false, false, true);
 
         }
 
         @Test public void testKeyValues() throws Exception {
 
-		// This is correct multipleNexts(1) return all false
-		// so it is correct for multipleNexts(16) to return all true.
-		boolean[] result = multipleNexts(16);
-		testResult(result, true, true, true, true);
+		assertEquals(true, iterator.hasNext());
+		boolean[] result = multipleNexts(5);
+		testResult(result, false, false, false, true);
 
-		result = multipleNexts(1);
-		testResult(result, false, false, false, false);
         }
 
 	public boolean[] multipleNexts(int num) {

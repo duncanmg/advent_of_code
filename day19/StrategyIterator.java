@@ -10,6 +10,8 @@ class StrategyIterator {
 		StrategyIterator obj = new StrategyIterator();
 	}
 
+	// This was much simpler because it ws thought that several robots could be requested at once.
+	// This is not the case, so this a simple cycle through the four robot types is sufficient.
 	public StrategyIterator() {
 	}
 
@@ -23,60 +25,24 @@ class StrategyIterator {
 
 	private boolean currentGeode = false;
 
-	private void init() {
-		counter = 0;
-		currentOre = true;
-		currentClay = false;
-		currentObsidian = false;
-		currentGeode = false;
-	}
-
 	private boolean nextOre() {
-		currentOre = toggle(currentOre);
-		return currentOre;
+		return counter == 1;
 	}
 
 	private boolean nextClay() {
-		if (counter == 0) {
-			return currentClay;
-		}
-
-		if (counter % 2 != 0) {
-			return currentClay;
-		} else {
-			currentClay = toggle(currentClay);
-			return currentClay;
-		}
+		return counter == 2;
 	}
 
 	private boolean nextObsidian() {
-		if (counter == 0) {
-			return currentClay;
-		}
-
-		if (counter % 4 != 0) {
-			return currentObsidian;
-		} else {
-			currentObsidian = toggle(currentObsidian);
-			return currentObsidian;
-		}
+		return counter == 3;
 	}
 
 	private boolean nextGeode() {
-		if (counter == 0) {
-			return currentClay;
-		}
-
-		if (counter % 8 != 0) {
-			return currentGeode;
-		} else {
-			currentGeode = toggle(currentGeode);
-			return currentGeode;
-		}
+		return counter == 4;
 	}
 
 	public boolean hasNext() {
-		return counter < 16;
+		return counter < 5;
 	}
 
 	public boolean[] next() {
@@ -91,7 +57,4 @@ class StrategyIterator {
 		return out;
 	}
 
-	private boolean toggle(boolean value) {
-		return value ? false : true;
-	}
 }
