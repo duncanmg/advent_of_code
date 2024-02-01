@@ -61,6 +61,7 @@ public class TestRobotStrategy {
 	@Test public void TestRobotsMinute1() throws Exception {
 
 		strategy.nextMinute();
+		strategy.collectResources();
 		assertEquals(1, strategy.minute);
 
 		testMaterialTotals(1, 0, 0, 0);
@@ -247,6 +248,7 @@ public class TestRobotStrategy {
 	void runNextMinutes(int num) {
 		for (int i = 0; i < num; i++) {
 			strategy.nextMinute();
+			strategy.collectResources();
 		}
 	}
 
@@ -342,6 +344,7 @@ public class TestRobotStrategy {
 		strategy = getSimpleStrategy();
 		while (strategy.minute < 1000 && strategy.geodeTotal == 0) {
 			strategy.nextMinute();
+			strategy.collectResources();
 
 			if (strategy.canBuildClayRobot() && strategy.numClayRobots == 0) {
 				strategy.requestClayRobot();
@@ -360,6 +363,7 @@ public class TestRobotStrategy {
 		strategy.requestGeodeRobot();
 		while (strategy.minute < 1000 && strategy.geodeTotal == 0) {
 			strategy.nextMinute();
+			strategy.collectResources();
 		}
 		assertEquals(4, strategy.minute);
 		assertEquals(1, strategy.geodeTotal);

@@ -18,6 +18,8 @@ public class TestRobotStrategyBlueprintOne {
 
 	RobotStrategy strategy;
 
+	Logger logger = new Logger(this);
+
 	@Before
 	public void setUp() throws Exception {
 		if (strategy == null) {
@@ -31,7 +33,7 @@ public class TestRobotStrategyBlueprintOne {
 
 	@Test public void TestBlueprintOne() throws Exception {
 
-		System.out.println(strategy.minute + " ----------------------------------------");
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(0, strategy.minute);
 
 		testMaterialTotals(0, 0, 0, 0);
@@ -39,7 +41,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(1, strategy.minute);
 
 		testMaterialTotals(1, 0, 0, 0);
@@ -47,7 +50,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(2, strategy.minute);
 
 		testMaterialTotals(2, 0, 0, 0);
@@ -55,7 +59,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(3, strategy.minute);
 
 		strategy.requestClayRobot();
@@ -64,7 +69,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 1, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(4, strategy.minute);
 
 		testMaterialTotals(2, 1, 0, 0);
@@ -72,7 +78,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(5, strategy.minute);
 
 		strategy.requestClayRobot();
@@ -81,7 +88,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 1, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(6, strategy.minute);
 
 		testMaterialTotals(2, 4, 0, 0);
@@ -89,7 +97,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(7, strategy.minute);
 
 		strategy.requestClayRobot();
@@ -98,7 +107,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 1, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(8, strategy.minute);
 
 		testMaterialTotals(2, 9, 0, 0);
@@ -106,7 +116,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(9, strategy.minute);
 
 		testMaterialTotals(3, 12, 0, 0);
@@ -114,7 +125,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(10, strategy.minute);
 
 		testMaterialTotals(4, 15, 0, 0);
@@ -122,7 +134,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(11, strategy.minute);
 
 		strategy.requestObsidianRobot();
@@ -131,7 +144,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 1, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(12, strategy.minute);
 
 		strategy.requestClayRobot();
@@ -140,7 +154,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 1, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(13, strategy.minute);
 
 		testMaterialTotals(2, 11, 2, 0);
@@ -148,7 +163,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(14, strategy.minute);
 
 		testMaterialTotals(3, 15, 3, 0);
@@ -156,7 +172,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(15, strategy.minute);
 
 		strategy.requestObsidianRobot();
@@ -165,7 +182,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 1, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(16, strategy.minute);
 
 		testMaterialTotals(2, 9, 6, 0);
@@ -173,7 +191,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(17, strategy.minute);
 
 		testMaterialTotals(3, 13, 8, 0);
@@ -181,7 +200,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(18, strategy.minute);
 
 		strategy.requestGeodeRobot();
@@ -190,7 +210,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 1);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(19, strategy.minute);
 
 		testMaterialTotals(3, 21, 5, 1);
@@ -198,7 +219,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(20, strategy.minute);
 
 		testMaterialTotals(4, 25, 7, 2);
@@ -206,7 +228,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(21, strategy.minute);
 
 		strategy.requestGeodeRobot();
@@ -215,7 +238,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 1);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(22, strategy.minute);
 
 		testMaterialTotals(4, 33, 4, 5);
@@ -223,7 +247,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(23, strategy.minute);
 
 		testMaterialTotals(5, 37, 6, 7);
@@ -231,7 +256,8 @@ public class TestRobotStrategyBlueprintOne {
 		testNumRobotsRequested(0, 0, 0, 0);
 
 		strategy.nextMinute();
-		System.out.println(strategy.minute + " ----------------------------------------");
+		strategy.collectResources();
+		logger.log(strategy.minute + " ----------------------------------------");
 		assertEquals(24, strategy.minute);
 
 		testMaterialTotals(6, 41, 8, 9);

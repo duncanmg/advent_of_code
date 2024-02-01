@@ -20,7 +20,7 @@ public class TestOptimizerBlueprintOne {
 
 	ArrayList<Blueprint> blueprints;
 
-	logger = new Logger(this);
+	Logger logger = new Logger(this);
 
 	// Blueprint 1:
 	// Each ore robot costs 4 ore.

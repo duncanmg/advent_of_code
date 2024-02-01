@@ -19,6 +19,12 @@ class BlueprintFactory {
 		}
 	}
 
+	public BlueprintFactory(String dataFile) {
+		if (dataFile != null) {
+			data = dataObj.getData(dataFile);
+		}
+	}
+
 	HashMap<String, String> argMap;
 
 	Data dataObj = new Data();
@@ -30,7 +36,7 @@ class BlueprintFactory {
 	// Key: BlueprintId, Value: ArrayList of values
 	// eg 1: 4, 4, 4, 7, 2, 19
 	// eg 2: 2, 4, 4, 20, 4, 18
-	private HashMap<Integer, ArrayList<Integer>> blueprintValues = new HashMap<Integer, ArrayList<Integer>>();
+	public  HashMap<Integer, ArrayList<Integer>> blueprintValues = new HashMap<Integer, ArrayList<Integer>>();
 
 	void parseDataFile() {
 		// Match all integers except at beginning and end of string.

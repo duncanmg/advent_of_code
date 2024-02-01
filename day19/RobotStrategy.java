@@ -224,6 +224,8 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 			return compareProjectedGeodeTotal(s);
 		}
 
+	// These are the sorting methods, which are chained.
+	// Soring on nine different things!
 	private int compareProjectedGeodeTotal(RobotStrategy s) {
 		logger.log("compareProjectedGeodeTotal: " + this.projectedGeodeTotal + " " + s.projectedGeodeTotal);
 		if (this.projectedGeodeTotal > s.projectedGeodeTotal) {

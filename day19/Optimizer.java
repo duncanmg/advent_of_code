@@ -25,15 +25,15 @@ class Optimizer {
 
 	public int optimize() {
 		logger.log("Num blueprints: " + this.blueprints.size() + ".  maxMinutes: " + this.maxMinutes + ". Optimizing...");
-		int maxGeodes = 0;
+		int totalQuality = 0;
 		for (Blueprint blueprint : blueprints) {
 			int geodes = optimizeBlueprint(blueprint);
-			if (geodes > maxGeodes) {
-				maxGeodes = geodes;
-			}
+			int quality = blueprint.id * geodes;
+			System.out.println("Blueprint " + blueprint.id + " has " + geodes + " geodes and has quality " + quality);
+			totalQuality += quality;
 		}
 		logger.log("maxMinutes: " + this.maxMinutes + ". End Optimizing");
-		return maxGeodes;
+		return totalQuality;
 	}
 
 	public int optimizeBlueprint(Blueprint blueprint) {
@@ -55,22 +55,23 @@ class Optimizer {
 
 			ArrayList<RobotStrategy> newRobotStrategies = new ArrayList<RobotStrategy>();
 
+			logger.log("Start of minute " + minute + ". Got " + robotStrategies.size() + " strategies.");
 			for (RobotStrategy robotStrategy : robotStrategies) {
 
 				// Increment minute. Build robots requested in previous minute.
 				// Collect resources.
 				robotStrategy.nextMinute();
-				System.out.println(robotStrategy);
+				// System.out.println(robotStrategy);
 
 				StrategyIterator strategyIterator = new StrategyIterator();
 
-				logger.log("Minute " + minute + " has " + robotStrategies.size() + " strategies");
+				logger.log("Minute " + minute + " process robotStrategy. " + robotStrategy.toString());
 				while (strategyIterator.hasNext()) {
 					boolean[] strategy = strategyIterator.next();
 
-					logger.log("Loop. strategy" + Arrays.toString(strategy));
+					logger.log("Loop. Try strategy " + Arrays.toString(strategy));
 					if (robotStrategy.canBuildTheseRobots(strategy)) {
-						logger.log("Can build!");
+						logger.log("Can follow this strategy!");
 						RobotStrategy newRobotStrategy = (RobotStrategy) robotStrategy.clone();
 						newRobotStrategy.requestTheseRobots(strategy);
 						newRobotStrategy.collectResources();
@@ -93,7 +94,7 @@ class Optimizer {
 					}
 				}
 			}
-			logger.log("Minute " + minute + " has " + newRobotStrategies.size() + " strategies. maxStrategies = " + maxStrategies);
+			logger.log("End of minute " + minute + ". Got " + newRobotStrategies.size() + " strategies. maxStrategies = " + maxStrategies);
 			if (newRobotStrategies.size() >= maxStrategies) {
 				logger.log("Sort and prune");
 				Collections.sort(newRobotStrategies, Collections.reverseOrder());
@@ -108,6 +109,10 @@ class Optimizer {
 		}
 		topRobotStrategy = robotStrategies.get(0);
 		logger.log("maxMinutes: " + this.maxMinutes + " topRobotStrategy: " + topRobotStrategy + ". End Optimizing");
+		int topFew = robotStrategies.size() > 10 ? 10 : robotStrategies.size();
+		for (int i=0; i<topFew; i++) {
+			logger.log(robotStrategies.get(i).toString());
+		}
 		logger.log("maxGeodes = " + maxGeodes + " from " 
 				+ topRobotStrategy.numGeodeRobots + " geode robots"
 				+ " and " + topRobotStrategy.numObsidianRobots + " obsidian robots"

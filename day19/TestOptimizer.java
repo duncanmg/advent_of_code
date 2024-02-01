@@ -28,46 +28,53 @@ public class TestOptimizer {
 
 		}
 
-	@Test public void testBlueprint1() throws Exception {
+	Logger logger = new Logger(this, true);
 
-		int maxGeodes = runSimpleBlueprint(0);
-		assertEquals(0, maxGeodes);
-	}
-
+//	@Test public void testBlueprint1() throws Exception {
+//
+//		int maxGeodes = runSimpleBlueprint(0);
+//		assertEquals(0, maxGeodes);
+//	}
+//
 	@Test public void testSimple1min() throws Exception {
 
 		int maxGeodes = runSimpleBlueprint(1);
+		testNumRobots(1, 0, 0, 0);
 		assertEquals(0, maxGeodes);
 	}
 
 	@Test public void testSimple2min() throws Exception {
 
 		int maxGeodes = runSimpleBlueprint(2);
+		testNumRobots(1, 0, 0, 0);
 		assertEquals(0, maxGeodes);
 	}
 
 	@Test public void testSimple3min() throws Exception {
 
 		int maxGeodes = runSimpleBlueprint(3);
+		testNumRobots(1, 1, 0, 0);
 		assertEquals(0, maxGeodes);
 	}
 
 	@Test public void testSimple4min() throws Exception {
 
 		int maxGeodes = runSimpleBlueprint(4);
-		assertEquals(1, maxGeodes);
+		testNumRobots(1, 2, 0, 0);
+		assertEquals(0, maxGeodes);
 	}
 
 	@Test public void testSimple6min() throws Exception {
 
 		int maxGeodes = runSimpleBlueprint(6);
-		assertEquals(6, maxGeodes);
+		testNumRobots(1, 2, 2, 0);
+		assertEquals(0, maxGeodes);
 	}
 
 	@Test public void testSimple7min() throws Exception {
 
 		int maxGeodes = runSimpleBlueprint(7);
-		assertEquals(10, maxGeodes);
+		assertEquals(1, maxGeodes);
 	}
 
 	@Test public void testSimple8min() throws Exception {
@@ -76,14 +83,14 @@ public class TestOptimizer {
 		// So, once we have an obsidian robot and an ore robot we can add another geode robot every minute!
 		// Here we have 2 geode robots collecting and one requested.
 		int maxGeodes = runSimpleBlueprint(8);
-		assertEquals(15, maxGeodes);
+		assertEquals(3, maxGeodes);
 	}
 
 	@Test public void testSimple9min() throws Exception {
 
 		// Here we have 3 geode robots collecting and one requested.
 		int maxGeodes = runSimpleBlueprint(9);
-		assertEquals(21, maxGeodes);
+		assertEquals(6, maxGeodes);
 	}
 
 	@Test public void testSimple() throws Exception {
@@ -92,7 +99,7 @@ public class TestOptimizer {
 		blueprints.add(bp);
 		optimizer.blueprints = blueprints;
 		int maxGeodes = optimizer.optimize();
-		assertEquals(231, maxGeodes);
+		assertEquals(171, maxGeodes);
 	}
 
 	// Simple Blueprint:
@@ -110,4 +117,19 @@ public class TestOptimizer {
 		return optimizer.optimize();
 	}
 
+       public void testNumRobots(int numOreRobots, int numClayRobots, int numObsidianRobots, int numGeodeRobots) {
+                if (optimizer.topRobotStrategy == null) {
+                } else {
+                        logger.log("optimizer.topRobotStrategy is not null");
+                        RobotStrategy topRobotStrategy = optimizer.topRobotStrategy;
+                        logger.log("topRobotStrategy.numOreRobots = " + topRobotStrategy.numOreRobots);
+                        assertEquals(numOreRobots, topRobotStrategy.numOreRobots);
+                        logger.log("topRobotStrategy.numClayRobots = " + topRobotStrategy.numClayRobots);
+                        assertEquals(numClayRobots, topRobotStrategy.numClayRobots);
+                        logger.log("topRobotStrategy.numObsidianRobots = " + topRobotStrategy.numObsidianRobots);
+                        assertEquals(numObsidianRobots, topRobotStrategy.numObsidianRobots);
+                        logger.log("topRobotStrategy.numGeodeRobots = " + topRobotStrategy.numGeodeRobots);
+                        assertEquals(numGeodeRobots, topRobotStrategy.numGeodeRobots);
+                }
+        }
 }
