@@ -52,6 +52,42 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 		// Estimate/project what the final number of geodes collected will be.
 		projectedGeodeTotal = geodeTotal + (numGeodeRobots * (maxMinutes - minute));
 
+		calcProgress();
+
+	}
+
+	float progress;
+
+	public void calcProgress() throws RuntimeException {
+		progress = geodeTotal + ((2 * calcGeodeProgress() + calcObsidianProgress()) / 3);
+	}
+
+	float calcGeodeProgress() {
+		float obsidianProgress = obsidianTotal / blueprint.geodeRobotObsidianCost;
+		if (obsidianProgress > 1) {
+			obsidianProgress = 1;
+		}
+
+		float oreProgress = oreTotal / blueprint.geodeRobotOreCost;
+		if (oreProgress > 1) {
+			oreProgress = 1;
+		}
+
+		return (obsidianProgress + oreProgress) / 2;
+	}
+
+	float calcObsidianProgress() {
+		float clayProgress = clayTotal / blueprint.obsidianRobotClayCost;
+		if (clayProgress > 1) {
+			clayProgress = 1;
+		}
+
+		float oreProgress = oreTotal / blueprint.obsidianRobotOreCost;
+		if (oreProgress > 1) {
+			oreProgress = 1;
+		}
+
+		return (clayProgress + oreProgress) / 2;
 	}
 
 	// Raw materials
@@ -224,14 +260,26 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 			return compareProjectedGeodeTotal(s);
 		}
 
-	// These are the sorting methods, which are chained.
-	// Soring on nine different things!
+	// The projected number of Geode nodes is the best indicator.
 	private int compareProjectedGeodeTotal(RobotStrategy s) {
 		logger.log("compareProjectedGeodeTotal: " + this.projectedGeodeTotal + " " + s.projectedGeodeTotal);
 		if (this.projectedGeodeTotal > s.projectedGeodeTotal) {
 			return 1;
 		}
 		else if (this.projectedGeodeTotal  == s.projectedGeodeTotal) {
+			return compareProgress(s);
+		}
+		else {
+			return -1;
+		}
+	}
+
+	private int compareProgress(RobotStrategy s) {
+		logger.log("compareProgress: " + this.progress + " " + s.progress);
+		if (this.progress > s.progress) {
+			return 1;
+		}
+		else if (this.progress  == s.progress) {
 			return compareNumGeodeRobots(s);
 		}
 		else {
