@@ -47,10 +47,15 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 
 		obsidianTotal += numObsidianRobots;
 
+		lastGeodeTotal = geodeTotal;
+
 		geodeTotal += numGeodeRobots;
 
+		// Rate at which geode collection is taking place. Geodes per minute.
+		int geodeGradient = geodeTotal - lastGeodeTotal;
+
 		// Estimate/project what the final number of geodes collected will be.
-		projectedGeodeTotal = geodeTotal + (numGeodeRobots * (maxMinutes - minute));
+		projectedGeodeTotal = geodeTotal + (geodeGradient * (maxMinutes - minute));
 
 		calcProgress();
 
@@ -58,11 +63,48 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 
 	float progress;
 
+	private float robotWeighting = (float) 1.2;
+
+	private float requestedRobotWeighting = (float) 1.1; 
+
+	// Sets the progress attribute. Weighted to encourage geode collection.
 	public void calcProgress() throws RuntimeException {
-		progress = geodeTotal + ((2 * calcGeodeProgress() + calcObsidianProgress()) / 3);
+		progress = 20 * geodeTotal 
+		+ 10 * calcGeodeProgress()
+		+ 5 * calcObsidianProgress()
+		+ calcClayProgress()
+		+ calcOreProgress();
 	}
 
+	// A float which will start at 0 and gradually increase. A higher number indicates 
+	// more progress.
 	float calcGeodeProgress() {
+		return robotWeighting * numGeodeRobots 
+		+ requestedRobotWeighting * numGeodeRobotsRequested 
+		+ calcBasicGeodeProgress();
+	}
+
+	float calcObsidianProgress() {
+		return robotWeighting * numObsidianRobots 
+		+ requestedRobotWeighting * numObsidianRobotsRequested 
+		+ calcBasicObsidianProgress();
+	}
+
+	float calcClayProgress() {
+		return robotWeighting * numClayRobots 
+		+ requestedRobotWeighting * numClayRobotsRequested 
+		+ calcBasicClayProgress();
+	}
+
+	float calcOreProgress() {
+		return robotWeighting * numOreRobots 
+		+ requestedRobotWeighting * numOreRobotsRequested 
+		+ calcBasicOreProgress();
+	}
+
+	// Return a float between 0 and 1 which provides a measure of when there will be
+	// enough ore to request another geode robot.
+	float calcBasicGeodeProgress() {
 		float obsidianProgress = obsidianTotal / blueprint.geodeRobotObsidianCost;
 		if (obsidianProgress > 1) {
 			obsidianProgress = 1;
@@ -76,7 +118,7 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 		return (obsidianProgress + oreProgress) / 2;
 	}
 
-	float calcObsidianProgress() {
+	float calcBasicObsidianProgress() {
 		float clayProgress = clayTotal / blueprint.obsidianRobotClayCost;
 		if (clayProgress > 1) {
 			clayProgress = 1;
@@ -90,6 +132,24 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 		return (clayProgress + oreProgress) / 2;
 	}
 
+	float calcBasicClayProgress() {
+		float clayProgress = oreTotal / blueprint.clayRobotCost;
+		if (clayProgress > 1) {
+			clayProgress = 1;
+		}
+
+		return clayProgress;
+	}
+
+	float calcBasicOreProgress() {
+		float oreProgress = oreTotal / blueprint.oreRobotCost;
+		if (oreProgress > 1) {
+			oreProgress = 1;
+		}
+
+		return oreProgress;
+	}
+
 	// Raw materials
 	public int oreTotal = 0;
 
@@ -98,6 +158,8 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 	public int obsidianTotal = 0;
 
 	public int geodeTotal = 0;
+
+	public int lastGeodeTotal = 0;
 
 	public int projectedGeodeTotal = 0;
 

@@ -19,7 +19,7 @@ class Optimizer {
 
 	public int maxMinutes = 24;
 
-	public int maxStrategies = 200000;
+	public int maxStrategies = 230000;
 
 	public RobotStrategy topRobotStrategy;
 
