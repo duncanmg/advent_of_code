@@ -75,137 +75,139 @@ public class TestOptimizerBlueprintOne {
 		assertEquals(0, maxGeodes);
 	}
 
-//	@Test public void testBlueprintOne04() throws Exception {
-//		optimizer.maxMinutes = 4;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(2, 1, 0, 0);
-//		testNumRobots(1, 1, 0, 0);
-//		testNumRobotsRequested(0, 0, 0, 0);
-//		assertEquals(0, maxGeodes);
-//	}
-//
-//	@Test public void testBlueprintOne05() throws Exception {
-//		optimizer.maxMinutes = 5;
-//		int maxGeodes = optimizer.optimize();
-//		testNumRobots(1, 1, 0, 0);
-//		testNumRobotsRequested(0, 1, 0, 0);
-//		assertEquals(0, maxGeodes);
-//	}
-//
-//	//	@Test public void testBlueprintOne06() throws Exception {
-//	//		optimizer.maxMinutes = 6;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//	//
-//	//	@Test public void testBlueprintOne07() throws Exception {
-//	//		optimizer.maxMinutes = 7;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//	//
-//	//	@Test public void testBlueprintOne08() throws Exception {
-//	//		optimizer.maxMinutes = 8;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//	//
-//	//	@Test public void testBlueprintOne09() throws Exception {
-//	//		optimizer.maxMinutes = 9;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//	//
-//	//	@Test public void testBlueprintOne10() throws Exception {
-//	//		optimizer.maxMinutes = 10;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//	//
-//	//	@Test public void testBlueprintOne11() throws Exception {
-//	//		optimizer.maxMinutes = 11;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//	//
-//	//	@Test public void testBlueprintOne12() throws Exception {
-//	//		optimizer.maxMinutes = 12;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//	//
-//	//	@Test public void testBlueprintOne13() throws Exception {
-//	//		optimizer.maxMinutes = 13;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//	//
-//	//	@Test public void testBlueprintOne14() throws Exception {
-//	//		optimizer.maxMinutes = 14;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//	//
-//	//	@Test public void testBlueprintOne15() throws Exception {
-//	//		optimizer.maxMinutes = 15;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//
-//	//	@Test public void testBlueprintOne16() throws Exception {
-//	//		optimizer.maxMinutes = 16;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//
-//	//	@Test public void testBlueprintOne17() throws Exception {
-//	//		optimizer.maxMinutes = 17;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//	//
-//	//	@Test public void testBlueprintOne18() throws Exception {
-//	//		optimizer.maxMinutes = 18;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//
-//		// This is the first geode collected!
-//		@Test public void testBlueprintOne19() throws Exception {
-//			optimizer.maxMinutes = 19;
-//			int maxGeodes = optimizer.optimize();
-//			assertEquals(1, maxGeodes);
-//		}
-//	
-//		@Test public void testBlueprintOne20() throws Exception {
-//			optimizer.maxMinutes = 20;
-//			int maxGeodes = optimizer.optimize();
-//			assertEquals(2, maxGeodes);
-//		}
-//	
-//		@Test public void testBlueprintOne21() throws Exception {
-//			optimizer.maxMinutes = 21;
-//			int maxGeodes = optimizer.optimize();
-//			assertEquals(3, maxGeodes);
-//		}
-//	
-//		@Test public void testBlueprintOne22() throws Exception {
-//			optimizer.maxMinutes = 22;
-//			int maxGeodes = optimizer.optimize();
-//			assertEquals(5, maxGeodes);
-//		}
-//
-//		@Test public void testBlueprintOne23() throws Exception {
-//			optimizer.maxMinutes = 23;
-//			int maxGeodes = optimizer.optimize();
-//			assertEquals(7, maxGeodes);
-//		}
-//
-//		@Test public void testBlueprintOne24() throws Exception {
-//			optimizer.maxMinutes = 24;
-//			int maxGeodes = optimizer.optimize();
-//			assertEquals(9, maxGeodes);
-//		}
+	@Test public void testBlueprintOne04() throws Exception {
+		optimizer.maxMinutes = 4;
+		int maxGeodes = optimizer.optimize();
+		testMaterialTotals(4, 0, 0, 0);
+		testNumRobots(1, 0, 0, 0);
+		testNumRobotsRequested(0, 0, 0, 0);
+		assertEquals(0, maxGeodes);
+	}
+
+	// A different path has bubbled to the top. This isn't the one
+	// which was top after 4 minutes.
+	@Test public void testBlueprintOne05() throws Exception {
+		optimizer.maxMinutes = 5;
+		int maxGeodes = optimizer.optimize();
+		testNumRobots(1, 1, 0, 0);
+		testNumRobotsRequested(0, 0, 0, 0);
+		assertEquals(0, maxGeodes);
+	}
+
+	//	@Test public void testBlueprintOne06() throws Exception {
+	//		optimizer.maxMinutes = 6;
+	//		int maxGeodes = optimizer.optimize();
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne07() throws Exception {
+	//		optimizer.maxMinutes = 7;
+	//		int maxGeodes = optimizer.optimize();
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne08() throws Exception {
+	//		optimizer.maxMinutes = 8;
+	//		int maxGeodes = optimizer.optimize();
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne09() throws Exception {
+	//		optimizer.maxMinutes = 9;
+	//		int maxGeodes = optimizer.optimize();
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne10() throws Exception {
+	//		optimizer.maxMinutes = 10;
+	//		int maxGeodes = optimizer.optimize();
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne11() throws Exception {
+	//		optimizer.maxMinutes = 11;
+	//		int maxGeodes = optimizer.optimize();
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne12() throws Exception {
+	//		optimizer.maxMinutes = 12;
+	//		int maxGeodes = optimizer.optimize();
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne13() throws Exception {
+	//		optimizer.maxMinutes = 13;
+	//		int maxGeodes = optimizer.optimize();
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne14() throws Exception {
+	//		optimizer.maxMinutes = 14;
+	//		int maxGeodes = optimizer.optimize();
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne15() throws Exception {
+	//		optimizer.maxMinutes = 15;
+	//		int maxGeodes = optimizer.optimize();
+	//		assertEquals(0, maxGeodes);
+	//	}
+
+	//	@Test public void testBlueprintOne16() throws Exception {
+	//		optimizer.maxMinutes = 16;
+	//		int maxGeodes = optimizer.optimize();
+	//		assertEquals(0, maxGeodes);
+	//	}
+
+	//	@Test public void testBlueprintOne17() throws Exception {
+	//		optimizer.maxMinutes = 17;
+	//		int maxGeodes = optimizer.optimize();
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne18() throws Exception {
+	//		optimizer.maxMinutes = 18;
+	//		int maxGeodes = optimizer.optimize();
+	//		assertEquals(0, maxGeodes);
+	//	}
+
+		// This is the first geode collected!
+		@Test public void testBlueprintOne19() throws Exception {
+			optimizer.maxMinutes = 19;
+			int maxGeodes = optimizer.optimize();
+			assertEquals(1, maxGeodes);
+		}
+	
+		@Test public void testBlueprintOne20() throws Exception {
+			optimizer.maxMinutes = 20;
+			int maxGeodes = optimizer.optimize();
+			assertEquals(2, maxGeodes);
+		}
+	
+		@Test public void testBlueprintOne21() throws Exception {
+			optimizer.maxMinutes = 21;
+			int maxGeodes = optimizer.optimize();
+			assertEquals(3, maxGeodes);
+		}
+	
+		@Test public void testBlueprintOne22() throws Exception {
+			optimizer.maxMinutes = 22;
+			int maxGeodes = optimizer.optimize();
+			assertEquals(5, maxGeodes);
+		}
+
+		@Test public void testBlueprintOne23() throws Exception {
+			optimizer.maxMinutes = 23;
+			int maxGeodes = optimizer.optimize();
+			assertEquals(7, maxGeodes);
+		}
+
+		@Test public void testBlueprintOne24() throws Exception {
+			optimizer.maxMinutes = 24;
+			int maxGeodes = optimizer.optimize();
+			assertEquals(9, maxGeodes);
+		}
 
 	public void testNumRobots(int numOreRobots, int numClayRobots, int numObsidianRobots, int numGeodeRobots) {
 		if (optimizer.topRobotStrategy == null) {
