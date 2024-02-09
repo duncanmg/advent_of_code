@@ -64,12 +64,14 @@ public class TestOptimizerBlueprintOne {
 		assertEquals(0, maxGeodes);
 	}
 
+	// This is interesting because it chooses to collect extra ore
+	// instead of requested a clay robot. Is that right?
 	@Test public void testBlueprintOne03() throws Exception {
 		optimizer.maxMinutes = 3;
 		int maxGeodes = optimizer.optimize();
-		testMaterialTotals(1, 0, 0, 0);
+		testMaterialTotals(3, 0, 0, 0);
 		testNumRobots(1, 0, 0, 0);
-		testNumRobotsRequested(0, 1, 0, 0);
+		testNumRobotsRequested(0, 0, 0, 0);
 		assertEquals(0, maxGeodes);
 	}
 

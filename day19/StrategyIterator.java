@@ -10,7 +10,7 @@ class StrategyIterator {
 		StrategyIterator obj = new StrategyIterator();
 	}
 
-	// This was much simpler because it ws thought that several robots could be requested at once.
+	// This was much more complex because it was thought that several robots could be requested at once.
 	// This is not the case, so this a simple cycle through the four robot types is sufficient.
 	public StrategyIterator() {
 	}
@@ -26,7 +26,7 @@ class StrategyIterator {
 	private boolean currentGeode = false;
 
 	private boolean nextOre() {
-		return counter == 1;
+		return counter == 3;
 	}
 
 	private boolean nextClay() {
@@ -34,11 +34,11 @@ class StrategyIterator {
 	}
 
 	private boolean nextObsidian() {
-		return counter == 3;
+		return counter == 1;
 	}
 
 	private boolean nextGeode() {
-		return counter == 4;
+		return counter == 0;
 	}
 
 	public boolean hasNext() {

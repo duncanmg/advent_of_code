@@ -183,18 +183,66 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 
 	// Which robots can be built from the raw materials available?
 	public boolean canBuildOreRobot() {
-		return oreTotal >= blueprint.oreRobotCost;
+		if (oreTotal < blueprint.oreRobotCost) {
+			return false;
+		}
+
+		// Ore is used to build clay, obsidian and geode robots.
+		int maxUsage;
+		if (blueprint.clayRobotCost > blueprint.obsidianRobotOreCost) {
+			maxUsage = blueprint.clayRobotCost;
+		} else {
+			maxUsage =  blueprint.obsidianRobotOreCost;
+		}
+		if (maxUsage < blueprint.geodeRobotOreCost) {
+			maxUsage = blueprint.geodeRobotOreCost;
+		}
+
+		maxUsage = maxUsage * (maxMinutes - minute);
+		if (maxUsage < 0) {
+			maxUsage = 0;
+		}
+		if (oreTotal > maxUsage) {
+			logger.log("canBuildOreRobot() Do not build ore robot because oreTotal " + oreTotal + " exceeds maxUsage " + maxUsage);
+			return false;
+		}
+		return true;
 	}
 
 	public boolean canBuildClayRobot() {
-		return oreTotal >= blueprint.clayRobotCost;
+		if (oreTotal < blueprint.clayRobotCost) {
+			return false;
+		}
+		
+		// Clay is used to build obsidian robots.
+		int maxUsage;
+		maxUsage = blueprint.obsidianRobotClayCost * (maxMinutes - minute);
+		if (maxUsage < 0) {
+			maxUsage = 0;
+		}
+		if (clayTotal > maxUsage) {
+			logger.log("canBuildClayRobot() Do not build clay robot because clayTotal " + clayTotal + " exceeds maxUsage " + maxUsage);
+			return false;
+		}
+		return true;
 	}
 
 	public boolean canBuildObsidianRobot() {
-		if (oreTotal >= blueprint.obsidianRobotOreCost && clayTotal >= blueprint.obsidianRobotClayCost) {
-			return true;
+		if (oreTotal < blueprint.obsidianRobotOreCost || clayTotal < blueprint.obsidianRobotClayCost) {
+			return false;
 		}
-		return false;
+		
+		// Obsidian is used to build geode robots.
+		int maxUsage;
+		maxUsage = blueprint.geodeRobotObsidianCost * (maxMinutes - minute);
+		if (maxUsage < 0) {
+			maxUsage = 0;
+		}
+		if (obsidianTotal > maxUsage) {
+			logger.log("canBuildObsidianRobot() Do not build obsidian robot because obsidianTotal " + obsidianTotal + " exceeds maxUsage " + maxUsage);
+			return false;
+		}
+		return true;
 	}
 
 	public boolean canBuildGeodeRobot() {

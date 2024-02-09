@@ -17,6 +17,8 @@ public class TestStrategyIterator {
 
 	StrategyIterator iterator;
 
+	Logger logger = new Logger(this, true);
+
        @Before
                 public void setUp() throws Exception {
                         iterator = new StrategyIterator();
@@ -27,19 +29,24 @@ public class TestStrategyIterator {
         @Test public void testFirstFewValues() throws Exception {
 
                 boolean[] result = iterator.next();
-                testResult(result, false, false, false, false);
-
-                result = iterator.next();
-                testResult(result, true, false, false, false);
-
-                result = iterator.next();
-                testResult(result, false, true, false, false);
+                testResult(result, false, false, false, true);
+		logger.log("01 testFirstFewValues()");
 
                 result = iterator.next();
                 testResult(result, false, false, true, false);
+		logger.log("02 testFirstFewValues()");
 
                 result = iterator.next();
-                testResult(result, false, false, false, true);
+                testResult(result, false, true, false, false);
+		logger.log("03 testFirstFewValues()");
+
+                result = iterator.next();
+                testResult(result, true, false, false, false);
+		logger.log("04 testFirstFewValues()");
+
+                result = iterator.next();
+                testResult(result, false, false, false, false);
+		logger.log("05 testFirstFewValues()");
 
         }
 
@@ -47,7 +54,7 @@ public class TestStrategyIterator {
 
 		assertEquals(true, iterator.hasNext());
 		boolean[] result = multipleNexts(5);
-		testResult(result, false, false, false, true);
+		testResult(result, false, false, false, false);
 
         }
 

@@ -19,7 +19,7 @@ class Optimizer {
 
 	public int maxMinutes = 24;
 
-	public int maxStrategies = 230000;
+	public int maxStrategies = 250000;
 
 	public RobotStrategy topRobotStrategy;
 
@@ -91,6 +91,10 @@ class Optimizer {
 						}
 						logger.log("Adding newRobotStrategy: " + newRobotStrategy);
 						newRobotStrategies.add(newRobotStrategy);
+						if (strategy[3] == true) {
+							logger.log("Can build geode robot. Skip other options");
+							break;
+						}
 					}
 				}
 			}
@@ -111,7 +115,7 @@ class Optimizer {
 		logger.log("maxMinutes: " + this.maxMinutes + " topRobotStrategy: " + topRobotStrategy + ". End Optimizing");
 		int topFew = robotStrategies.size() > 10 ? 10 : robotStrategies.size();
 		for (int i=0; i<topFew; i++) {
-			logger.log(robotStrategies.get(i).toString());
+			System.out.println(robotStrategies.get(i).toString());
 		}
 		logger.log("maxGeodes = " + maxGeodes + " from " 
 				+ topRobotStrategy.numGeodeRobots + " geode robots"

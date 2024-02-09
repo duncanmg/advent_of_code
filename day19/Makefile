@@ -15,7 +15,7 @@ all: TestRunner.class BlueprintFactory.class Blueprint.class RobotStrategy.class
 
 BlueprintFactory.class: BlueprintFactory.java Blueprint.class
 
-Optimizer: Optimizer.java Blueprint.class RobotStrategy.class
+Optimizer: Optimizer.java Blueprint.class RobotStrategy.class StrategyIterator.class
 
 RunBlueprintOptimization.class: RunBlueprintOptimization.java Optimizer.class Blueprint.class RobotStrategy.class
 
