@@ -176,12 +176,12 @@ public class TestRobotStrategy {
 		runNextMinutes(13);
 		logger.log("05 ------ minute: " + strategy.minute);
 		testMaterialTotals(30, 15, 0, 0);
-		testDecisions(false, true, true, false);
+		testDecisions(true, true, true, false);
 
 		// Request obsidian robot.
 		strategy.requestObsidianRobot();
 		testMaterialTotals(27, 1, 0, 0);
-		testDecisions(false, true, false, false);
+		testDecisions(true, true, false, false);
 		testNumRobots(2, 1, 0, 0);
 		testNumRobotsRequested(0, 0, 1, 0);
 
@@ -196,12 +196,12 @@ public class TestRobotStrategy {
 		runNextMinutes(6);
 		logger.log("07 ------ minute: " + strategy.minute);
 		testMaterialTotals(43, 9, 8, 0);
-		testDecisions(false, false, false, true);
+		testDecisions(true, true, false, true);
 
 		// Request geode robot.
 		strategy.requestGeodeRobot();
 		testMaterialTotals(41, 9, 1, 0);
-		testDecisions(false, false, false, false);
+		testDecisions(true, true, false, false);
 		testNumRobots(2, 1, 1, 0);
 		testNumRobotsRequested(0, 0, 0, 1);
 

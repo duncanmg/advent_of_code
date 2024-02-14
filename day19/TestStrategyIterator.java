@@ -21,30 +21,41 @@ public class TestStrategyIterator {
 
        @Before
                 public void setUp() throws Exception {
-                        iterator = new StrategyIterator();
+			RobotStrategy robotStrategy = new RobotStrategy();
+			Blueprint blueprint = new Blueprint(100, new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6)));
+			robotStrategy.blueprint = blueprint;
+                        iterator = new StrategyIterator(robotStrategy);
                         assertEquals(iterator.getClass().getName(), "StrategyIterator");
 
                 }
 
         @Test public void testFirstFewValues() throws Exception {
 
+		// Always "geode" first.
                 boolean[] result = iterator.next();
+		assertEquals(iterator.label, "geode");
                 testResult(result, false, false, false, true);
 		logger.log("01 testFirstFewValues()");
 
+		// Then the best choice, which is "obsidian" in this case.
                 result = iterator.next();
+		logger.log("02a testFirstFewValues() " + iterator.label);
+		assertEquals("obsidian", iterator.label);
                 testResult(result, false, false, true, false);
 		logger.log("02 testFirstFewValues()");
 
                 result = iterator.next();
+		assertEquals(iterator.label, "clay");
                 testResult(result, false, true, false, false);
 		logger.log("03 testFirstFewValues()");
 
                 result = iterator.next();
+		assertEquals(iterator.label, "ore");
                 testResult(result, true, false, false, false);
 		logger.log("04 testFirstFewValues()");
 
                 result = iterator.next();
+		assertEquals(iterator.label, "none");
                 testResult(result, false, false, false, false);
 		logger.log("05 testFirstFewValues()");
 

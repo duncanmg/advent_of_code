@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import java.lang.Math;
+
 class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 
 	public static void main(String[] args) {
@@ -70,36 +72,36 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 	// Sets the progress attribute. Weighted to encourage geode collection.
 	public void calcProgress() throws RuntimeException {
 		progress = 20 * geodeTotal 
-		+ 10 * calcGeodeProgress()
-		+ 5 * calcObsidianProgress()
-		+ calcClayProgress()
-		+ calcOreProgress();
+			+ 10 * calcGeodeProgress()
+			+ 5 * calcObsidianProgress()
+			+ calcClayProgress()
+			+ calcOreProgress();
 	}
 
 	// A float which will start at 0 and gradually increase. A higher number indicates 
 	// more progress.
 	float calcGeodeProgress() {
 		return robotWeighting * numGeodeRobots 
-		+ requestedRobotWeighting * numGeodeRobotsRequested 
-		+ calcBasicGeodeProgress();
+			+ requestedRobotWeighting * numGeodeRobotsRequested 
+			+ calcBasicGeodeProgress();
 	}
 
 	float calcObsidianProgress() {
 		return robotWeighting * numObsidianRobots 
-		+ requestedRobotWeighting * numObsidianRobotsRequested 
-		+ calcBasicObsidianProgress();
+			+ requestedRobotWeighting * numObsidianRobotsRequested 
+			+ calcBasicObsidianProgress();
 	}
 
 	float calcClayProgress() {
 		return robotWeighting * numClayRobots 
-		+ requestedRobotWeighting * numClayRobotsRequested 
-		+ calcBasicClayProgress();
+			+ requestedRobotWeighting * numClayRobotsRequested 
+			+ calcBasicClayProgress();
 	}
 
 	float calcOreProgress() {
 		return robotWeighting * numOreRobots 
-		+ requestedRobotWeighting * numOreRobotsRequested 
-		+ calcBasicOreProgress();
+			+ requestedRobotWeighting * numOreRobotsRequested 
+			+ calcBasicOreProgress();
 	}
 
 	// Return a float between 0 and 1 which provides a measure of when there will be
@@ -150,6 +152,113 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 		return oreProgress;
 	}
 
+	String recommendBestStrategy() {
+
+		boolean[] allFalse = new boolean[]{false, false, false, false};
+		String bestStrategy = "none";
+		float deltaMinutes = 1000000;
+
+		String[] labels = new String[]{ "ore", "clay", "obsidian", "geode"};
+
+		// Try to improve on this. (Reduce it.)
+		float leastMinutes = calcTimeToGeodeRobot(allFalse);
+
+		// Increase number of each robot type in turn.
+		for (int i=0; i<3; i++) {
+			boolean[] strategyToTry = allFalse.clone();
+			strategyToTry[i] = true;
+			logger.log(i + " strategyToTry " + Arrays.toString(strategyToTry));
+			if (canBuildTheseRobots(strategyToTry) == true) {
+				float newMinutes = calcTimeToGeodeRobot(strategyToTry);
+				logger.log(i + " strategyToTry " + Arrays.toString(strategyToTry) + " newMinutes " + newMinutes);
+				// Better/lower?
+				if (newMinutes < leastMinutes) {
+					logger.log(newMinutes + " is less than " + leastMinutes);
+					leastMinutes = newMinutes;
+					bestStrategy = labels[i];
+				}
+			}
+		}
+		logger.log("recommendBestStrategy() returning " + bestStrategy);
+		return bestStrategy;
+	}
+
+	float calcTimeToGeodeRobot(boolean[] robotTypeToIncrease) {
+		return calcTimeToGeodeRobot(robotTypeToIncrease[0], robotTypeToIncrease[1],
+				robotTypeToIncrease[2]);
+	}
+
+	// Return an estimate of the time in minutes to the next geode robot.
+	// Can experiment with adding robot types to see which reduces the time most.
+	public float calcTimeToGeodeRobot(boolean ore, boolean clay, boolean obsidian) {
+
+		int timeToCreateRobot = 1;
+
+		int numOreRobots = this.numOreRobots;
+		if (ore) {
+			numOreRobots++;
+		}
+
+		int numClayRobots = this.numClayRobots;
+		if (clay) {
+			numClayRobots++;
+			logger.log("Trying increasing numClayRobots to " + numClayRobots);
+		}
+
+		int numObsidianRobots = this.numObsidianRobots;
+		if (obsidian) {
+			numObsidianRobots++;
+		}
+
+		float timeToOreRobot = timeToCreateRobot + ((blueprint.oreRobotCost - oreTotal) / numOreRobots);
+		if (timeToOreRobot < 0) {
+			timeToOreRobot = 0;
+		}
+
+		float timeToClayRobot = timeToCreateRobot + ((blueprint.clayRobotCost - oreTotal) / numOreRobots);
+		if (timeToClayRobot < 0) {
+			timeToClayRobot = 0;
+		}
+
+		logger.log("calcTimeToGeodeRobot timeToOreRobot " + timeToOreRobot + " timeToClayRobot " + timeToClayRobot);
+
+		float timeToObsidianRobot = (float) 0.0;
+		float oreTime = (blueprint.obsidianRobotOreCost - oreTotal) / numOreRobots;
+		logger.log("oreTime " + oreTime + " blueprint.obsidianRobotOreCost " + blueprint.obsidianRobotOreCost + " oreTotal " + oreTotal);
+		if (numClayRobots == 0) {
+			float clayTime = timeToClayRobot + blueprint.obsidianRobotClayCost + timeToCreateRobot;
+			timeToObsidianRobot = Math.max(oreTime, clayTime);
+			logger.log("timeToObsidianRobot " + timeToObsidianRobot + " oreTime " + oreTime + " clayTime " + clayTime);
+		}
+		else {
+			float clayTime = timeToCreateRobot + ((blueprint.obsidianRobotClayCost - clayTotal) / numClayRobots);
+			timeToObsidianRobot = Math.max(oreTime, clayTime);
+			logger.log("timeToObsidianRobot " + timeToObsidianRobot + " oreTime " + oreTime + " clayTime " + clayTime);
+		}
+
+		if (timeToObsidianRobot < 0) {
+			timeToObsidianRobot = 0;
+		}
+
+		float timeToGeodeRobot = (float) 0.0;
+		oreTime = (blueprint.geodeRobotOreCost - oreTotal) / numOreRobots;
+		if (numObsidianRobots == 0) {
+			float obsidianTime = timeToObsidianRobot + blueprint.geodeRobotObsidianCost + timeToCreateRobot;
+			timeToGeodeRobot = Math.max(oreTime, obsidianTime);
+		}
+		else {
+			float obsidianTime = timeToCreateRobot + ((blueprint.geodeRobotObsidianCost - obsidianTotal) / numObsidianRobots);
+			timeToGeodeRobot =  Math.max(oreTime, obsidianTime);
+		}
+
+		logger.log("calcTimeToGeodeRobot timeToObsidianRobot " + timeToObsidianRobot + " timeToGeodeRobot " + timeToGeodeRobot);
+		if (timeToGeodeRobot < 0) {
+			timeToGeodeRobot = 0;
+		}
+
+		return timeToGeodeRobot;
+	}
+
 	// Raw materials
 	public int oreTotal = 0;
 
@@ -183,63 +292,24 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 
 	// Which robots can be built from the raw materials available?
 	public boolean canBuildOreRobot() {
+		logger.log("01 canBuildOreRobot oreTotal " + oreTotal + " oreRobotCost " + blueprint.oreRobotCost);
 		if (oreTotal < blueprint.oreRobotCost) {
 			return false;
 		}
-
-		// Ore is used to build clay, obsidian and geode robots.
-		int maxUsage;
-		if (blueprint.clayRobotCost > blueprint.obsidianRobotOreCost) {
-			maxUsage = blueprint.clayRobotCost;
-		} else {
-			maxUsage =  blueprint.obsidianRobotOreCost;
-		}
-		if (maxUsage < blueprint.geodeRobotOreCost) {
-			maxUsage = blueprint.geodeRobotOreCost;
-		}
-
-		maxUsage = maxUsage * (maxMinutes - minute);
-		if (maxUsage < 0) {
-			maxUsage = 0;
-		}
-		if (oreTotal > maxUsage) {
-			logger.log("canBuildOreRobot() Do not build ore robot because oreTotal " + oreTotal + " exceeds maxUsage " + maxUsage);
-			return false;
-		}
 		return true;
+
 	}
 
 	public boolean canBuildClayRobot() {
 		if (oreTotal < blueprint.clayRobotCost) {
 			return false;
 		}
-		
-		// Clay is used to build obsidian robots.
-		int maxUsage;
-		maxUsage = blueprint.obsidianRobotClayCost * (maxMinutes - minute);
-		if (maxUsage < 0) {
-			maxUsage = 0;
-		}
-		if (clayTotal > maxUsage) {
-			logger.log("canBuildClayRobot() Do not build clay robot because clayTotal " + clayTotal + " exceeds maxUsage " + maxUsage);
-			return false;
-		}
 		return true;
+
 	}
 
 	public boolean canBuildObsidianRobot() {
 		if (oreTotal < blueprint.obsidianRobotOreCost || clayTotal < blueprint.obsidianRobotClayCost) {
-			return false;
-		}
-		
-		// Obsidian is used to build geode robots.
-		int maxUsage;
-		maxUsage = blueprint.geodeRobotObsidianCost * (maxMinutes - minute);
-		if (maxUsage < 0) {
-			maxUsage = 0;
-		}
-		if (obsidianTotal > maxUsage) {
-			logger.log("canBuildObsidianRobot() Do not build obsidian robot because obsidianTotal " + obsidianTotal + " exceeds maxUsage " + maxUsage);
 			return false;
 		}
 		return true;

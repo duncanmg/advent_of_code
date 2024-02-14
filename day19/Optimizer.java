@@ -63,18 +63,28 @@ class Optimizer {
 				robotStrategy.nextMinute();
 				// System.out.println(robotStrategy);
 
-				StrategyIterator strategyIterator = new StrategyIterator();
+				StrategyIterator strategyIterator = new StrategyIterator(robotStrategy);
 
 				logger.log("Minute " + minute + " process robotStrategy. " + robotStrategy.toString());
+				int numRobotsRequested = 0;
 				while (strategyIterator.hasNext()) {
-					boolean[] strategy = strategyIterator.next();
 
+					boolean[] strategy = strategyIterator.next();
 					logger.log("Loop. Try strategy " + Arrays.toString(strategy));
 					if (robotStrategy.canBuildTheseRobots(strategy)) {
 						logger.log("Can follow this strategy!");
+
+						String label = strategyIterator.label;
+						// if (label.equals("none") && numRobotsRequested > 0) {
+						if (numRobotsRequested > 0) {
+							logger.log("A robot has been built, so skip the 'none' strategy.");
+							break;
+						}
+
 						RobotStrategy newRobotStrategy = (RobotStrategy) robotStrategy.clone();
 						newRobotStrategy.requestTheseRobots(strategy);
 						newRobotStrategy.collectResources();
+
 						if (newRobotStrategy.geodeTotal > maxGeodes) {
 							maxGeodes = newRobotStrategy.geodeTotal;
 							logger.log("New maxGeodes = " + maxGeodes + " from " 
@@ -89,9 +99,13 @@ class Optimizer {
 									+ " and " + newRobotStrategy.numOreRobotsRequested + " ore robots"
 								  );
 						}
+
 						logger.log("Adding newRobotStrategy: " + newRobotStrategy);
 						newRobotStrategies.add(newRobotStrategy);
-						if (strategy[3] == true) {
+
+						numRobotsRequested++;
+
+						if (label.equals("geode")) {
 							logger.log("Can build geode robot. Skip other options");
 							break;
 						}
