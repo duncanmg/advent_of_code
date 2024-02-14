@@ -71,6 +71,7 @@ class Optimizer {
 
 					String robot = strategyIterator.next();
 					logger.log("Loop. Try robot " + robot);
+
 					if (robotStrategy.canBuildThisRobot(robot)) {
 						logger.log("Can build this robot!");
 
@@ -107,7 +108,7 @@ class Optimizer {
 			}
 			logger.log("End of minute " + minute + ". Got " + newRobotStrategies.size() + " strategies. maxStrategies = " + maxStrategies);
 			if (newRobotStrategies.size() >= maxStrategies) {
-				logger.log("Sort and prune");
+				System.out.println("Sort and prune minute " + minute);
 				Collections.sort(newRobotStrategies, Collections.reverseOrder());
 				List<RobotStrategy> list = newRobotStrategies.subList(0, maxStrategies);
 				newRobotStrategies = new ArrayList<RobotStrategy>(list);

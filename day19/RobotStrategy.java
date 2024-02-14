@@ -547,6 +547,6 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 	}
 
 	public String toString() {
-		return "Minute: " + minute + " Num Robots: " + numOreRobots + " " + numClayRobots + " " + numObsidianRobots + " " + numGeodeRobots + " Num Robots Requested: " + numOreRobotsRequested + " " + numClayRobotsRequested + " " + numObsidianRobotsRequested + " " + numGeodeRobotsRequested + " Totals: " + oreTotal + " " + clayTotal + " " + obsidianTotal + " " + geodeTotal + " Projected: " + projectedGeodeTotal;
+		return "Minute: " + minute + " Num Robots: " + numOreRobots + " " + numClayRobots + " " + numObsidianRobots + " " + numGeodeRobots + " Num Robots Requested: " + numOreRobotsRequested + " " + numClayRobotsRequested + " " + numObsidianRobotsRequested + " " + numGeodeRobotsRequested + " Totals: " + oreTotal + " " + clayTotal + " " + obsidianTotal + " " + geodeTotal + " Projected: " + projectedGeodeTotal + " Progress " + progress;
 	}
 }
