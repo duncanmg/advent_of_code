@@ -317,29 +317,29 @@ public class TestRobotStrategy {
 		testMaterialTotals(7, 8, 3, 2);
 	}
 
-	@Test public void  TestCanBuildTheseRobots() {
+	@Test public void  TestCanBuildThisRobot() throws Exception {
 		strategy = getSimpleStrategy();
 
-		assertEquals(true, strategy.canBuildTheseRobots(false, false, false, false));
+		assertEquals(true, strategy.canBuildThisRobot("none"));
 
 		logger.log("00");
 		setMaterialTotals(1, 0, 0, 0);
-		assertEquals(true, strategy.canBuildTheseRobots(true, false, false, false));
-		assertEquals(true, strategy.canBuildTheseRobots(false, true, false, false));
-		assertEquals(false, strategy.canBuildTheseRobots(true, true, false, false));
+		assertEquals(true, strategy.canBuildThisRobot("ore"));
+		assertEquals(true, strategy.canBuildThisRobot("clay"));
+		assertEquals(false, strategy.canBuildThisRobot("obsidian"));
 
 		logger.log("01");
 		setMaterialTotals(1, 1, 0, 0);
-		assertEquals(true, strategy.canBuildTheseRobots(true, false, false, false));
-		assertEquals(true, strategy.canBuildTheseRobots(false, false, true, false));
-		assertEquals(false, strategy.canBuildTheseRobots(true, false, true, false));
-		assertEquals(false, strategy.canBuildTheseRobots(false, false, false, true));
+		assertEquals(true, strategy.canBuildThisRobot("ore"));
+		assertEquals(true, strategy.canBuildThisRobot("clay"));
+		assertEquals(true, strategy.canBuildThisRobot("obsidian"));
+		assertEquals(false, strategy.canBuildThisRobot("geode"));
 
 		logger.log("02");
 		setMaterialTotals(1, 0, 1, 0);
-		assertEquals(true, strategy.canBuildTheseRobots(true, false, false, false));
-		assertEquals(true, strategy.canBuildTheseRobots(false, false, false, true));
-		assertEquals(false, strategy.canBuildTheseRobots(true, false, false, true));
+		assertEquals(true, strategy.canBuildThisRobot("ore"));
+		assertEquals(true, strategy.canBuildThisRobot("geode"));
+		assertEquals(false, strategy.canBuildThisRobot("obsidian"));
 	}
 
 	@Test

@@ -23,7 +23,7 @@ class Optimizer {
 
 	public RobotStrategy topRobotStrategy;
 
-	public int optimize() {
+	public int optimize() throws Exception {
 		logger.log("Num blueprints: " + this.blueprints.size() + ".  maxMinutes: " + this.maxMinutes + ". Optimizing...");
 		int totalQuality = 0;
 		for (Blueprint blueprint : blueprints) {
@@ -36,7 +36,7 @@ class Optimizer {
 		return totalQuality;
 	}
 
-	public int optimizeBlueprint(Blueprint blueprint) {
+	public int optimizeBlueprint(Blueprint blueprint) throws Exception {
 		int maxGeodes = 0;
 
 		if (maxMinutes <= 0) {
@@ -69,20 +69,13 @@ class Optimizer {
 				int numRobotsRequested = 0;
 				while (strategyIterator.hasNext()) {
 
-					boolean[] strategy = strategyIterator.next();
-					logger.log("Loop. Try strategy " + Arrays.toString(strategy));
-					if (robotStrategy.canBuildTheseRobots(strategy)) {
-						logger.log("Can follow this strategy!");
-
-						String label = strategyIterator.label;
-						// if (label.equals("none") && numRobotsRequested > 0) {
-						if (numRobotsRequested > 0) {
-							logger.log("A robot has been built, so skip the 'none' strategy.");
-							break;
-						}
+					String robot = strategyIterator.next();
+					logger.log("Loop. Try robot " + robot);
+					if (robotStrategy.canBuildThisRobot(robot)) {
+						logger.log("Can build this robot!");
 
 						RobotStrategy newRobotStrategy = (RobotStrategy) robotStrategy.clone();
-						newRobotStrategy.requestTheseRobots(strategy);
+						newRobotStrategy.requestThisRobot(robot);
 						newRobotStrategy.collectResources();
 
 						if (newRobotStrategy.geodeTotal > maxGeodes) {
@@ -105,7 +98,7 @@ class Optimizer {
 
 						numRobotsRequested++;
 
-						if (label.equals("geode")) {
+						if (robot.equals("geode")) {
 							logger.log("Can build geode robot. Skip other options");
 							break;
 						}

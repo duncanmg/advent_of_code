@@ -6,11 +6,11 @@ import java.util.regex.Matcher;
 
 class RunBlueprintOptimization {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		RunBlueprintOptimization obj = new RunBlueprintOptimization(args);
 	}
 
-	public RunBlueprintOptimization(String[] args) {
+	public RunBlueprintOptimization(String[] args) throws Exception {
 		ArgumentProcessor argProcessor = new ArgumentProcessor(args);
 		HashMap<String, String> argMap = argProcessor.process();
 		String dataFile = argMap.get("dataFile");

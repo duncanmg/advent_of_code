@@ -152,7 +152,7 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 		return oreProgress;
 	}
 
-	String recommendBestStrategy() {
+	String recommendBestStrategy() throws Exception {
 
 		boolean[] allFalse = new boolean[]{false, false, false, false};
 		String bestStrategy = "none";
@@ -168,7 +168,7 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 			boolean[] strategyToTry = allFalse.clone();
 			strategyToTry[i] = true;
 			logger.log(i + " strategyToTry " + Arrays.toString(strategyToTry));
-			if (canBuildTheseRobots(strategyToTry) == true) {
+			if (canBuildThisRobot(labels[i]) == true) {
 				float newMinutes = calcTimeToGeodeRobot(strategyToTry);
 				logger.log(i + " strategyToTry " + Arrays.toString(strategyToTry) + " newMinutes " + newMinutes);
 				// Better/lower?
@@ -322,48 +322,26 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 		return false;
 	}
 
-	public boolean canBuildTheseRobots(boolean ore, boolean clay, boolean obsidian, boolean geode) {
-		// Operate on the clone so that we don't change the original inventory.
-		RobotStrategy clone = (RobotStrategy) this.clone();
-		if (ore) {
-			if (clone.canBuildOreRobot()) {
-				clone.requestOreRobot();
-			} else {
-				return false;
-			}
+	public boolean canBuildThisRobot(String robot) throws Exception {
+
+		switch(robot) {
+			case "ore":
+				return this.canBuildOreRobot();
+			case "clay":
+				return this.canBuildClayRobot();
+			case "obsidian":
+				return this.canBuildObsidianRobot();
+			case "geode":
+				return this.canBuildGeodeRobot();
+			case "none":
+				return true;
 		}
-		if (clay) {
-			if (clone.canBuildClayRobot()) {
-				clone.requestClayRobot();
-			} else {
-				return false;
-			}
-		}
-		if (obsidian) {
-			if (clone.canBuildObsidianRobot()) {
-				clone.requestObsidianRobot();
-			} else {
-				return false;
-			}
-		}
-		if (geode) {
-			logTotals();
-			if (clone.canBuildGeodeRobot()) {
-				clone.requestGeodeRobot();
-			} else {
-				return false;
-			}
-		}
-		return true;
+		throw new Exception("Unknown robot: " + robot);
 	}
 
 	public void logTotals() {
 		logger.log("Minute: " + minute + " Num Robots: " + numOreRobots + " " + numClayRobots + " " + numObsidianRobots + " " + numGeodeRobots);
 		logger.log("Minute: " + minute + " Totals: " + oreTotal + " " + clayTotal + " " + obsidianTotal + " " + geodeTotal);
-	}
-
-	public boolean canBuildTheseRobots(boolean[] requested) {
-		return canBuildTheseRobots(requested[0], requested[1], requested[2], requested[3]);
 	}
 
 	// Request robots to be built
@@ -401,23 +379,21 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 		obsidianTotal -= blueprint.geodeRobotObsidianCost;
 	}
 
-	public void requestTheseRobots(boolean ore, boolean clay, boolean obsidian, boolean geode) throws RuntimeException {
-		if (ore) {
-			requestOreRobot();
+	public void requestThisRobot(String robot) throws RuntimeException {
+		switch(robot) {
+			case "ore":
+				requestOreRobot();
+				break;
+			case "clay":
+				requestClayRobot();
+				break;
+			case "obsidian":
+				requestObsidianRobot();
+				break;
+			case "geode":
+				requestGeodeRobot();
+				break;
 		}
-		if (clay) {
-			requestClayRobot();
-		}
-		if (obsidian) {
-			requestObsidianRobot();
-		}
-		if (geode) {
-			requestGeodeRobot();
-		}
-	}
-
-	public void requestTheseRobots(boolean[] requested) {
-		requestTheseRobots(requested[0], requested[1], requested[2], requested[3]);
 	}
 
 	// Shallow clone

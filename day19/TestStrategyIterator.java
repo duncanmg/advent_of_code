@@ -32,31 +32,25 @@ public class TestStrategyIterator {
         @Test public void testFirstFewValues() throws Exception {
 
 		// Always "geode" first.
-                boolean[] result = iterator.next();
-		assertEquals(iterator.label, "geode");
-                testResult(result, false, false, false, true);
+                String result = iterator.next();
+		assertEquals(result, "geode");
 		logger.log("01 testFirstFewValues()");
 
 		// Then the best choice, which is "obsidian" in this case.
                 result = iterator.next();
-		logger.log("02a testFirstFewValues() " + iterator.label);
-		assertEquals("obsidian", iterator.label);
-                testResult(result, false, false, true, false);
+		assertEquals("obsidian", result);
 		logger.log("02 testFirstFewValues()");
 
                 result = iterator.next();
-		assertEquals(iterator.label, "clay");
-                testResult(result, false, true, false, false);
+		assertEquals(result, "clay");
 		logger.log("03 testFirstFewValues()");
 
                 result = iterator.next();
-		assertEquals(iterator.label, "ore");
-                testResult(result, true, false, false, false);
+		assertEquals(result, "ore");
 		logger.log("04 testFirstFewValues()");
 
                 result = iterator.next();
-		assertEquals(iterator.label, "none");
-                testResult(result, false, false, false, false);
+		assertEquals(result, "none");
 		logger.log("05 testFirstFewValues()");
 
         }
@@ -64,24 +58,17 @@ public class TestStrategyIterator {
         @Test public void testKeyValues() throws Exception {
 
 		assertEquals(true, iterator.hasNext());
-		boolean[] result = multipleNexts(5);
-		testResult(result, false, false, false, false);
+		String result = multipleNexts(5);
+		assertEquals(result, "none");
 
         }
 
-	public boolean[] multipleNexts(int num) {
-		boolean[] result = new boolean[4];
+	public String multipleNexts(int num) {
+		String result = new String("");
 		for (int i = 0; i < num; i++) {
 			result = iterator.next();
 		}
 		return result;
 	}
 
-	public void testResult(boolean[] result, boolean ore, boolean clay, boolean obsidian, boolean geode) {
-		assertEquals(ore, result[0]);
-		assertEquals(clay, result[1]);
-		assertEquals(obsidian, result[2]);
-		assertEquals(geode, result[3]);
-		
-	}
 }
