@@ -12,7 +12,6 @@ class StrategyIterator {
 
 	public StrategyIterator(RobotStrategy strategy) {
 		robotStrategy = strategy;
-		recommendedStrategyLabel = robotStrategy.recommendBestStrategy();
 	}
 
 	RobotStrategy robotStrategy;

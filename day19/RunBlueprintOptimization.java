@@ -14,6 +14,15 @@ class RunBlueprintOptimization {
 		ArgumentProcessor argProcessor = new ArgumentProcessor(args);
 		HashMap<String, String> argMap = argProcessor.process();
 		String dataFile = argMap.get("dataFile");
+
+		Optimizer optimizer = new Optimizer();
+
+		int maxMinutes = 0;
+		if (argMap.get("maxMinutes") != null) {
+			maxMinutes = Integer.parseInt(argMap.get("maxMinutes"));
+			optimizer.maxMinutes = maxMinutes;
+		}
+
 		if (dataFile != null) {
 			BlueprintFactory blueprintFactory = new BlueprintFactory(dataFile);
 			blueprintFactory.parseDataFile();
@@ -26,7 +35,6 @@ class RunBlueprintOptimization {
 				Blueprint blueprint = new Blueprint(blueprintId, values);
 				blueprints.add(blueprint);
 			}
-			Optimizer optimizer = new Optimizer();
 			optimizer.blueprints = blueprints;
 			int totalQuality = optimizer.optimize();
 			logger.log("totalQuality: " + totalQuality);
