@@ -227,6 +227,20 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 		return false;
 	}
 
+	boolean hasReachedRecommendedStockLimit(String robot) {
+		switch(robot) {
+			case "ore":
+				return oreTotal >= blueprint.recommendedOreStock ? true : false;
+			case "clay":
+				return clayTotal >= blueprint.recommendedClayStock ? true : false;
+			case "obsidian":
+				return obsidianTotal >= blueprint.recommendedObsidianStock ? true : false;
+			case "geode":
+				return false;
+		}
+		return false;
+	}
+
 	// Shallow clone
 	@Override
 		public Object clone() {
