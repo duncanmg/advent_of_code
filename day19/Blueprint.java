@@ -24,6 +24,19 @@ class Blueprint {
 		obsidianRobotClayCost = args.get(3);
 		geodeRobotOreCost = args.get(4);
 		geodeRobotObsidianCost = args.get(5);
+
+//		recommendedOreStock = Math.max(Math.max(oreRobotCost, clayRobotCost), 
+//			Math.max(obsidianRobotOreCost, geodeRobotOreCost));
+
+		int safetyFactor = 2;
+
+		recommendedOreStock = (oreRobotCost + obsidianRobotOreCost + geodeRobotOreCost) * safetyFactor;
+		recommendedClayStock = obsidianRobotClayCost * safetyFactor;
+		recommendedObsidianStock = geodeRobotObsidianCost * safetyFactor;
+
+		// maxClayRobots = obsidianRobotClayCost;
+		// maxObsidianRobots = geodeRobotObsidianCost;
+		// maxOreRobots = oreRobotCost + clayRobotCost + geodeRobotObsidianCost;
 	}
 
 	public final int id;
@@ -33,5 +46,14 @@ class Blueprint {
 	public final int obsidianRobotClayCost;
 	public final int geodeRobotOreCost;
 	public final int geodeRobotObsidianCost;
+
+	// Maximum recommended levels of stock. Don't create another robot of the given type if level exceeded.
+	// Can never have too many geode robots.
+
+	public final int recommendedOreStock;
+
+	public final int recommendedClayStock;
+
+	public final int recommendedObsidianStock;
 
 }
