@@ -28,21 +28,18 @@ class Optimizer {
 		logger.log("Num blueprints: " + this.blueprints.size() + ".  maxMinutes: " + this.maxMinutes + ". Optimizing...");
 		int totalQuality = 0;
 		for (Blueprint blueprint : blueprints) {
-			int geodes = optimizeBlueprint(blueprint);
-			int quality = blueprint.id * geodes;
-			System.out.println("Blueprint " + blueprint.id + " has " + geodes + " geodes and has quality " + quality);
+			RobotStrategy bestRobotStrategy = optimizeBlueprint(blueprint);
+			int quality = blueprint.id * bestRobotStrategy.projectedGeodeTotal;
+			System.out.println("Blueprint " + blueprint.id + " has " + bestRobotStrategy.projectedGeodeTotal + " geodes and has quality " + quality);
+			System.out.println("bestRobotStrategy " + bestRobotStrategy);
 			totalQuality += quality;
 		}
 		logger.log("maxMinutes: " + this.maxMinutes + ". End Optimizing");
 		return totalQuality;
 	}
 
-	public int optimizeBlueprint(Blueprint blueprint) throws Exception {
+	public RobotStrategy optimizeBlueprint(Blueprint blueprint) throws Exception {
 		int maxGeodes = 0;
-
-		if (maxMinutes <= 0) {
-			return maxGeodes;
-		}
 
 		ArrayList<RobotStrategy> robotStrategies = new ArrayList<RobotStrategy>();
 		RobotStrategy firstRobotStrategy = new RobotStrategy();
@@ -51,56 +48,74 @@ class Optimizer {
 		// firstRobotStrategy.minute = 1;
 		// firstRobotStrategy.nextMinute();
 
-		maxGeodes = depthFirstTraversal(firstRobotStrategy);
+		if (maxMinutes <= 0) {
+			return firstRobotStrategy;
+		}
 
-		return maxGeodes;
+		RobotStrategy bestRobotStrategy = depthFirstTraversal(firstRobotStrategy);
+
+		logger.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + bestRobotStrategy);
+		return bestRobotStrategy;
 	}
 
-	public int depthFirstTraversal(RobotStrategy clonedRobotStrategy) throws Exception {
+	public RobotStrategy depthFirstTraversal(RobotStrategy clonedRobotStrategy) throws Exception {
 		int maxGeodes = 0;
 
 		logger.log("Start depthFirstTraversal " + clonedRobotStrategy);
 		clonedRobotStrategy.nextMinute();
 		if (clonedRobotStrategy.minute > maxMinutes) {
-			return clonedRobotStrategy.geodeTotal;
+			return clonedRobotStrategy;
 		}
+
+//		if (clonedRobotStrategy.minute > 10) {
+//		Calculator calculator = new Calculator(clonedRobotStrategy);
+//			if (!calculator.continueSearching()) {
+//				return clonedRobotStrategy;
+//			}
+//		}
 
 		logger.log("01 XXXXXXXXXX");
 		StrategyIterator strategyIterator = new StrategyIterator(clonedRobotStrategy);
 
 		int numRobotsRequested = 0;
+		RobotStrategy bestRobotStrategy = clonedRobotStrategy;
 		while (strategyIterator.hasNext()) {
 			String robot = strategyIterator.next();
 			logger.log("02 XXXXXXXXXX " + robot);
 
 			if (numRobotsRequested > 0) {
-				logger.log("Skip none because numRobotsRequested is " + numRobotsRequested);
+				logger.log("Break because numRobotsRequested is " + numRobotsRequested);
 				break;
 			}
 
 			if (clonedRobotStrategy.canBuildThisRobot(robot)) {
 
+				if (clonedRobotStrategy.hasReachedRecommendedStockLimit(robot)) {
+					logger.log("Continue because hasReachedRecommendedStockLimit is true for " + robot);
+					continue;
+				}
+
 				logger.log("03 XXXXXXXXXX canBuildThisRobot");
-//				if (!clonedRobotStrategy.hasTimeToMakeFirstGeodeRobot()) {
-//					continue;
-//				}
-//				logger.log("04 XXXXXXXXXX hasTimeToMakeFirstGeodeRobot");
 
 				RobotStrategy newRobotStrategy = (RobotStrategy) clonedRobotStrategy.clone();
 				newRobotStrategy.requestThisRobot(robot);
 				newRobotStrategy.collectResources();
 
-				int numGeodes = depthFirstTraversal((RobotStrategy) newRobotStrategy.clone());
+				RobotStrategy returnedRobotStrategy = depthFirstTraversal((RobotStrategy) newRobotStrategy.clone());
 
-				if (numGeodes > maxGeodes) {
-					maxGeodes = numGeodes;
+				if (returnedRobotStrategy.geodeTotal > maxGeodes) {
+					maxGeodes = returnedRobotStrategy.geodeTotal;
+					bestRobotStrategy = returnedRobotStrategy;
 				}
-//				if (robot.equals("geode")) {
-//					numRobotsRequested++;
-//				}
+				if (robot.equals("geode")) {
+					numRobotsRequested++;
+				}
 			}
 		}
-		return maxGeodes;
+		// This is of limited use. It will be the first RobotStrategy found which has the maximum number of geodes.
+		// So the geode total will be right, but the other data does not have much meaning. For example, if the
+		// maximum geode total is genuinely zero then the original RobotStrategy from minute 1 will be returned.
+		return bestRobotStrategy;
 	}
 
 }
