@@ -25,9 +25,6 @@ class Blueprint {
 		geodeRobotOreCost = args.get(4);
 		geodeRobotObsidianCost = args.get(5);
 
-//		recommendedOreStock = Math.max(Math.max(oreRobotCost, clayRobotCost), 
-//			Math.max(obsidianRobotOreCost, geodeRobotOreCost));
-
 		int safetyFactor = 2;
 
 		recommendedOreStock = (oreRobotCost + obsidianRobotOreCost + geodeRobotOreCost) * safetyFactor;

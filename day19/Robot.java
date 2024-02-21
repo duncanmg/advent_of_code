@@ -66,6 +66,23 @@ class Robot implements Cloneable, Comparable<Robot>{
 		logger.log("requestRobot() Not implemented");
 	}
 
+	// Geode and None do not have a maximum. Others must override this.
+        public boolean hasMaxRobots() {
+                return false;
+        }
+
+	// Geode and None do not have a maximum. Others must override this.
+        public boolean hasMaxStock() {
+                return false;
+        }
+
+	// Stock required to create 1 robot per minute for the remaining time.
+	public int calcMaxStock(int robotCost) {
+		int shortfallPerMinute = robotCost - numRobots;
+		int minutesRemaining = maxMinutes - minute;
+		return shortfallPerMinute * minutesRemaining;
+	}
+
 	// Deepish clone
 	@Override
 		public Object clone() {

@@ -29,4 +29,13 @@ class OreRobot extends Robot {
 		total -= blueprint.oreRobotCost;
 	}
 
+	public boolean hasMaxRobots() {
+		return numRobots >= blueprint.maxOreRobots;
+	}
+
+        public boolean hasMaxStock() {
+                return total >= calcMaxStock(blueprint.oreRobotCost
+			+ blueprint.obsidianRobotOreCost + blueprint.geodeRobotOreCost);
+        }
+
 }

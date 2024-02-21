@@ -1,8 +1,8 @@
 import java.io.IOException;
 import java.util.*;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+import java.util.concurrent.*; 
+import java.util.Date;
 
 class Optimizer {
 
@@ -27,10 +27,19 @@ class Optimizer {
 	public int optimize() throws Exception {
 		logger.log("Num blueprints: " + this.blueprints.size() + ".  maxMinutes: " + this.maxMinutes + ". Optimizing...");
 		int totalQuality = 0;
+		TimeUnit time = TimeUnit.MILLISECONDS;
 		for (Blueprint blueprint : blueprints) {
+
+			Date startDate = new Date();
+
 			RobotStrategy bestRobotStrategy = optimizeBlueprint(blueprint);
 			int quality = blueprint.id * bestRobotStrategy.robots.get("geode").total;
-			System.out.println("Blueprint " + blueprint.id + " has " + bestRobotStrategy.robots.get("geode").total + " geodes and has quality " + quality);
+
+			Date endDate = new Date();
+			long durationInMilliseconds = endDate.getTime() - startDate.getTime();
+			long durationInMinutes = time.convert(durationInMilliseconds,  TimeUnit.MINUTES);
+
+			System.out.println("Blueprint " + blueprint.id + " took " + durationInMinutes + ". It has " + bestRobotStrategy.robots.get("geode").total + " geodes and has quality " + quality);
 			System.out.println("bestRobotStrategy " + bestRobotStrategy);
 			totalQuality += quality;
 		}
@@ -44,8 +53,6 @@ class Optimizer {
 		ArrayList<RobotStrategy> robotStrategies = new ArrayList<RobotStrategy>();
 		RobotStrategy firstRobotStrategy = new RobotStrategy(blueprint);
 		firstRobotStrategy.maxMinutes = maxMinutes;
-		// firstRobotStrategy.minute = 1;
-		// firstRobotStrategy.nextMinute();
 
 		if (maxMinutes <= 0) {
 			return firstRobotStrategy;
@@ -87,6 +94,15 @@ class Optimizer {
 			if (clonedRobotStrategy.canBuildThisRobot(robot)) {
 
 				logger.log("canBuildThisRobot " + robot + "!!!!");
+
+				Robot current = clonedRobotStrategy.robots.get(robot);
+				if (current.hasMaxRobots()) {
+					continue;
+				}
+
+				if (current.hasMaxStock()) {
+					continue;
+				}
 
 				// logger.log("clonedRobotStrategy: " + clonedRobotStrategy);
 				RobotStrategy newRobotStrategy = (RobotStrategy) clonedRobotStrategy.clone();

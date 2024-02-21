@@ -30,5 +30,12 @@ class ClayRobot extends Robot {
 		oreRobot.total -= blueprint.clayRobotCost;
 	}
 
+	public boolean hasMaxRobots() {
+		return numRobots >= blueprint.maxClayRobots;
+	}
+
+        public boolean hasMaxStock() {
+                return total >= calcMaxStock(blueprint.obsidianRobotClayCost);
+        }
 
 }
