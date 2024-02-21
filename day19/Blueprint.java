@@ -34,9 +34,9 @@ class Blueprint {
 		recommendedClayStock = obsidianRobotClayCost * safetyFactor;
 		recommendedObsidianStock = geodeRobotObsidianCost * safetyFactor;
 
-		// maxClayRobots = obsidianRobotClayCost;
-		// maxObsidianRobots = geodeRobotObsidianCost;
-		// maxOreRobots = oreRobotCost + clayRobotCost + geodeRobotObsidianCost;
+		maxClayRobots = obsidianRobotClayCost;
+		maxObsidianRobots = geodeRobotObsidianCost;
+		maxOreRobots = oreRobotCost + clayRobotCost + geodeRobotObsidianCost;
 	}
 
 	public final int id;
@@ -47,8 +47,10 @@ class Blueprint {
 	public final int geodeRobotOreCost;
 	public final int geodeRobotObsidianCost;
 
-	// Maximum recommended levels of stock. Don't create another robot of the given type if level exceeded.
 	// Can never have too many geode robots.
+
+	// Minimum recommended levels of stock. Don't create another robot of the given type if level exceeded.
+	// Really? Not sure about that advice.
 
 	public final int recommendedOreStock;
 
@@ -56,4 +58,12 @@ class Blueprint {
 
 	public final int recommendedObsidianStock;
 
+	// The maximum number of robots means it's possible to create a robot of any type
+	// every second. Can only ever create one robot per second, so don't need any more.
+
+	public final int maxOreRobots;
+
+	public final int maxClayRobots;
+
+	public final int maxObsidianRobots;
 }

@@ -29,8 +29,8 @@ class Optimizer {
 		int totalQuality = 0;
 		for (Blueprint blueprint : blueprints) {
 			RobotStrategy bestRobotStrategy = optimizeBlueprint(blueprint);
-			int quality = blueprint.id * bestRobotStrategy.projectedGeodeTotal;
-			System.out.println("Blueprint " + blueprint.id + " has " + bestRobotStrategy.projectedGeodeTotal + " geodes and has quality " + quality);
+			int quality = blueprint.id * bestRobotStrategy.robots.get("geode").total;
+			System.out.println("Blueprint " + blueprint.id + " has " + bestRobotStrategy.robots.get("geode").total + " geodes and has quality " + quality);
 			System.out.println("bestRobotStrategy " + bestRobotStrategy);
 			totalQuality += quality;
 		}
@@ -42,8 +42,7 @@ class Optimizer {
 		int maxGeodes = 0;
 
 		ArrayList<RobotStrategy> robotStrategies = new ArrayList<RobotStrategy>();
-		RobotStrategy firstRobotStrategy = new RobotStrategy();
-		firstRobotStrategy.blueprint = blueprint;
+		RobotStrategy firstRobotStrategy = new RobotStrategy(blueprint);
 		firstRobotStrategy.maxMinutes = maxMinutes;
 		// firstRobotStrategy.minute = 1;
 		// firstRobotStrategy.nextMinute();
@@ -54,18 +53,19 @@ class Optimizer {
 
 		RobotStrategy bestRobotStrategy = depthFirstTraversal(firstRobotStrategy);
 
-		logger.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + bestRobotStrategy);
 		return bestRobotStrategy;
 	}
 
 	public RobotStrategy depthFirstTraversal(RobotStrategy clonedRobotStrategy) throws Exception {
 		int maxGeodes = 0;
 
-		logger.log("Start depthFirstTraversal " + clonedRobotStrategy);
-		clonedRobotStrategy.nextMinute();
-		if (clonedRobotStrategy.minute > maxMinutes) {
+		logger.log("End minute " + clonedRobotStrategy.minute + ". depthFirstTraversal " + clonedRobotStrategy);
+		if (clonedRobotStrategy.minute >= maxMinutes) {
+			logger.log("Stop depthFirstTraversal. Time exceeded. " + clonedRobotStrategy.minute + " >= " + maxMinutes);
 			return clonedRobotStrategy;
 		}
+		clonedRobotStrategy.nextMinute();
+		logger.log("Start minute " + clonedRobotStrategy.minute + ". depthFirstTraversal " + clonedRobotStrategy);
 
 //		if (clonedRobotStrategy.minute > 10) {
 //		Calculator calculator = new Calculator(clonedRobotStrategy);
@@ -74,14 +74,10 @@ class Optimizer {
 //			}
 //		}
 
-		logger.log("01 XXXXXXXXXX");
-		StrategyIterator strategyIterator = new StrategyIterator(clonedRobotStrategy);
-
 		int numRobotsRequested = 0;
 		RobotStrategy bestRobotStrategy = clonedRobotStrategy;
-		while (strategyIterator.hasNext()) {
-			String robot = strategyIterator.next();
-			logger.log("02 XXXXXXXXXX " + robot);
+		for (String robot : clonedRobotStrategy.robotList) {
+			logger.log("Checking " + robot);
 
 			if (numRobotsRequested > 0) {
 				logger.log("Break because numRobotsRequested is " + numRobotsRequested);
@@ -90,23 +86,20 @@ class Optimizer {
 
 			if (clonedRobotStrategy.canBuildThisRobot(robot)) {
 
-				if (clonedRobotStrategy.hasReachedRecommendedStockLimit(robot)) {
-					logger.log("Continue because hasReachedRecommendedStockLimit is true for " + robot);
-					continue;
-				}
+				logger.log("canBuildThisRobot " + robot + "!!!!");
 
-				logger.log("03 XXXXXXXXXX canBuildThisRobot");
-
+				// logger.log("clonedRobotStrategy: " + clonedRobotStrategy);
 				RobotStrategy newRobotStrategy = (RobotStrategy) clonedRobotStrategy.clone();
 				newRobotStrategy.requestThisRobot(robot);
 				newRobotStrategy.collectResources();
 
 				RobotStrategy returnedRobotStrategy = depthFirstTraversal((RobotStrategy) newRobotStrategy.clone());
 
-				if (returnedRobotStrategy.geodeTotal > maxGeodes) {
-					maxGeodes = returnedRobotStrategy.geodeTotal;
+				if (returnedRobotStrategy.robots.get("geode").total > maxGeodes) {
+					maxGeodes = returnedRobotStrategy.robots.get("geode").total;
 					bestRobotStrategy = returnedRobotStrategy;
 				}
+
 				if (robot.equals("geode")) {
 					numRobotsRequested++;
 				}
