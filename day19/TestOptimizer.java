@@ -10,7 +10,7 @@ import java.util.*;
 import org.junit.Before;
 
 // This tests the optimizer using one very simple blueprint.
-public class TestOptimizer {
+public class TestOptimizer extends TestOptimizerBase {
 
 	public static void main(String[] args) throws Exception {
 		TestOptimizer obj = new TestOptimizer();
@@ -30,12 +30,12 @@ public class TestOptimizer {
 
 	Logger logger = new Logger(this, true);
 
-//	@Test public void testBlueprint1() throws Exception {
-//
-//		int maxGeodes = runSimpleBlueprint(0);
-//		assertEquals(0, maxGeodes);
-//	}
-//
+	//	@Test public void testBlueprint1() throws Exception {
+	//
+	//		int maxGeodes = runSimpleBlueprint(0);
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
 	@Test public void testSimple1min() throws Exception {
 
 		int maxGeodes = runSimpleBlueprint(1);
@@ -109,7 +109,7 @@ public class TestOptimizer {
 	// Each geode robot costs 1 ore and 1 obsidian.
 
 	// The simple strategy produces one geode after7 minutes.
-	public int runSimpleBlueprint(int minutes) {
+	public int runSimpleBlueprint(int minutes) throws Exception {
 		Blueprint bp = new Blueprint(1, new ArrayList<Integer>(Arrays.asList(1, 1, 1, 1, 1, 1)));
 		blueprints.add(bp);
 		optimizer.blueprints = blueprints;
@@ -117,19 +117,19 @@ public class TestOptimizer {
 		return optimizer.optimize();
 	}
 
-       public void testNumRobots(int numOreRobots, int numClayRobots, int numObsidianRobots, int numGeodeRobots) {
-                if (optimizer.topRobotStrategy == null) {
-                } else {
-                        logger.log("optimizer.topRobotStrategy is not null");
-                        RobotStrategy topRobotStrategy = optimizer.topRobotStrategy;
-                        logger.log("topRobotStrategy.numOreRobots = " + topRobotStrategy.numOreRobots);
-                        assertEquals(numOreRobots, topRobotStrategy.numOreRobots);
-                        logger.log("topRobotStrategy.numClayRobots = " + topRobotStrategy.numClayRobots);
-                        assertEquals(numClayRobots, topRobotStrategy.numClayRobots);
-                        logger.log("topRobotStrategy.numObsidianRobots = " + topRobotStrategy.numObsidianRobots);
-                        assertEquals(numObsidianRobots, topRobotStrategy.numObsidianRobots);
-                        logger.log("topRobotStrategy.numGeodeRobots = " + topRobotStrategy.numGeodeRobots);
-                        assertEquals(numGeodeRobots, topRobotStrategy.numGeodeRobots);
-                }
-        }
+	public void testNumRobots(int numOreRobots, int numClayRobots, int numObsidianRobots, int numGeodeRobots) {
+		HashMap<String, Robot> robots = optimizer.bestRobotStrategies.get(0).robots;
+
+		logger.log("robots.get(\"ore\").numRobots = " + robots.get("ore").numRobots);
+		assertEquals(numOreRobots, robots.get("ore").numRobots);
+
+		logger.log("robots.get(\"clay\").numRobots = " + robots.get("clay").numRobots);
+		assertEquals(numClayRobots, robots.get("clay").numRobots);
+
+		logger.log("robots.get(\"obsidian\").numRobots = " + robots.get("obsidian").numRobots);
+		assertEquals(numObsidianRobots, robots.get("obsidian").numRobots);
+
+		logger.log("robots.get(\"geode\").numRobots = " + robots.get("geode").numRobots);
+		assertEquals(numGeodeRobots, robots.get("geode").numRobots);
+	}
 }

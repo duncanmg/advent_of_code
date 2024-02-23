@@ -10,13 +10,15 @@ import java.util.*;
 // import org.junit.jupiter.api.BeforeEach;
 import org.junit.Before;
 
-public class TestRobotStrategyBlueprintOne {
+public class TestCalculator {
 
 	public static void main(String[] args) throws Exception {
-		TestRobotStrategyBlueprintOne obj = new TestRobotStrategyBlueprintOne();
+		TestCalculator obj = new TestCalculator();
 	}
 
 	RobotStrategy strategy;
+
+	Calculator calculator;
 
 	Logger logger = new Logger(this, true);
 
@@ -40,6 +42,12 @@ public class TestRobotStrategyBlueprintOne {
 		testMaterialTotals(0, 0, 0, 0);
 		testNumRobots(1, 0, 0, 0);
 		testNumRobotsRequested(0, 0, 0, 0);
+
+		calculator = new Calculator(strategy);
+		assertEquals(5, calculator.timeToOreRobot(), 0.001);
+		assertEquals(3, calculator.timeToClayRobot(), 0.001);
+		assertEquals(18, calculator.timeToObsidianRobot(calculator.timeToClayRobot()), 0.01);
+		assertEquals(26, calculator.calcTimeToGeodeRobot(), 0.001);
 
 //		assertEquals(26.0, strategy.calcTimeToGeodeRobot(false, false, false), 0.01);
 //		assertEquals("none", strategy.recommendBestStrategy());

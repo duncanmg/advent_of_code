@@ -53,7 +53,7 @@ class Calculator {
 			return true;
 		}
 
-		float minutesToGeodeRobot = calcTimeToGeodeRobot("none");
+		float minutesToGeodeRobot = calcTimeToGeodeRobot();
 
 		if (minutesToGeodeRobot < minutesRemaining + safetyMarginMinutes) {
 			return true;
@@ -62,14 +62,24 @@ class Calculator {
 		return false;
 	}
 
-	// Number of minutes from requesting a robot to in collecting its first material.
+	// Number of minutes from requesting a robot to it collecting its first material.
 	final int timeToCreateRobot = 1;
 
 	Blueprint blueprint;
 
+	// Beware! This mutates the object.
+	public float addRobotAndRecalc(String robot) {
+		Robot candidate = robotStrategy.robots.get(robot);
+		if (candidate.canBuildRobot(robotStrategy.robots)) {
+			candidate.requestRobot(robotStrategy.robots);
+		}
+		robotStrategy.nextMinute();
+		return calcTimeToGeodeRobot();
+	}
+
 	// Return an estimate of the time in minutes to the next geode robot.
 	// Can experiment with adding robot types to see which reduces the time most.
-	public float calcTimeToGeodeRobot(String robot) {
+	public float calcTimeToGeodeRobot() {
 
 		float timeToOreRobot = timeToOreRobot();
 

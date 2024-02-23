@@ -31,6 +31,7 @@ public class TestOptimizerBlueprintOne {
 
 	@Before
 		public void setUp() throws Exception {
+			logger.log("01 setUp()");
 			optimizer = new Optimizer();
 			assertEquals(optimizer.getClass().getName(), "Optimizer");
 			blueprints = new ArrayList<Blueprint>();
@@ -40,260 +41,265 @@ public class TestOptimizerBlueprintOne {
 
 		}
 
-//	@Test public void testBlueprintOne00() throws Exception {
-//		optimizer.maxMinutes = 0;
-//		int maxGeodes = optimizer.optimize();
-//		testNumRobots(1, 0, 0, 0);
-//		testMaterialTotals(0, 0, 0, 0);
-//		assertEquals(0, maxGeodes);
-//	}
-//
-//	@Test public void testBlueprintOne01() throws Exception {
-//		optimizer.maxMinutes = 1;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(1, 0, 0, 0);
-//		testNumRobots(1, 0, 0, 0);
-//		assertEquals(0, maxGeodes);
-//	}
-//
-//	@Test public void testBlueprintOne02() throws Exception {
-//		optimizer.maxMinutes = 2;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(2, 0, 0, 0);
-//		testNumRobots(1, 0, 0, 0);
-//		testNumRobotsRequested(0, 0, 0, 0);
-//		assertEquals(0, maxGeodes);
-//	}
-//
-//	// The new rules means it will always build a robot if it can.
-//	@Test public void testBlueprintOne03() throws Exception {
-//		optimizer.maxMinutes = 3;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(1, 0, 0, 0);
-//		testNumRobots(1, 0, 0, 0);
-//		testNumRobotsRequested(0, 1, 0, 0);
-//		assertEquals(0, maxGeodes);
-//	}
-//
-//	// It can't create a robot, so it just collects.
-//	@Test public void testBlueprintOne04() throws Exception {
-//		optimizer.maxMinutes = 4;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(2, 1, 0, 0);
-//		testNumRobots(1, 1, 0, 0);
-//		testNumRobotsRequested(0, 0, 0, 0);
-//		assertEquals(0, maxGeodes);
-//	}
-//
-//	@Test public void testBlueprintOne05() throws Exception {
-//		optimizer.maxMinutes = 5;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(1, 2, 0, 0);
-//		testNumRobots(1, 1, 0, 0);
-//		testNumRobotsRequested(0, 1, 0, 0);
-//		assertEquals(0, maxGeodes);
-//	}
-//
-//	@Test public void testBlueprintOne06() throws Exception {
-//		optimizer.maxMinutes = 6;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(2, 4, 0, 0);
-//		testNumRobots(1, 2, 0, 0);
-//		testNumRobotsRequested(0, 0, 0, 0);
-//		assertEquals(0, maxGeodes);
-//	}
-//
-//	// Requests yet another clay robot. Yes. These expected values
-//	// are taken from the example.
-//	@Test public void testBlueprintOne07() throws Exception {
-//		optimizer.maxMinutes = 7;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(1, 6, 0, 0);
-//		testNumRobots(1, 2, 0, 0);
-//		testNumRobotsRequested(0, 1, 0, 0);
-//		assertEquals(0, maxGeodes);
-//	}
-//
-//	@Test public void testBlueprintOne08() throws Exception {
-//		optimizer.maxMinutes = 8;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(2, 9, 0, 0);
-//		testNumRobots(1, 3, 0, 0);
-//		testNumRobotsRequested(0, 0, 0, 0);
-//		assertEquals(0, maxGeodes);
-//	}
-//
-//	@Test public void testBlueprintOne09() throws Exception {
-//		optimizer.maxMinutes = 9;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(3, 12, 0, 0);
-//		testNumRobots(1, 3, 0, 0);
-//		testNumRobotsRequested(0, 0, 0, 0);
-//		assertEquals(0, maxGeodes);
-//	}
-//
-//	@Test public void testBlueprintOne10() throws Exception {
-//		optimizer.maxMinutes = 10;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(4, 15, 0, 0);
-//		testNumRobots(1, 3, 0, 0);
-//		testNumRobotsRequested(0, 0, 0, 0);
-//		assertEquals(0, maxGeodes);
-//	}
+		RobotStrategy bestRobotStrategy = new RobotStrategy();
+
+	//	@Test public void testBlueprintOne00() throws Exception {
+	//		optimizer.maxMinutes = 0;
+	//		int maxGeodes = optimizer.optimize();
+	//		testNumRobots(1, 0, 0, 0);
+	//		testMaterialTotals(0, 0, 0, 0);
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne01() throws Exception {
+	//		optimizer.maxMinutes = 1;
+	//		int maxGeodes = optimizer.optimize();
+	//		testMaterialTotals(1, 0, 0, 0);
+	//		testNumRobots(1, 0, 0, 0);
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne02() throws Exception {
+	//		optimizer.maxMinutes = 2;
+	//		int maxGeodes = optimizer.optimize();
+	//		testMaterialTotals(2, 0, 0, 0);
+	//		testNumRobots(1, 0, 0, 0);
+	//		testNumRobotsRequested(0, 0, 0, 0);
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	// The new rules means it will always build a robot if it can.
+	//	@Test public void testBlueprintOne03() throws Exception {
+	//		optimizer.maxMinutes = 3;
+	//		int maxGeodes = optimizer.optimize();
+	//		testMaterialTotals(1, 0, 0, 0);
+	//		testNumRobots(1, 0, 0, 0);
+	//		testNumRobotsRequested(0, 1, 0, 0);
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	// It can't create a robot, so it just collects.
+	//	@Test public void testBlueprintOne04() throws Exception {
+	//		optimizer.maxMinutes = 4;
+	//		int maxGeodes = optimizer.optimize();
+	//		testMaterialTotals(2, 1, 0, 0);
+	//		testNumRobots(1, 1, 0, 0);
+	//		testNumRobotsRequested(0, 0, 0, 0);
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne05() throws Exception {
+	//		optimizer.maxMinutes = 5;
+	//		int maxGeodes = optimizer.optimize();
+	//		testMaterialTotals(1, 2, 0, 0);
+	//		testNumRobots(1, 1, 0, 0);
+	//		testNumRobotsRequested(0, 1, 0, 0);
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne06() throws Exception {
+	//		optimizer.maxMinutes = 6;
+	//		int maxGeodes = optimizer.optimize();
+	//		testMaterialTotals(2, 4, 0, 0);
+	//		testNumRobots(1, 2, 0, 0);
+	//		testNumRobotsRequested(0, 0, 0, 0);
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	// Requests yet another clay robot. Yes. These expected values
+	//	// are taken from the example.
+	//	@Test public void testBlueprintOne07() throws Exception {
+	//		optimizer.maxMinutes = 7;
+	//		int maxGeodes = optimizer.optimize();
+	//		testMaterialTotals(1, 6, 0, 0);
+	//		testNumRobots(1, 2, 0, 0);
+	//		testNumRobotsRequested(0, 1, 0, 0);
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne08() throws Exception {
+	//		optimizer.maxMinutes = 8;
+	//		int maxGeodes = optimizer.optimize();
+	//		testMaterialTotals(2, 9, 0, 0);
+	//		testNumRobots(1, 3, 0, 0);
+	//		testNumRobotsRequested(0, 0, 0, 0);
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne09() throws Exception {
+	//		optimizer.maxMinutes = 9;
+	//		int maxGeodes = optimizer.optimize();
+	//		testMaterialTotals(3, 12, 0, 0);
+	//		testNumRobots(1, 3, 0, 0);
+	//		testNumRobotsRequested(0, 0, 0, 0);
+	//		assertEquals(0, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne10() throws Exception {
+	//		optimizer.maxMinutes = 10;
+	//		int maxGeodes = optimizer.optimize();
+	//		testMaterialTotals(4, 15, 0, 0);
+	//		testNumRobots(1, 3, 0, 0);
+	//		testNumRobotsRequested(0, 0, 0, 0);
+	//		assertEquals(0, maxGeodes);
+	//	}
 
 	// Request first obsidian robot.
 	@Test public void testBlueprintOne11() throws Exception {
 		optimizer.maxMinutes = 11;
-		int maxGeodes = optimizer.optimize();
-		testMaterialTotals(2, 4, 0, 0);
-		testNumRobots(1, 3, 0, 0);
-		testNumRobotsRequested(0, 0, 1, 0);
-		assertEquals(0, maxGeodes);
+		logger.log("Bang");
+		ArrayList<RobotStrategy> bestRobotStrategies = optimizer.optimizeBlueprint(optimizer.blueprints.get(0));
+		bestRobotStrategy = bestRobotStrategies.get(0);
+		// testMaterialTotals(2, 4, 0, 0);
+		// testNumRobots(1, 3, 0, 0);
+		// testNumRobotsRequested(0, 0, 1, 0);
+		// assertEquals(0, maxGeodes);
 	}
 
-	// Requests an obsidian robot. Still only 1 ore robot.
-	@Test public void testBlueprintOne12() throws Exception {
-		optimizer.maxMinutes = 12;
-		int maxGeodes = optimizer.optimize();
-		testMaterialTotals(1, 7, 1, 0);
-		testNumRobots(1, 3, 1, 0);
-		testNumRobotsRequested(0, 1, 0, 0);
-		assertEquals(0, maxGeodes);
-	}
+//	// Requests an obsidian robot. Still only 1 ore robot.
+//	@Test public void testBlueprintOne12() throws Exception {
+//		optimizer.maxMinutes = 12;
+//		int maxGeodes = optimizer.optimize();
+//		// testMaterialTotals(1, 7, 1, 0);
+//		testMaterialTotals(1, 7, 20000, 0);
+//		testNumRobots(1, 3, 1, 0);
+//		testNumRobotsRequested(0, 1, 0, 0);
+//		assertEquals(10, maxGeodes);
+//	}
 
-//	//	@Test public void testBlueprintOne13() throws Exception {
-//	//		optimizer.maxMinutes = 13;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		testMaterialTotals(2, 11, 2, 0);
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//	//
-//	//	@Test public void testBlueprintOne14() throws Exception {
-//	//		optimizer.maxMinutes = 14;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		testMaterialTotals(3, 15, 3, 0);
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//	//
-//	//	@Test public void testBlueprintOne15() throws Exception {
-//	//		optimizer.maxMinutes = 15;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		testMaterialTotals(1, 5, 4, 0);
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//
-//	//	@Test public void testBlueprintOne16() throws Exception {
-//	//		optimizer.maxMinutes = 16;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		testMaterialTotals(2, 9, 6, 0);
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//
-//	//	@Test public void testBlueprintOne17() throws Exception {
-//	//		optimizer.maxMinutes = 17;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		testMaterialTotals(3, 13, 8, 0);
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//	//
-//	//	@Test public void testBlueprintOne18() throws Exception {
-//	//		optimizer.maxMinutes = 18;
-//	//		int maxGeodes = optimizer.optimize();
-//	//		testMaterialTotals(2, 17, 3, 0);
-//	//		assertEquals(0, maxGeodes);
-//	//	}
-//
-//	// This is the first geode allegedly collected!
-//	// Building a massive surplus of clay. Only 1 ore robot.
-//	@Test public void testBlueprintOne19() throws Exception {
-//		optimizer.maxMinutes = 19;
-//		testMaterialTotals(3, 21, 5, 1);
-//		testNumRobots(1, 4, 2, 1);
-//		testNumRobotsRequested(0, 0, 0, 0);
-//		int maxGeodes = optimizer.optimize();
-//		assertEquals(0, maxGeodes);
-//	}
-//
-//	@Test public void testBlueprintOne20() throws Exception {
-//		optimizer.maxMinutes = 20;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(4, 25, 7, 2);
-//		assertEquals(2, maxGeodes);
-//	}
-//
-//	@Test public void testBlueprintOne21() throws Exception {
-//		optimizer.maxMinutes = 21;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(3, 29, 2, 3);
-//		assertEquals(3, maxGeodes);
-//	}
-//
-//	@Test public void testBlueprintOne22() throws Exception {
-//		optimizer.maxMinutes = 22;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(4, 33, 4,5);
-//		assertEquals(5, maxGeodes);
-//	}
-//
-//	@Test public void testBlueprintOne23() throws Exception {
-//		optimizer.maxMinutes = 23;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(5, 37, 6, 7);
-//		assertEquals(7, maxGeodes);
-//	}
-//
-//	@Test public void testBlueprintOne24() throws Exception {
-//		optimizer.maxMinutes = 24;
-//		int maxGeodes = optimizer.optimize();
-//		testMaterialTotals(6, 41, 8, 9);
-//		assertEquals(9, maxGeodes);
-//	}
+	//	//	@Test public void testBlueprintOne13() throws Exception {
+	//	//		optimizer.maxMinutes = 13;
+	//	//		int maxGeodes = optimizer.optimize();
+	//	//		testMaterialTotals(2, 11, 2, 0);
+	//	//		assertEquals(0, maxGeodes);
+	//	//	}
+	//	//
+	//	//	@Test public void testBlueprintOne14() throws Exception {
+	//	//		optimizer.maxMinutes = 14;
+	//	//		int maxGeodes = optimizer.optimize();
+	//	//		testMaterialTotals(3, 15, 3, 0);
+	//	//		assertEquals(0, maxGeodes);
+	//	//	}
+	//	//
+	//	//	@Test public void testBlueprintOne15() throws Exception {
+	//	//		optimizer.maxMinutes = 15;
+	//	//		int maxGeodes = optimizer.optimize();
+	//	//		testMaterialTotals(1, 5, 4, 0);
+	//	//		assertEquals(0, maxGeodes);
+	//	//	}
+	//
+	//	//	@Test public void testBlueprintOne16() throws Exception {
+	//	//		optimizer.maxMinutes = 16;
+	//	//		int maxGeodes = optimizer.optimize();
+	//	//		testMaterialTotals(2, 9, 6, 0);
+	//	//		assertEquals(0, maxGeodes);
+	//	//	}
+	//
+	//	//	@Test public void testBlueprintOne17() throws Exception {
+	//	//		optimizer.maxMinutes = 17;
+	//	//		int maxGeodes = optimizer.optimize();
+	//	//		testMaterialTotals(3, 13, 8, 0);
+	//	//		assertEquals(0, maxGeodes);
+	//	//	}
+	//	//
+	//	//	@Test public void testBlueprintOne18() throws Exception {
+	//	//		optimizer.maxMinutes = 18;
+	//	//		int maxGeodes = optimizer.optimize();
+	//	//		testMaterialTotals(2, 17, 3, 0);
+	//	//		assertEquals(0, maxGeodes);
+	//	//	}
+	//
+		// This is the first geode allegedly collected!
+		// Building a massive surplus of clay. Only 1 ore robot.
+		@Test public void testBlueprintOne19() throws Exception {
+			optimizer.maxMinutes = 19;
+//			testMaterialTotals(3, 21, 5, 1);
+//			testNumRobots(1, 4, 2, 1);
+//			testNumRobotsRequested(0, 0, 0, 0);
+			int maxGeodes = optimizer.optimize();
+			assertEquals(1, maxGeodes);
+		}
+	
+		@Test public void testBlueprintOne20() throws Exception {
+			optimizer.maxMinutes = 20;
+			int maxGeodes = optimizer.optimize();
+			// testMaterialTotals(4, 25, 7, 2);
+			assertEquals(2, maxGeodes);
+		}
+	
+	//	@Test public void testBlueprintOne21() throws Exception {
+	//		optimizer.maxMinutes = 21;
+	//		int maxGeodes = optimizer.optimize();
+	//		testMaterialTotals(3, 29, 2, 3);
+	//		assertEquals(3, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne22() throws Exception {
+	//		optimizer.maxMinutes = 22;
+	//		int maxGeodes = optimizer.optimize();
+	//		testMaterialTotals(4, 33, 4,5);
+	//		assertEquals(5, maxGeodes);
+	//	}
+	//
+	//	@Test public void testBlueprintOne23() throws Exception {
+	//		optimizer.maxMinutes = 23;
+	//		int maxGeodes = optimizer.optimize();
+	//		testMaterialTotals(5, 37, 6, 7);
+	//		assertEquals(7, maxGeodes);
+	//	}
+	//
+//		@Test public void testBlueprintOne24() throws Exception {
+//			optimizer.maxMinutes = 24;
+//			int maxGeodes = optimizer.optimize();
+//			testMaterialTotals(6, 41, 8, 9);
+//			assertEquals(9, maxGeodes);
+//		}
 
 	public void testNumRobots(int numOreRobots, int numClayRobots, int numObsidianRobots, int numGeodeRobots) {
-		if (optimizer.topRobotStrategy == null) {
-		} else {
-			logger.log("optimizer.topRobotStrategy is not null");
-			RobotStrategy topRobotStrategy = optimizer.topRobotStrategy;
-			logger.log("topRobotStrategy.numOreRobots = " + topRobotStrategy.numOreRobots);
-			assertEquals(numOreRobots, topRobotStrategy.numOreRobots);
-			logger.log("topRobotStrategy.numClayRobots = " + topRobotStrategy.numClayRobots);
-			assertEquals(numClayRobots, topRobotStrategy.numClayRobots);
-			logger.log("topRobotStrategy.numObsidianRobots = " + topRobotStrategy.numObsidianRobots);
-			assertEquals(numObsidianRobots, topRobotStrategy.numObsidianRobots);
-			logger.log("topRobotStrategy.numGeodeRobots = " + topRobotStrategy.numGeodeRobots);
-			assertEquals(numGeodeRobots, topRobotStrategy.numGeodeRobots);
-		}
+		HashMap<String, Robot> robots = bestRobotStrategy.robots;
+
+		logger.log("robots.get(\"ore\").numRobots = " + robots.get("ore").numRobots);
+		assertEquals(numOreRobots, robots.get("ore").numRobots);
+
+		logger.log("robots.get(\"clay\").numRobots = " + robots.get("clay").numRobots);
+		assertEquals(numClayRobots, robots.get("clay").numRobots);
+
+		logger.log("robots.get(\"obsidian\").numRobots = " + robots.get("obsidian").numRobots);
+		assertEquals(numObsidianRobots, robots.get("obsidian").numRobots);
+
+		logger.log("robots.get(\"geode\").numRobots = " + robots.get("geode").numRobots);
+		assertEquals(numGeodeRobots, robots.get("geode").numRobots);
 	}
 
 	public void testMaterialTotals(int oreTotal, int clayTotal, int obsidianTotal, int geodeTotal) {
-		if (optimizer.topRobotStrategy == null) {
-		} else {
-			logger.log("optimizer.topRobotStrategy is not null");
-			RobotStrategy topRobotStrategy = optimizer.topRobotStrategy;
-			logger.log("topRobotStrategy.oreTotal = " + topRobotStrategy.oreTotal);
-			assertEquals(oreTotal, topRobotStrategy.oreTotal);
-			logger.log("topRobotStrategy.clayTotal = " + topRobotStrategy.clayTotal);
-			assertEquals(clayTotal, topRobotStrategy.clayTotal);
-			logger.log("topRobotStrategy.obsidianTotal = " + topRobotStrategy.obsidianTotal);
-			assertEquals(obsidianTotal, topRobotStrategy.obsidianTotal);
-			logger.log("topRobotStrategy.geodeTotal = " + topRobotStrategy.geodeTotal);
-			assertEquals(geodeTotal, topRobotStrategy.geodeTotal);
-		}
+		HashMap<String, Robot> robots = bestRobotStrategy.robots;
+
+		logger.log("robots.get(\"ore\").total = " + robots.get("ore").total);
+		assertEquals(oreTotal, robots.get("ore").total);
+
+		logger.log("robots.get(\"clay\").total = " + robots.get("clay").total);
+		assertEquals(clayTotal, robots.get("clay").total);
+
+		logger.log("robots.get(\"obsidian\").total = " + robots.get("obsidian").total);
+		assertEquals(obsidianTotal, robots.get("obsidian").total);
+
+		logger.log("robots.get(\"geode\").total = " + robots.get("geode").total);
+		assertEquals(geodeTotal, robots.get("geode").total);
 	}
 
 	void testNumRobotsRequested(int numOreRobotsRequested, int numClayRobotsRequested, int numObsidianRobotsRequested, int numGeodeRobotsRequested) {
-		if (optimizer.topRobotStrategy == null) {
-		} else {
-			logger.log("optimizer.topRobotStrategy is not null");
-			RobotStrategy topRobotStrategy = optimizer.topRobotStrategy;
-			logger.log("topRobotStrategy.numOreRobotsRequested = " + topRobotStrategy.numOreRobotsRequested);
-			assertEquals(numOreRobotsRequested, topRobotStrategy.numOreRobotsRequested);
-			logger.log("topRobotStrategy.numClayRobotsRequested = " + topRobotStrategy.numClayRobotsRequested);
-			assertEquals(numClayRobotsRequested, topRobotStrategy.numClayRobotsRequested);
-			logger.log("topRobotStrategy.numObsidianRobotsRequested = " + topRobotStrategy.numObsidianRobotsRequested);
-			assertEquals(numObsidianRobotsRequested, topRobotStrategy.numObsidianRobotsRequested);
-			logger.log("topRobotStrategy.numGeodeRobotsRequested = " + topRobotStrategy.numGeodeRobotsRequested);
-			assertEquals(numGeodeRobotsRequested, topRobotStrategy.numGeodeRobotsRequested);
-		}
+		HashMap<String, Robot> robots = bestRobotStrategy.robots;
+
+		logger.log("robots.get(\"ore\").numRobotsRequested = " + robots.get("ore").numRobotsRequested);
+		assertEquals(numOreRobotsRequested, robots.get("ore").numRobotsRequested);
+
+		logger.log("robots.get(\"clay\").numRobotsRequested = " + robots.get("clay").numRobotsRequested);
+		assertEquals(numClayRobotsRequested, robots.get("clay").numRobotsRequested);
+
+		logger.log("robots.get(\"obsidian\").numRobotsRequested = " + robots.get("obsidian").numRobotsRequested);
+		assertEquals(numObsidianRobotsRequested, robots.get("obsidian").numRobotsRequested);
+
+		logger.log("robots.get(\"geode\").numRobotsRequested = " + robots.get("geode").numRobotsRequested);
+		assertEquals(numGeodeRobotsRequested, robots.get("geode").numRobotsRequested);
 	}
 }

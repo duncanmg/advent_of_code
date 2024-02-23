@@ -34,64 +34,102 @@ public class TestOptimizerVariousBlueprints {
 		// Simple
 		testBlueprints.add(new Blueprint(1, new ArrayList<Integer>(Arrays.asList(1, 1, 1, 1, 1, 1))));
 
+		testBlueprints.add(new Blueprint(2, new ArrayList<Integer>(Arrays.asList(100, 100, 100, 100, 100, 100))));
+
+		testBlueprints.add(new Blueprint(3, new ArrayList<Integer>(Arrays.asList(100, 2, 100, 100, 100, 100))));
+
+		testBlueprints.add(new Blueprint(4, new ArrayList<Integer>(Arrays.asList(100, 2, 1, 1, 100, 100))));
+
 		// Lots of ore needed for geode robot.
-		testBlueprints.add(new Blueprint(2, new ArrayList<Integer>(Arrays.asList(1, 1, 1, 1, 10, 1))));
-		logger.log("XX Hi " + testBlueprints.size() + " " + counter);
+		// Minute 1: 1 0 0 0
+		// Minute 2: 1 0 0 0 Ore robot requested
+		// Minute 3: 2 0 0 0 Ore robot requested
+		// Minute 4: 4 0 0 0 Clay Robot Requested
+		// Minute 5: 6 0 0 0 Obsidian Robot Requested
+		// Minute 6: 9 1 1 0
+		// Minute 7: 12 1 1 0 Geode Robot Requested
+		// Minute 8: 5 2 2 1 Geode Collected.
+		testBlueprints.add(new Blueprint(1, new ArrayList<Integer>(Arrays.asList(1, 1, 1, 1, 10, 1))));
 	}
 
-	int counter = 0;
-
-	@Before
-		public void setUp() throws Exception {
-		logger.log("01 Hi");
+		public void setUp(int blueprintIndex) throws Exception {
 			if (testBlueprints.size() == 0){
-		logger.log("02 Hi");
 				buildBlueprints();
 			}
-		logger.log("03 Hi");
+
 			optimizer = new Optimizer();
-		logger.log("04 Hi");
+			optimizer.returnOneBestStrategy = false;
 			assertEquals(optimizer.getClass().getName(), "Optimizer");
-		logger.log("05 Hi");
+
 			ArrayList<Blueprint> blueprints = new ArrayList<Blueprint>();
-		logger.log("06 Hi " + testBlueprints.size() + " " + counter);
-			blueprints.add(testBlueprints.get(counter));
-		logger.log("07 Hi");
-			counter++;
-		logger.log("08 Hi");
+			blueprints.add(testBlueprints.get(blueprintIndex));
+
 			optimizer.blueprints = blueprints;
-		logger.log("09 Hi");
+
+			logger.log("End setUp " + blueprintIndex);
 
 		}
 
-	RobotStrategy bestRobotStrategy = new RobotStrategy();
+	RobotStrategy bestRobotStrategy = new  RobotStrategy();
 
-//	// Request first obsidian robot.
-//	@Test public void testBlueprintOne11() throws Exception {
-//		optimizer.maxMinutes = 11;
-//		logger.log("Bang");
-//		bestRobotStrategy = optimizer.optimizeBlueprint(optimizer.blueprints.get(0));
-//		// assertEquals(0, maxGeodes);
-//	}
-
-//	// This is the first geode allegedly collected!
-//	// Building a massive surplus of clay. Only 1 ore robot.
-//	@Test public void testBlueprintOne19() throws Exception {
-//		optimizer.maxMinutes = 19;
-//		int maxGeodes = optimizer.optimize();
-//		assertEquals(1, maxGeodes);
-//	}
-
-	@Test public void testBlueprintZero() throws Exception {
-		logger.log("Hi");
+	@Test public void testBlueprintId1() throws Exception {
+		setUp(0);
 		optimizer.maxMinutes = 7;
-		int maxGeodes = optimizer.optimize();
-		// testMaterialTotals(4, 25, 7, 2);
-		assertEquals(1, maxGeodes);
+		int totalQuality = optimizer.optimize();
+		assertEquals(1, totalQuality);
 	}
 
+//	@Test public void testBlueprintId2() throws Exception {
+//		setUp(1);
+//		optimizer.maxMinutes = 11;
+//		int totalQuality = optimizer.optimize();
+//		bestRobotStrategy = optimizer.bestRobotStrategies.get(0);
+//
+//		testNumRobots(1, 0, 0, 0);
+//		testMaterialTotals(11, 0, 0, 0);
+//		assertEquals(0, totalQuality);
+//	}
+
+//	@Test public void testBlueprintId3() throws Exception {
+//		setUp(2);
+//		optimizer.maxMinutes = 4;
+//		int totalQuality = optimizer.optimize();
+//		bestRobotStrategy = optimizer.bestRobotStrategies.get(0);
+//
+//		testNumRobots(1, 1, 0, 0);
+//		testMaterialTotals(2, 1, 0, 0);
+//		testNumRobotsRequested(0, 0, 0, 0);
+//		assertEquals(0, totalQuality);
+//	}
+//
+//	@Test public void testBlueprintId4() throws Exception {
+//		setUp(3);
+//		optimizer.maxMinutes = 5;
+//		int totalQuality = optimizer.optimize();
+//		bestRobotStrategy = optimizer.bestRobotStrategies.get(0);
+//
+//		assertEquals(5, optimizer.bestRobotStrategies.size());
+//
+//		assertEquals(true, anyRobotStrategiesHaveNumRobotsRequested(optimizer.bestRobotStrategies, 0, 0, 1, 0));
+//		assertEquals(true, noRobotStrategiesHaveNumRobots(optimizer.bestRobotStrategies, -1, -1, 1, -1));
+//		assertEquals(true, noRobotStrategiesHaveNumRobots(optimizer.bestRobotStrategies, -1, -1, -1, 1));
+//		assertEquals(0, totalQuality);
+//	}
+//
+//	@Test public void testBlueprintId4b() throws Exception {
+//		setUp(3);
+//		optimizer.maxMinutes = 6;
+//		int totalQuality = optimizer.optimize();
+//		bestRobotStrategy = optimizer.bestRobotStrategies.get(0);
+//
+//		assertEquals(9, optimizer.bestRobotStrategies.size());
+//
+//		assertEquals(true, anyRobotStrategiesHaveNumRobots(optimizer.bestRobotStrategies, -1, -1, 1, 0));
+//		assertEquals(true, noRobotStrategiesHaveNumRobots(optimizer.bestRobotStrategies, -1, -1, -1, 1));
+//		assertEquals(0, totalQuality);
+//	}
+
 	public void testNumRobots(int numOreRobots, int numClayRobots, int numObsidianRobots, int numGeodeRobots) {
-		logger.log("bestRobotStrategy is not null");
 		logger.log("bestRobotStrategy.robots.get(\"ore\").numRobots = " + bestRobotStrategy.robots.get("ore").numRobots);
 		assertEquals(numOreRobots, bestRobotStrategy.robots.get("ore").numRobots);
 		logger.log("bestRobotStrategy.robots.get(\"clay\").numRobots = " + bestRobotStrategy.robots.get("clay").numRobots);
@@ -110,7 +148,8 @@ public class TestOptimizerVariousBlueprints {
 		int i = 0;
 		for(String label : labels) {
 			logger.log("testMaterialTotals " + label);
-			assertEquals((long)expectedTotals.get(i), (long)bestRobotStrategy.robots.get("label").total);
+			assertEquals((long)expectedTotals.get(i), (long)bestRobotStrategy.robots.get(label).total);
+			i++;
 		}
 	}
 
@@ -128,5 +167,74 @@ public class TestOptimizerVariousBlueprints {
 
 		logger.log("bestRobotStrategy.robots.get(\"geode\").numRobotsRequested = " + bestRobotStrategy.robots.get("geode").numRobotsRequested);
 		assertEquals(numGeodeRobotsRequested, bestRobotStrategy.robots.get("geode").numRobotsRequested);
+	}
+
+	boolean anyRobotStrategiesHaveNumRobots(ArrayList<RobotStrategy> robotStrategies, int numOreRobots, int numClayRobots, int numObsidianRobots, int numGeodeRobots) {
+		ArrayList<Integer>expectedNumRobots = new ArrayList<Integer>(Arrays.asList(numOreRobots, numClayRobots,  numObsidianRobots, numGeodeRobots));
+		ArrayList<String>labels = new ArrayList<String>(Arrays.asList("ore", "clay", "obsidian", "geode"));
+
+		boolean ok = false;
+		for (RobotStrategy robotStrategy : robotStrategies) {
+			int i = 0;
+			int correct = 0;
+			for(String label : labels) {
+				if (expectedNumRobots.get(i) < 0) {
+					correct++;
+				}
+				else if ((long)expectedNumRobots.get(i) == (long)bestRobotStrategy.robots.get(label).numRobots) {
+					correct++;
+				}
+				if (correct == 4) {
+					logger.log("anyRobotStrategiesHaveNumRobots Correct: " + robotStrategy);
+					ok = true;
+				}
+				i++;
+			}
+		}
+		return ok;
+	}
+
+	boolean noRobotStrategiesHaveNumRobots(ArrayList<RobotStrategy> robotStrategies, int numOreRobots, int numClayRobots, int numObsidianRobots, int numGeodeRobots) {
+		ArrayList<Integer>expectedNumRobots = new ArrayList<Integer>(Arrays.asList(numOreRobots, numClayRobots,  numObsidianRobots, numGeodeRobots));
+		ArrayList<String>labels = new ArrayList<String>(Arrays.asList("ore", "clay", "obsidian", "geode"));
+
+		boolean ok = true;
+		for (RobotStrategy robotStrategy : robotStrategies) {
+			int i = 0;
+			int correct = 0;
+			for(String label : labels) {
+				if ((long)expectedNumRobots.get(i) < 0) {
+					continue;
+				}
+				if ((long)expectedNumRobots.get(i) == (long)bestRobotStrategy.robots.get(label).numRobots) {
+					logger.log("anyRobotStrategiesHaveNumRobots Correct: " + robotStrategy);
+					ok = false;
+				}
+				i++;
+			}
+		}
+		return ok;
+	}
+
+	boolean anyRobotStrategiesHaveNumRobotsRequested(ArrayList<RobotStrategy> robotStrategies, int numOreRobotsRequested, int numClayRobotsRequested, int numObsidianRobotsRequested, int numGeodeRobotsRequested) {
+		ArrayList<Integer>expectedNumRobotsRequested = new ArrayList<Integer>(Arrays.asList(numOreRobotsRequested, numClayRobotsRequested,  numObsidianRobotsRequested, numGeodeRobotsRequested));
+		ArrayList<String>labels = new ArrayList<String>(Arrays.asList("ore", "clay", "obsidian", "geode"));
+
+		boolean ok = false;
+		for (RobotStrategy robotStrategy : robotStrategies) {
+			int i = 0;
+			int correct = 0;
+			for(String label : labels) {
+				if ((long)expectedNumRobotsRequested.get(i) == (long)bestRobotStrategy.robots.get(label).numRobotsRequested) {
+					correct++;
+				}
+				if (correct == 4) {
+					logger.log("anyRobotStrategiesHaveNumRobotsRequested Correct: " + robotStrategy);
+					ok = true;
+				}
+				i++;
+			}
+		}
+		return ok;
 	}
 }
