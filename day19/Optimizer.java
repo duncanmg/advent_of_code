@@ -21,6 +21,8 @@ class Optimizer {
 
 	public ArrayList<RobotStrategy> bestRobotStrategies = new ArrayList<RobotStrategy>();
 
+	public boolean useCalculator = false;
+
 	// returnOneBestStrategy will normally be set to true, which means that only one RobotStrategy will be returned
 	// from depthFirstTraversal. The number of geodes will always be correct, but the other data will be of
 	// limited value.
@@ -63,109 +65,9 @@ class Optimizer {
 		return totalQuality;
 	}
 
-	public ArrayList<RobotStrategy> optimizeBlueprint(Blueprint blueprint) throws Exception {
-		int maxGeodes = 0;
-
-		ArrayList<RobotStrategy> robotStrategies = new ArrayList<RobotStrategy>();
-
-		RobotStrategy firstRobotStrategy = new RobotStrategy(blueprint);
-		firstRobotStrategy.maxMinutes = maxMinutes;
-
-		if (maxMinutes <= 0) {
-			robotStrategies.add(firstRobotStrategy);
-			return robotStrategies;
-		}
-
-		robotStrategies = depthFirstTraversal(firstRobotStrategy);
-
-		return robotStrategies;
-	}
-
-	public ArrayList<RobotStrategy> depthFirstTraversal(RobotStrategy clonedRobotStrategy) throws Exception {
-		int maxGeodes = 0;
-
-		ArrayList<RobotStrategy> bestRobotStrategies = new ArrayList<RobotStrategy>();
-
-		if (clonedRobotStrategy.minute >= maxMinutes) {
-			throw new Exception("Error in depthFirstTraversal. Time out of range. " + clonedRobotStrategy.minute + " >= " + maxMinutes);
-		}
-		clonedRobotStrategy.nextMinute();
-		logger.log("Start minute " + clonedRobotStrategy.minute + ". depthFirstTraversal " + clonedRobotStrategy);
-
-		//		if (clonedRobotStrategy.minute > 10) {
-		//		Calculator calculator = new Calculator(clonedRobotStrategy);
-		//			if (!calculator.continueSearching()) {
-		//				return clonedRobotStrategy;
-		//			}
-		//		}
-
-		int numRobotsRequested = 0;
-
-		for (String robot : clonedRobotStrategy.robotList) {
-			logger.log("Checking " + robot);
-
-			if (numRobotsRequested > 0) {
-				logger.log("Break because numRobotsRequested is " + numRobotsRequested);
-				break;
-			}
-
-			if (clonedRobotStrategy.canBuildThisRobot(robot)) {
-
-				logger.log("canBuildThisRobot " + robot + "!!!!");
-
-				Robot current = clonedRobotStrategy.robots.get(robot);
-				if (current.hasMaxRobots()) {
-					continue;
-				}
-
-				if (current.hasMaxStock()) {
-					continue;
-				}
-
-				RobotStrategy newRobotStrategy = (RobotStrategy) clonedRobotStrategy.clone();
-				newRobotStrategy.requestThisRobot(robot);
-				newRobotStrategy.collectResources();
-
-				ArrayList<RobotStrategy> returnedRobotStrategies = new ArrayList<RobotStrategy>();
-				if (clonedRobotStrategy.minute < maxMinutes) {
-					returnedRobotStrategies = depthFirstTraversal((RobotStrategy) newRobotStrategy.clone());
-				}
-				else {
-					logger.log("depthFirstTraversal. Do not recurse. Time exceeded. " + clonedRobotStrategy.minute + " >= " + maxMinutes);
-					logger.log("depthFirstTraversal. Add to returnedRobotStrategies. " + newRobotStrategy);
-					returnedRobotStrategies.add(newRobotStrategy);
-				}
-
-				if (returnedRobotStrategies.size() > 0) {
-					returnedRobotStrategies = filterRobotStrategies(returnedRobotStrategies);
-					int returnedGeodeTotal = returnedRobotStrategies.get(0).robots.get("geode").total;
-					if (returnedGeodeTotal >= maxGeodes) {
-						if (returnedGeodeTotal > maxGeodes) {
-							bestRobotStrategies = new ArrayList<RobotStrategy>(0);
-							maxGeodes = returnedGeodeTotal;
-							bestRobotStrategies.addAll(returnedRobotStrategies);
-						}
-						else {
-							if (!returnOneBestStrategy) {
-								bestRobotStrategies.addAll(returnedRobotStrategies);
-							}
-						}
-					}
-				}
-
-				if (robot.equals("geode")) {
-					numRobotsRequested++;
-				}
-			}
-		}
-
-		if (bestRobotStrategies.size() == 0) {
-			bestRobotStrategies.add(clonedRobotStrategy);
-		}
-
-		logRobotStrategies(bestRobotStrategies, clonedRobotStrategy.minute);
-		logger.log("End minute " + clonedRobotStrategy.minute + ". depthFirstTraversal");
-		return bestRobotStrategies;
+	ArrayList<RobotStrategy> optimizeBlueprint(Blueprint blueprint) throws Exception{
+		logger.log("optimizeBlueprint not implemented");
+		return new ArrayList<RobotStrategy>();
 	}
 
 	ArrayList<RobotStrategy> filterRobotStrategies(ArrayList<RobotStrategy> robotStrategies) {

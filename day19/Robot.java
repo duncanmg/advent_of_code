@@ -15,9 +15,10 @@ class Robot implements Cloneable, Comparable<Robot>{
 	public Robot() {
 	}
 
-	public Robot(Blueprint b, Stock s) {
+	public Robot(Blueprint b, Stock s, int max) {
 		blueprint = b;
 		stock = s;
+		maxMinutes = max;
 	}
 
 	Logger logger = new Logger(this, true);

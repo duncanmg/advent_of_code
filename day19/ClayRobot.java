@@ -15,8 +15,8 @@ class ClayRobot extends Robot {
 	public ClayRobot() {
 	}
 
-	public ClayRobot(Blueprint b, Stock s) {
-		super(b, s);
+	public ClayRobot(Blueprint b, Stock s, int max) {
+		super(b, s, max);
 	}
 
 	public boolean canBuildRobot(HashMap<String, Robot> robots) {

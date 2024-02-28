@@ -15,7 +15,10 @@ class RunBlueprintOptimization {
 		HashMap<String, String> argMap = argProcessor.process();
 		String dataFile = argMap.get("dataFile");
 
-		Optimizer optimizer = new Optimizer();
+		Optimizer optimizer = new OptimizerWithDepthFirstSearch();
+		if (argMap.get("useCalculator") != null) {
+			optimizer = new OptimizerWithCalculator();
+		}
 
 		int maxMinutes = 0;
 		if (argMap.get("maxMinutes") != null) {

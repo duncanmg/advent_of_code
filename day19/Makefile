@@ -33,6 +33,10 @@ ObsidianRobot.class: ObsidianRobot.java Robot.class
 
 Optimizer.class: Optimizer.java RobotStrategy.class
 
+OptimizerWithCalculator: OptimizerWithCalculator.java Optimizer.class
+
+OptimizerWithWithDepthFirstSearch: OptimizerWithWithDepthFirstSearch.java Optimizer.class
+
 OreRobot.class: OreRobot.java Robot.class
 
 Robot.class: Robot.java

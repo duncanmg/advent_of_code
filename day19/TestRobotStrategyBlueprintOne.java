@@ -28,7 +28,7 @@ public class TestRobotStrategyBlueprintOne {
 			ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(4, 2, 3, 14, 2, 7));
 			Blueprint blueprint = new Blueprint(1, values);
 
-			strategy = new RobotStrategy(blueprint);
+			strategy = new RobotStrategy(blueprint, 24);
 			assertEquals(strategy.getClass().getName(), "RobotStrategy");
 		}
 	}

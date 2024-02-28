@@ -15,8 +15,8 @@ class NoneRobot extends Robot {
 	public NoneRobot() {
 	}
 
-	public NoneRobot(Blueprint blueprint, Stock stock) {
-		super(blueprint, stock);
+	public NoneRobot(Blueprint blueprint, Stock stock, int max) {
+		super(blueprint, stock, max);
 	}
 
         public void nextMinute() {

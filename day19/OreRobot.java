@@ -15,8 +15,8 @@ class OreRobot extends Robot {
 	public OreRobot() {
 	}
 
-	public OreRobot(Blueprint blueprint, Stock stock) {
-		super(blueprint, stock);
+	public OreRobot(Blueprint blueprint, Stock stock, int max) {
+		super(blueprint, stock, max);
 		numRobots = 1;
 	}
 

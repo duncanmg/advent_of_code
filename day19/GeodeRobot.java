@@ -15,8 +15,8 @@ class GeodeRobot extends Robot {
 	public GeodeRobot() {
 	}
 
-	public GeodeRobot(Blueprint blueprint, Stock stock) {
-		super(blueprint, stock);
+	public GeodeRobot(Blueprint blueprint, Stock stock, int max) {
+		super(blueprint, stock, max);
 	}
 
         public boolean canBuildRobot(HashMap<String, Robot> robots) {

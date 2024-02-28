@@ -25,7 +25,7 @@ public class TestRobotStrategy {
 			logger.log("Start setUp");
 
 			ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(4, 2, 3, 14, 2, 7));
-			strategy = new RobotStrategy(new Blueprint(1, values));
+			strategy = new RobotStrategy(new Blueprint(1, values), 24);
 			assertEquals(strategy.getClass().getName(), "RobotStrategy");
 
 			logger.log("End setUp");
@@ -382,7 +382,7 @@ public class TestRobotStrategy {
 
 	public RobotStrategy getSimpleStrategy() {
 		ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(1, 1, 1, 1, 1, 1));
-		RobotStrategy strategy = new RobotStrategy(new Blueprint(10, values));
+		RobotStrategy strategy = new RobotStrategy(new Blueprint(10, values), 24);
 		return strategy;
 	}
 }

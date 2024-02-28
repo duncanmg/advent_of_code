@@ -74,6 +74,7 @@ class Calculator {
 			candidate.requestRobot(robotStrategy.robots);
 		}
 		robotStrategy.nextMinute();
+		robotStrategy.collectResources();
 		return calcTimeToGeodeRobot();
 	}
 
@@ -111,14 +112,23 @@ class Calculator {
 	float timeToObsidianRobot(float timeToClayRobot) {
 		float timeToObsidianRobot = (float) 0.0;
 		float oreTime = (blueprint.obsidianRobotOreCost - oreRobot.total) / oreRobot.numRobots;
+		if (oreTime < 0) {
+			oreTime = 0;
+		}
 		logger.log("oreTime " + oreTime + " blueprint.obsidianRobotOreCost " + blueprint.obsidianRobotOreCost + " oreTotal " + oreRobot.total);
 		if (clayRobot.numRobots == 0) {
 			float clayTime = timeToClayRobot + blueprint.obsidianRobotClayCost + timeToCreateRobot;
+			if (clayTime < 0) {
+				clayTime = 0;
+			}
 			timeToObsidianRobot = Math.max(oreTime, clayTime);
 			logger.log("timeToObsidianRobot " + timeToObsidianRobot + " oreTime " + oreTime + " clayTime " + clayTime);
 		}
 		else {
 			float clayTime = timeToCreateRobot + ((blueprint.obsidianRobotClayCost - clayRobot.total) / clayRobot.numRobots);
+			if (clayTime < 0) {
+				clayTime = 0;
+			}
 			timeToObsidianRobot = Math.max(oreTime, clayTime);
 			logger.log("timeToObsidianRobot " + timeToObsidianRobot + " oreTime " + oreTime + " clayTime " + clayTime);
 		}
@@ -133,12 +143,21 @@ class Calculator {
 	float timeToGeodeRobot(float timeToObsidianRobot) {
 		float timeToGeodeRobot = (float) 0.0;
 		float oreTime = (blueprint.geodeRobotOreCost - oreRobot.total) / oreRobot.numRobots;
+		if (oreTime < 0) {
+			oreTime = 0;
+		}
 		if (obsidianRobot.numRobots == 0) {
 			float obsidianTime = timeToObsidianRobot + blueprint.geodeRobotObsidianCost + timeToCreateRobot;
+			if (obsidianTime < 0) {
+				obsidianTime = 0;
+			}
 			timeToGeodeRobot = Math.max(oreTime, obsidianTime);
 		}
 		else {
 			float obsidianTime = timeToCreateRobot + ((blueprint.geodeRobotObsidianCost - obsidianRobot.total) / obsidianRobot.numRobots);
+			if (obsidianTime < 0) {
+				obsidianTime = 0;
+			}
 			timeToGeodeRobot =  Math.max(oreTime, obsidianTime);
 		}
 
@@ -148,4 +167,25 @@ class Calculator {
 		}
 		return timeToGeodeRobot;
 	}
+
+//        ArrayList<String> calculateStrategy(RobotStrategy robotStrategy) {
+//                Calculator calculator = new Calculator((RobotStrategy) robotStrategy.clone());
+//                float base = calculator.calcTimeToGeodeRobot();
+//                ArrayList<String> out = new ArrayList<String>();
+//                for (String robot : robotStrategy.robotList) {
+//                        if (robotStrategy.canBuildThisRobot(robot)) {
+//                                calculator = new Calculator((RobotStrategy) robotStrategy.clone());
+//                                float newCount = calculator.addRobotAndRecalc(robot);
+//                                if (newCount < base) {
+//                                        out = new ArrayList<String>();
+//                                        out.add(robot);
+//                                }
+//                                else if (newCount == base) {
+//                                        out.add(robot);
+//                                }
+//                        }
+//                }
+//		return out;
+//        }
+
 }

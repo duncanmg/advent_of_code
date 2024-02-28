@@ -15,13 +15,13 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 	public RobotStrategy() {
 	}
 
-	public RobotStrategy(Blueprint b) {
+	public RobotStrategy(Blueprint b, int maxMinutes) {
 		blueprint = b;
-		robots.put("ore",new OreRobot(blueprint, stock));
-		robots.put("clay",new ClayRobot(blueprint, stock));
-		robots.put("obsidian",new ObsidianRobot(blueprint, stock));
-		robots.put("geode",new GeodeRobot(blueprint, stock));
-		robots.put("none",new NoneRobot(blueprint, stock));
+		robots.put("ore",new OreRobot(blueprint, stock, maxMinutes));
+		robots.put("clay",new ClayRobot(blueprint, stock, maxMinutes));
+		robots.put("obsidian",new ObsidianRobot(blueprint, stock, maxMinutes));
+		robots.put("geode",new GeodeRobot(blueprint, stock, maxMinutes));
+		robots.put("none",new NoneRobot(blueprint, stock, maxMinutes));
 	}
 
 	Logger logger = new Logger(this, true);
@@ -30,7 +30,7 @@ class RobotStrategy implements Cloneable, Comparable<RobotStrategy>{
 
 	public int minute = 0;
 
-	public int maxMinutes = 24;
+	final int maxMinutes = 24;
 
 	Stock stock = new Stock();
 
