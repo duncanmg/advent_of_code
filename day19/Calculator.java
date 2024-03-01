@@ -70,11 +70,16 @@ class Calculator {
 	// Beware! This mutates the object.
 	public float addRobotAndRecalc(String robot) {
 		Robot candidate = robotStrategy.robots.get(robot);
+		logger.log("01 addRobotAndRecalc " + robot + " candidate " + candidate);
 		if (candidate.canBuildRobot(robotStrategy.robots)) {
+			logger.log("addRobotAndRecalc. Requesting robot. " + robot);
 			candidate.requestRobot(robotStrategy.robots);
+			logger.log("02 addRobotAndRecalc " + robot + " candidate " + candidate);
 		}
 		robotStrategy.nextMinute();
+		logger.log("03 addRobotAndRecalc " + robot + " candidate " + candidate);
 		robotStrategy.collectResources();
+		logger.log("04 addRobotAndRecalc " + robot + " candidate " + candidate);
 		return calcTimeToGeodeRobot();
 	}
 
@@ -121,7 +126,8 @@ class Calculator {
 			if (clayTime < 0) {
 				clayTime = 0;
 			}
-			timeToObsidianRobot = Math.max(oreTime, clayTime);
+			// timeToObsidianRobot = Math.max(oreTime, clayTime);
+			timeToObsidianRobot = oreTime + clayTime;
 			logger.log("timeToObsidianRobot " + timeToObsidianRobot + " oreTime " + oreTime + " clayTime " + clayTime);
 		}
 		else {
@@ -129,7 +135,8 @@ class Calculator {
 			if (clayTime < 0) {
 				clayTime = 0;
 			}
-			timeToObsidianRobot = Math.max(oreTime, clayTime);
+			// timeToObsidianRobot = Math.max(oreTime, clayTime);
+			timeToObsidianRobot = oreTime + clayTime;
 			logger.log("timeToObsidianRobot " + timeToObsidianRobot + " oreTime " + oreTime + " clayTime " + clayTime);
 		}
 
@@ -158,7 +165,8 @@ class Calculator {
 			if (obsidianTime < 0) {
 				obsidianTime = 0;
 			}
-			timeToGeodeRobot =  Math.max(oreTime, obsidianTime);
+			// timeToGeodeRobot =  Math.max(oreTime, obsidianTime);
+			timeToGeodeRobot =  oreTime + obsidianTime;
 		}
 
 		logger.log("calcTimeToGeodeRobot timeToObsidianRobot " + timeToObsidianRobot + " timeToGeodeRobot " + timeToGeodeRobot);

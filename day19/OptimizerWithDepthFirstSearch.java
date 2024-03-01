@@ -25,14 +25,15 @@ class OptimizerWithDepthFirstSearch extends Optimizer {
 			return robotStrategies;
 		}
 
-		robotStrategies = depthFirstTraversal(firstRobotStrategy);
+		robotStrategies = depthFirstTraversal(firstRobotStrategy, firstRobotStrategy.minute + "-start");
 
 		return robotStrategies;
 	}
 
-	public ArrayList<RobotStrategy> depthFirstTraversal(RobotStrategy clonedRobotStrategy) throws Exception {
+	public ArrayList<RobotStrategy> depthFirstTraversal(RobotStrategy clonedRobotStrategy, String trace) throws Exception {
 		int maxGeodes = 0;
 
+		logger.log(trace);
 		ArrayList<RobotStrategy> bestRobotStrategies = new ArrayList<RobotStrategy>();
 
 		if (clonedRobotStrategy.minute >= maxMinutes) {
@@ -44,10 +45,6 @@ class OptimizerWithDepthFirstSearch extends Optimizer {
 		int numRobotsRequested = 0;
 
 		ArrayList<String> robotList = clonedRobotStrategy.robotList;
-		if (useCalculator == true) {
-			Calculator calculator = new Calculator(clonedRobotStrategy);
-			robotList = calculator.calculateStrategy(clonedRobotStrategy);	
-		}
 
 		for (String robot : clonedRobotStrategy.robotList) {
 			logger.log("Checking " + robot);
@@ -76,11 +73,15 @@ class OptimizerWithDepthFirstSearch extends Optimizer {
 
 				ArrayList<RobotStrategy> returnedRobotStrategies = new ArrayList<RobotStrategy>();
 				if (clonedRobotStrategy.minute < maxMinutes) {
-					returnedRobotStrategies = depthFirstTraversal((RobotStrategy) newRobotStrategy.clone());
+					returnedRobotStrategies = depthFirstTraversal((RobotStrategy) newRobotStrategy.clone(), trace + "-" + clonedRobotStrategy.minute + "-" + robot);
 				}
 				else {
 					logger.log("depthFirstTraversal. Do not recurse. Time exceeded. " + clonedRobotStrategy.minute + " >= " + maxMinutes);
 					logger.log("depthFirstTraversal. Add to returnedRobotStrategies. " + newRobotStrategy);
+					if (newRobotStrategy.robots.get("geode").total >= 4) {
+						System.out.println( trace + "-" + newRobotStrategy.minute + "-" + robot);
+						System.out.println(newRobotStrategy);
+					}
 					returnedRobotStrategies.add(newRobotStrategy);
 				}
 

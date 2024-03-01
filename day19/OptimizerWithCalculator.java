@@ -25,14 +25,15 @@ class OptimizerWithCalculator extends Optimizer{
 			return robotStrategies;
 		}
 
-		robotStrategies = traverse(firstRobotStrategy);
+		robotStrategies = traverse(firstRobotStrategy, firstRobotStrategy.minute + "-start-");
 
 		return robotStrategies;
 	}
 
-	public ArrayList<RobotStrategy> traverse(RobotStrategy clonedRobotStrategy) throws Exception {
+	public ArrayList<RobotStrategy> traverse(RobotStrategy clonedRobotStrategy, String trace) throws Exception {
 		int maxGeodes = 0;
 
+		logger.log(trace);
 		ArrayList<RobotStrategy> bestRobotStrategies = new ArrayList<RobotStrategy>();
 
 		if (clonedRobotStrategy.minute >= maxMinutes) {
@@ -50,36 +51,40 @@ class OptimizerWithCalculator extends Optimizer{
 		for (String robot : robotList) {
 			logger.log("Checking " + robot);
 
-				RobotStrategy newRobotStrategy = (RobotStrategy) clonedRobotStrategy.clone();
-				newRobotStrategy.requestThisRobot(robot);
-				newRobotStrategy.collectResources();
+			RobotStrategy newRobotStrategy = (RobotStrategy) clonedRobotStrategy.clone();
+			newRobotStrategy.requestThisRobot(robot);
+			newRobotStrategy.collectResources();
 
-				ArrayList<RobotStrategy> returnedRobotStrategies = new ArrayList<RobotStrategy>();
-				if (clonedRobotStrategy.minute < maxMinutes) {
-					returnedRobotStrategies = traverse((RobotStrategy) newRobotStrategy.clone());
+			ArrayList<RobotStrategy> returnedRobotStrategies = new ArrayList<RobotStrategy>();
+			if (clonedRobotStrategy.minute < maxMinutes) {
+				returnedRobotStrategies = traverse((RobotStrategy) newRobotStrategy.clone(), trace + clonedRobotStrategy.minute + "-" + robot + "-");
+			}
+			else {
+				logger.log("traverse. Do not recurse. Time exceeded. " + clonedRobotStrategy.minute + " >= " + maxMinutes);
+				logger.log("traverse. Add to returnedRobotStrategies. " + newRobotStrategy);
+				if (newRobotStrategy.robots.get("geode").total >= 3) {
+					System.out.println( trace + "-" + newRobotStrategy.minute + "-" + robot + "-");
+					System.out.println(newRobotStrategy);
 				}
-				else {
-					logger.log("traverse. Do not recurse. Time exceeded. " + clonedRobotStrategy.minute + " >= " + maxMinutes);
-					logger.log("traverse. Add to returnedRobotStrategies. " + newRobotStrategy);
-					returnedRobotStrategies.add(newRobotStrategy);
-				}
+				returnedRobotStrategies.add(newRobotStrategy);
+			}
 
-				if (returnedRobotStrategies.size() > 0) {
-					returnedRobotStrategies = filterRobotStrategies(returnedRobotStrategies);
-					int returnedGeodeTotal = returnedRobotStrategies.get(0).robots.get("geode").total;
-					if (returnedGeodeTotal >= maxGeodes) {
-						if (returnedGeodeTotal > maxGeodes) {
-							bestRobotStrategies = new ArrayList<RobotStrategy>(0);
-							maxGeodes = returnedGeodeTotal;
+			if (returnedRobotStrategies.size() > 0) {
+				returnedRobotStrategies = filterRobotStrategies(returnedRobotStrategies);
+				int returnedGeodeTotal = returnedRobotStrategies.get(0).robots.get("geode").total;
+				if (returnedGeodeTotal >= maxGeodes) {
+					if (returnedGeodeTotal > maxGeodes) {
+						bestRobotStrategies = new ArrayList<RobotStrategy>(0);
+						maxGeodes = returnedGeodeTotal;
+						bestRobotStrategies.addAll(returnedRobotStrategies);
+					}
+					else {
+						if (!returnOneBestStrategy) {
 							bestRobotStrategies.addAll(returnedRobotStrategies);
-						}
-						else {
-							if (!returnOneBestStrategy) {
-								bestRobotStrategies.addAll(returnedRobotStrategies);
-							}
 						}
 					}
 				}
+			}
 		}
 
 		if (bestRobotStrategies.size() == 0) {
@@ -96,25 +101,26 @@ class OptimizerWithCalculator extends Optimizer{
 		float base = calculator.calcTimeToGeodeRobot();
 		ArrayList<String> out = new ArrayList<String>();
 		for (String robot : robotStrategy.robotList) {
+
 			if (robotStrategy.canBuildThisRobot(robot)) {
 
-				Robot current = robotStrategy.robots.get(robot);
+			Robot current = robotStrategy.robots.get(robot);
 
-				if (current.hasMaxRobots()) {
-					continue;
-				}
+			if (current.hasMaxRobots()) {
+				continue;
+			}
 
-				if (current.hasMaxStock()) {
-					continue;
-				}
+			if (current.hasMaxStock()) {
+				continue;
+			}
 
-				// "geode" is always best.
-				if (robot.equals("geode")) {
-					out = new ArrayList<String>();
-					out.add(robot);
-					logger.log("Return geode");
-					break;
-				}
+			// "geode" is always best.
+			if (robot.equals("geode")) {
+				out = new ArrayList<String>();
+				out.add(robot);
+				logger.log("Return geode");
+				break;
+			}
 
 				calculator = new Calculator((RobotStrategy) robotStrategy.clone());
 				float newCount = calculator.addRobotAndRecalc(robot);
