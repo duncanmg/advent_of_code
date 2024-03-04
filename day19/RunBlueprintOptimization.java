@@ -19,6 +19,12 @@ class RunBlueprintOptimization {
 		if (argMap.get("useCalculator") != null) {
 			optimizer = new OptimizerWithCalculator();
 		}
+		else if (argMap.get("useCache") != null) {
+			optimizer = new OptimizerWithCache();
+			if (argMap.get("useTrace") != null) {
+				optimizer.useTrace = true;
+			}
+		}
 
 		int maxMinutes = 0;
 		if (argMap.get("maxMinutes") != null) {

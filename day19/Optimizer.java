@@ -19,6 +19,8 @@ class Optimizer {
 
 	public int maxMinutes = 24;
 
+	public Boolean useTrace = false;
+
 	public ArrayList<RobotStrategy> bestRobotStrategies = new ArrayList<RobotStrategy>();
 
 	public boolean useCalculator = false;

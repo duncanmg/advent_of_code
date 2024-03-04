@@ -78,9 +78,10 @@ class Robot implements Cloneable, Comparable<Robot>{
         }
 
 	// Stock required to create 1 robot per minute for the remaining time.
+	// No point in requesting a robot in the last minute, it won't have time to collect anything.
 	public int calcMaxStock(int robotCost) {
 		int shortfallPerMinute = robotCost - numRobots;
-		int minutesRemaining = maxMinutes - minute;
+		int minutesRemaining = maxMinutes - minute - 1;
 		return shortfallPerMinute * minutesRemaining;
 	}
 

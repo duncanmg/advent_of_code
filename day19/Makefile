@@ -6,7 +6,7 @@ export CLASSPATH=.:${JAR_DIR}/junit/junit-4.10.jar:${JAR_DIR}/junit/junit-jupite
 
 all: application_classes test_classes TestRunner.class
 
-application_classes: Blueprint.class BlueprintFactory.class Calculator.class ClayRobot.class GeodeRobot.class NoneRobot.class ObsidianRobot.class Optimizer.class OreRobot.class Robot.class RobotStrategy.class RunBlueprintOptimization.class Stock.class StrategyIterator.class
+application_classes: Blueprint.class BlueprintFactory.class Calculator.class ClayRobot.class GeodeRobot.class NoneRobot.class ObsidianRobot.class Optimizer.class OreRobot.class Robot.class RobotStrategy.class RunBlueprintOptimization.class Stock.class StrategyIterator.class Cache.class
 
 test_classes: TestBlueprint.class TestBlueprintFactory.class TestCalculator.class TestOptimizer.class TestOptimizerBlueprintOne.class TestOptimizerVariousBlueprints.class TestRobotStrategy.class TestRobotStrategyBlueprintOne.class  TestStrategyIterator.class
 
@@ -35,7 +35,9 @@ Optimizer.class: Optimizer.java RobotStrategy.class
 
 OptimizerWithCalculator: OptimizerWithCalculator.java Optimizer.class
 
-OptimizerWithWithDepthFirstSearch: OptimizerWithWithDepthFirstSearch.java Optimizer.class
+OptimizerWithDepthFirstSearch: OptimizerWithDepthFirstSearch.java Optimizer.class
+
+OptimizerWithCache: OptimizerWithCache.java Optimizer.class
 
 OreRobot.class: OreRobot.java Robot.class
 
@@ -43,7 +45,7 @@ Robot.class: Robot.java
 
 RobotStrategy.class: RobotStrategy.java OreRobot.class ClayRobot.class ObsidianRobot.class GeodeRobot.class
 
-RunBlueprintOptimization.class: RunBlueprintOptimization.java Optimizer.class BlueprintFactory.class
+RunBlueprintOptimization.class: RunBlueprintOptimization.java Optimizer.class BlueprintFactory.class OptimizerWithCache.class OptimizerWithDepthFirstSearch.class OptimizerWithCalculator.class
 
 Stock.class: Stock.java
 
@@ -69,3 +71,4 @@ TestRunner.class: TestRunner.java test_classes
 
 TestStrategyIterator.class: TestStrategyIterator.java StrategyIterator.class
 
+Cache.class: Cache.java
