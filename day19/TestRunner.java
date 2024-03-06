@@ -13,7 +13,6 @@ public class TestRunner {
 	  testClasses.put("TestBlueprintFactory", TestBlueprintFactory.class);
 	  testClasses.put("TestBlueprint", TestBlueprint.class);
 	  testClasses.put("TestRobotStrategy", TestRobotStrategy.class);
-	  testClasses.put("TestStrategyIterator", TestStrategyIterator.class);
 	  testClasses.put("TestOptimizer", TestOptimizer.class);
 	  testClasses.put("TestOptimizerBlueprintOne", TestOptimizerBlueprintOne.class);
 	  testClasses.put("TestRobotStrategyBlueprintOne", TestRobotStrategyBlueprintOne.class);
