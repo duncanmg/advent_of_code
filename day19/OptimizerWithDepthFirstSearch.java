@@ -73,15 +73,26 @@ class OptimizerWithDepthFirstSearch extends Optimizer {
 
 				ArrayList<RobotStrategy> returnedRobotStrategies = new ArrayList<RobotStrategy>();
 				if (clonedRobotStrategy.minute < maxMinutes) {
-					returnedRobotStrategies = depthFirstTraversal((RobotStrategy) newRobotStrategy.clone(), trace + "-" + clonedRobotStrategy.minute + "-" + robot);
+					String newTrace= trace;
+					if (useTrace) {
+						newTrace += "-" + clonedRobotStrategy.minute + "-" + robot;
+					}
+					Boolean prune = clonedRobotStrategy.minute > pruneAfterMinutes 
+						&& clonedRobotStrategy.robots.get("geode").total < pruneBelowGeodeRobots;
+					// System.out.println("clonedRobotStrategy.minute " + clonedRobotStrategy.minute + " pruneAfterMinutes " + pruneAfterMinutes);
+					// System.out.println(" clonedRobotStrategy.robots.get(geode).total " +  clonedRobotStrategy.robots.get("geode").total + " pruneBelowGeodeRobots " + pruneBelowGeodeRobots);
+					if (!prune) {
+						// System.out.println("DO NOT PRUNE!");
+						returnedRobotStrategies = depthFirstTraversal((RobotStrategy) newRobotStrategy.clone(), newTrace);
+					}
 				}
 				else {
 					logger.log("depthFirstTraversal. Do not recurse. Time exceeded. " + clonedRobotStrategy.minute + " >= " + maxMinutes);
 					logger.log("depthFirstTraversal. Add to returnedRobotStrategies. " + newRobotStrategy);
-					if (newRobotStrategy.robots.get("geode").total >= 4) {
-						System.out.println( trace + "-" + newRobotStrategy.minute + "-" + robot);
-						System.out.println(newRobotStrategy);
-					}
+//					if (newRobotStrategy.robots.get("geode").total >= 4) {
+//						System.out.println( trace + "-" + newRobotStrategy.minute + "-" + robot);
+//						System.out.println(newRobotStrategy);
+//					}
 					returnedRobotStrategies.add(newRobotStrategy);
 				}
 

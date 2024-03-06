@@ -21,6 +21,10 @@ class Optimizer {
 
 	public Boolean useTrace = false;
 
+	public Integer pruneAfterMinutes = 600;
+
+	public Integer pruneBelowGeodeRobots = 1000;
+
 	public ArrayList<RobotStrategy> bestRobotStrategies = new ArrayList<RobotStrategy>();
 
 	public boolean useCalculator = false;

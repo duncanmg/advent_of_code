@@ -26,6 +26,14 @@ class RunBlueprintOptimization {
 			}
 		}
 
+		if (argMap.get("pruneAfterMinutes") != null) {
+                        optimizer.pruneAfterMinutes = Integer.parseInt(argMap.get("pruneAfterMinutes"));
+                }
+
+		if (argMap.get("pruneBelowGeodeRobots") != null) {
+                        optimizer.pruneBelowGeodeRobots = Integer.parseInt(argMap.get("pruneBelowGeodeRobots"));
+                }
+
 		int maxMinutes = 0;
 		if (argMap.get("maxMinutes") != null) {
 			maxMinutes = Integer.parseInt(argMap.get("maxMinutes"));
