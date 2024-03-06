@@ -118,6 +118,7 @@ public class TestOptimizer extends TestOptimizerBase {
 	}
 
 	public void testNumRobots(int numOreRobots, int numClayRobots, int numObsidianRobots, int numGeodeRobots) {
+		assertEquals(true, optimizer.bestRobotStrategies.size() > 0);
 		HashMap<String, Robot> robots = optimizer.bestRobotStrategies.get(0).robots;
 
 		logger.log("robots.get(\"ore\").numRobots = " + robots.get("ore").numRobots);

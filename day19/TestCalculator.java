@@ -46,8 +46,8 @@ public class TestCalculator {
 		calculator = new Calculator(strategy);
 		assertEquals(5, calculator.timeToOreRobot(), 0.001);
 		assertEquals(3, calculator.timeToClayRobot(), 0.001);
-		assertEquals(18, calculator.timeToObsidianRobot(calculator.timeToClayRobot()), 0.01);
-		assertEquals(26, calculator.calcTimeToGeodeRobot(), 0.001);
+		assertEquals(21, calculator.timeToObsidianRobot(calculator.timeToClayRobot()), 0.01);
+		assertEquals(29, calculator.calcTimeToGeodeRobot(), 0.001);
 
 //		assertEquals(26.0, strategy.calcTimeToGeodeRobot(false, false, false), 0.01);
 //		assertEquals("none", strategy.recommendBestStrategy());

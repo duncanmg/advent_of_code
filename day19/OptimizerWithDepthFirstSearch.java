@@ -25,15 +25,14 @@ class OptimizerWithDepthFirstSearch extends Optimizer {
 			return robotStrategies;
 		}
 
-		robotStrategies = depthFirstTraversal(firstRobotStrategy, firstRobotStrategy.minute + "-start");
+		robotStrategies = depthFirstTraversal(firstRobotStrategy, new HashMap<String, Boolean>());
 
 		return robotStrategies;
 	}
 
-	public ArrayList<RobotStrategy> depthFirstTraversal(RobotStrategy clonedRobotStrategy, String trace) throws Exception {
+	public ArrayList<RobotStrategy> depthFirstTraversal(RobotStrategy clonedRobotStrategy, HashMap<String, Boolean> robotsToSkip) throws Exception {
 		int maxGeodes = 0;
 
-		logger.log(trace);
 		ArrayList<RobotStrategy> bestRobotStrategies = new ArrayList<RobotStrategy>();
 
 		if (clonedRobotStrategy.minute >= maxMinutes) {
@@ -45,6 +44,7 @@ class OptimizerWithDepthFirstSearch extends Optimizer {
 		int numRobotsRequested = 0;
 
 		ArrayList<String> robotList = clonedRobotStrategy.robotList;
+		HashMap<String, Boolean> requestedRobots = new HashMap<String, Boolean>();
 
 		for (String robot : clonedRobotStrategy.robotList) {
 			logger.log("Checking " + robot);
@@ -73,17 +73,27 @@ class OptimizerWithDepthFirstSearch extends Optimizer {
 
 				ArrayList<RobotStrategy> returnedRobotStrategies = new ArrayList<RobotStrategy>();
 				if (clonedRobotStrategy.minute < maxMinutes) {
-					String newTrace= trace;
-					if (useTrace) {
-						newTrace += "-" + clonedRobotStrategy.minute + "-" + robot;
-					}
 					Boolean prune = clonedRobotStrategy.minute > pruneAfterMinutes 
 						&& clonedRobotStrategy.robots.get("geode").total < pruneBelowGeodeRobots;
 					// System.out.println("clonedRobotStrategy.minute " + clonedRobotStrategy.minute + " pruneAfterMinutes " + pruneAfterMinutes);
 					// System.out.println(" clonedRobotStrategy.robots.get(geode).total " +  clonedRobotStrategy.robots.get("geode").total + " pruneBelowGeodeRobots " + pruneBelowGeodeRobots);
 					if (!prune) {
 						// System.out.println("DO NOT PRUNE!");
-						returnedRobotStrategies = depthFirstTraversal((RobotStrategy) newRobotStrategy.clone(), newTrace);
+						if (robot.equals("none")) {
+							if (requestedRobots.isEmpty()) {
+								requestedRobots = robotsToSkip;
+							}
+							returnedRobotStrategies = depthFirstTraversal((RobotStrategy) newRobotStrategy.clone(), requestedRobots);
+						}
+						else {
+							if (robotsToSkip.containsKey(robot)){
+								// Skip this robot.
+							}
+							else{
+								returnedRobotStrategies = depthFirstTraversal((RobotStrategy) newRobotStrategy.clone(), new HashMap<String, Boolean>());
+								requestedRobots.put(robot, true);
+							}
+						}
 					}
 				}
 				else {
