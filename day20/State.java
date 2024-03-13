@@ -1,17 +1,17 @@
 class State {
 
 	public static void main(String[] args) {
-		State obj = new State(0, 0);
+		State obj = new State(0, 1);
 	}
 
-	public State(int cp, int v) {
-		currentPos = cp;
+	public State(int id, int v) {
+		this.id = id;
 		value = v;
 	}
 
 	final int value;
 
-	int currentPos;
+	final int id;
 
 	State leftState;
 
@@ -19,8 +19,8 @@ class State {
 
 	@Override
 	public String toString() {
-		return "leftCp: " + leftState.currentPos + " leftV: " + leftState.value 
-			+ " cP: " + currentPos + " v: " + value 
-			+ " rightCp: " + rightState.currentPos + " rightV: " + rightState.value;
+		return "leftV: " + leftState.value 
+			+ " v: " + value 
+			+ " rightV: " + rightState.value;
 	}
 }

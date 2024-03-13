@@ -6,7 +6,7 @@ all: application_classes test_classes TestRunner.class
 
 application_classes: RunMixer.class Mixer.class State.class
 
-test_classes: TestMixer.class TestState.class
+test_classes: TestMixer.class TestState.class TestExampleData.class
 
 .SUFFIXES: .java .class
 
@@ -22,3 +22,5 @@ TestRunner.class: TestRunner.java test_classes
 TestMixer.class: TestMixer.java Mixer.class State.class
 
 TestState.class: TestState.java State.class
+
+TestExampleData.class: TestExampleData.java Mixer.class

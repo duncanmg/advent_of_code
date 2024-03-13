@@ -15,6 +15,7 @@ class RunMixer {
 		Mixer mixer = new Mixer(dataFile);
 		mixer.mix();
 
+		mixer.logChain(0, "");
 	}
 
 	Logger logger = new Logger(this, true);

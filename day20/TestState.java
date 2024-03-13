@@ -20,7 +20,7 @@ public class TestState {
 		}
 
 	@Test public void TestConstructor01() {
-		State state = new State(1,2);
+		State state = new State(1, 1);
 		assertEquals("State", state.getClass().getName());
 	}
 

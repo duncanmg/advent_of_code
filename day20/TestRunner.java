@@ -12,6 +12,7 @@ public class TestRunner {
 
 	  testClasses.put("TestMixer", TestMixer.class);
 	  testClasses.put("TestState", TestState.class);
+	  testClasses.put("TestExampleData", TestExampleData.class);
 
 	  if (args.length > 0) {
 	  	for (int i=0; i<args.length; i++) {
