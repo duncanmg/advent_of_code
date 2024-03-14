@@ -54,6 +54,26 @@ public class TestExampleData {
 		testSingleStep(1, 1);
 	}
 
+	@Test public void TestStep02() throws Exception {
+		testSingleStep(2, 1);
+	}
+
+	@Test public void TestStep03() throws Exception {
+		testSingleStep(3, 1);
+	}
+
+	@Test public void TestStep04() throws Exception {
+		testSingleStep(4, 1);
+	}
+
+	@Test public void TestStep05() throws Exception {
+		testSingleStep(5, 1);
+	}
+
+	@Test public void TestStep06() throws Exception {
+		testSingleStep(6, 1);
+	}
+
 	void testSingleStep(int dataIndex, int startValue) throws Exception {
 
 		Mixer mixer = setUpMixer(dataIndex);

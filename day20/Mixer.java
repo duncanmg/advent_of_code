@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.util.*;
 
+// mixer = new Mixer("data.txt");
+// mixer.mix();
 class Mixer {
 
 	public static void main(String[] args) {
@@ -66,7 +68,14 @@ class Mixer {
 	}
 
 	void move(State state) {
-		moveByValue(state);
+
+		int distance = calculateDistance(state);
+
+		State newNeighbour = getStateByDistance(state, distance);
+
+		if (distance > 0) {
+			moveState(state, newNeighbour);
+		}
 	}
 
 	void logStates() {
@@ -75,158 +84,53 @@ class Mixer {
 		}
 	}
 
-	void moveByValue(State state) {
+	int calculateDistance(State state) {
 
-		int distance = state.value;
+		// Don't count the one which will be moved.
+		int circumference = states.size() - 1;
 
-		if (distance == 0) {
-			return;
+		int distance = Math.abs(state.value);
+
+		// Don't go round and round!
+		while (distance > circumference) {
+			distance -= circumference;
 		}
 
-		//		if (Math.abs(distance) == 1) {
-		//			moveOne(state);
-		//			return;
-		//		}
+		if (distance == 0) {
+			return 0;
+		}
 
-		State stateToBeSwapped = getStateByDistance(state, distance);
+		if (state.value < 0) {
+			// Keep it simple by always going right.
+			distance = circumference - distance;
+		}
 
-		superSwap(state, stateToBeSwapped);
+		logger.log("distance=" + distance);
 
-		//		State oldRightState = state.rightState;
-		//		State oldLeftState = state.leftState;
-		//		// logStates();
-		//
-		//		if (distance > 0) {
-		//
-		//			// Move right
-		//
-		//			logStates();
-		//			logger.log("00 UUUUUUUUUUUUUUUUUUUUUUUUUUUUU state=" + state);
-		//			logger.log("01 stateToBeSwapped=" + stateToBeSwapped);
-		//
-		//			state.rightState = stateToBeSwapped.rightState;
-		//
-		//			logger.log("01.1 oldRightState=" + oldRightState);
-		//
-		//			stateToBeSwapped.rightState = oldRightState;
-		//
-		//			logger.log("02");
-		//			logStates();
-		//
-		//			logger.log("03");
-		//			state.leftState = stateToBeSwapped.leftState;
-		//			stateToBeSwapped.leftState = oldLeftState;
-		//			logger.log("04");
-		//			logStates();
-		//
-		//			oldLeftState.rightState = stateToBeSwapped;
-		//			logger.log("05");
-		//			logStates();
-		//
-		//			logger.log("06");
-		//			state.rightState.leftState = state;
-		//
-		//			logger.log("07");
-		//			logStates();
-		//
-		//		}
-		//		else {
-		//
-		//			// Move left
-		//
-		//			state.leftState = stateToBeSwapped.leftState;
-		//			stateToBeSwapped.leftState = oldLeftState;
-		//			logStates();
-		//
-		//			state.rightState = stateToBeSwapped.rightState;
-		//			stateToBeSwapped.rightState = oldRightState;
-		//			logStates();
-		//
-		//			oldRightState.leftState = stateToBeSwapped;
-		//			logStates();
-		//
-		//			state.leftState.rightState = state;
-		//
-		//			logStates();
-		//
-		//		}
+		return distance;
 
 	}
 
-	//	// a and b must not be the same.
-	//	// a and b must not be adjacent.
-	//	void swapStates(State a, State b) {
-	//		State tmp;
-	//
-	//		logger.log("01 swapStates()");
-	//		logStates();
-	//		tmp = a.leftState;
-	//		a.leftState = b.leftState;
-	//		b.leftState = tmp;
-	//
-	//		logger.log("02 swapStates()");
-	//		logStates();
-	//
-	//		tmp = a.rightState;
-	//		a.rightState = b.rightState;
-	//		b.rightState = tmp;
-	//
-	//		logStates();
-	//		logger.log("03 swapStates()");
-	//
-	//		tmp = a.leftState.rightState;
-	//		a.leftState.rightState = b.leftState.rightState;
-	//		b.leftState.rightState = tmp;
-	//
-	//		logger.log("04 swapStates()");
-	//		logStates();
-	//
-	//		tmp = a.rightState.leftState;
-	//		a.rightState.leftState = b.rightState.leftState;
-	//		b.rightState.leftState = tmp;
-	//
-	//		logger.log("05 swapStates()");
-	//		logStates();
-	//
-	//		logger.log("06 swapStates()");
-	//	}
-
-	void superSwap(State a, State b) {
+	// Move "a" to be immediately right of "b".
+	void moveState(State a, State b) {
 
 		if (a.id == b.id) {
 			return;
 		}
 
-		State leftStateA = a.leftState;
-		if (leftStateA.id == b.id) {
-			leftStateA = leftStateA.leftState;
-		}
-
-		State leftStateB = b.leftState;
-		if (leftStateB.id == a.id) {
-			leftStateB = leftStateB.leftState;
-		}
-
-		logger.log("01 superSwap a.value=" + a.value + " b.value=" + b.value);
+		logger.log("01 moveState a.value=" + a.value + " b.value=" + b.value);
 		logStates();
-		// Remove both states from linked list.
+
 		unlinkState(a);
 
-		logger.log("02 superSwap. After unlinking a");
+		logger.log("02 moveState. After unlinking a");
 		logStates();
 
-		unlinkState(b);
-		logger.log("03 superSwap. After unlinking b");
+		linkState(b, a);
+		logger.log("04 moveState. After linking a. " + a.toString());
 		logStates();
 
-		logger.log("leftStateA " + leftStateA + " leftStateB " + leftStateB);
-		linkState(leftStateB, a);
-		logger.log("04 superSwap. After linking a. " + a.toString());
-		logStates();
-		linkState(leftStateA, b);
-		logger.log("05 superSwap. After linking b. " + b.toString());
-		logStates();
-		logger.log("06 End superSwap.");
+		logger.log("06 End moveState.");
 
 	}
 
@@ -238,136 +142,22 @@ class Mixer {
 		state.rightState = unlinked;
 	}
 
-	void linkState(State leftState, State state) {
+	void linkState(State destinationState, State state) {
 		State tmp;
-		logger.log("linkState Put " + state + " to the right of " + leftState);
 
-		tmp = leftState.rightState;
-		leftState.rightState.leftState = state;
-		leftState.rightState = state;
-		state.rightState = tmp;
-		state.leftState = leftState;
+			logger.log("linkState Put " + state + " to the right of " + destinationState);
+			tmp = destinationState.rightState;
+			destinationState.rightState.leftState = state;
+			destinationState.rightState = state;
+			state.rightState = tmp;
+			state.leftState = destinationState;
 	}
 
-	//	void swapAdjacentStates(State a, State b) {
-	//		State tmp;
-	//
-	//			logger.log("01 QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ");
-	//		// Same states
-	//		if (a.id == b.id) {
-	//			return;
-	//		}
-	//
-	//			logger.log("02 QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ");
-	//		// Exactly two states in list
-	//		if (a.rightState.id == b.id && a.leftState.id == b.id) {
-	//			b.rightState = a;
-	//			a.leftState = b;
-	//			b.leftState = a;
-	//			a.rightState = b;
-	//			return;
-	//		}
-	//
-	//			logger.log("03 QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ");
-	//		// Adjacent on one side
-	//		if (a.rightState.id == b.id) {
-	//			logger.log("04 QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ");
-	//			tmp = a.leftState;
-	//			a.rightState = b.rightState;
-	//			b.rightState = a;
-	//			a.leftState = b;
-	//			b.leftState = tmp;
-	//			b.leftState.rightState = b;
-	//			return;
-	//		}
-	//
-	//		tmp = a.leftState.rightState;
-	//		a.leftState.rightState = b.leftState.rightState;
-	//		b.leftState.rightState = tmp;
-	//
-	//		tmp = a.rightState.leftState;
-	//		a.rightState.leftState = b.rightState.leftState;
-	//		b.rightState.leftState = tmp;
-	//
-	//		tmp = a.leftState;
-	//		a.leftState = b.leftState;
-	//		b.leftState = tmp;
-	//
-	//		tmp = a.rightState;
-	//		a.rightState = b.rightState;
-	//		b.rightState = tmp;
-	//
-	//		logStates();
-	//	}
-
-	//	void moveOne(State state) {
-	//
-	//		logger.log("Start MoveOne");
-	//		State oldRightState = state.rightState;
-	//		State oldLeftState = state.leftState;
-	//		// logStates();
-	//
-	//		if (state.value > 0) {
-	//
-	//			// Move right
-	//
-	//			// logStates();
-	//			// logger.log("00 state=" + state);
-	//			state.rightState = oldRightState.rightState;
-	//			// logger.log("01.1 oldRightState=" + oldRightState);
-	//			oldRightState.rightState = state;
-	//			// logger.log("02");
-	//			// logStates();
-	//
-	//			logger.log("03");
-	//			state.leftState = oldRightState;
-	//			oldRightState.leftState = oldLeftState;
-	//			// logger.log("04");
-	//			// logStates();
-	//
-	//			oldLeftState.rightState = oldRightState;
-	//			////  logger.log("05");
-	//			// logStates();
-	//
-	//			// logger.log("06");
-	//			state.rightState.leftState = state;
-	//
-	//			// logger.log("07");
-	//			// logStates();
-	//	}
-	//	else {
-	//			// Move left
-	//
-	//			state.leftState = oldLeftState.leftState;
-	//			oldLeftState.leftState = state;
-	//			logStates();
-	//
-	//			state.rightState = oldLeftState;
-	//			oldLeftState.rightState = oldRightState;
-	//			logStates();
-	//
-	//			oldRightState.leftState = oldLeftState;
-	//			logStates();
-	//
-	//			state.leftState.rightState = state;
-	//
-	//			logStates();
-	//	}
-	//}
 	State getStateByDistance(State state, int distance) {
 		State candidate = state;
-		boolean goRight = distance > 0;
-		// logger.log("getStateByDistance state: " + state.toString() + " distance: " + distance);
 		for (int i=0; i<Math.abs(distance); i++) {
-			if (goRight) {
-				// logger.log("getStateByDistance i=" + i + " candidate=" + candidate.rightState.toString());
 				candidate = candidate.rightState;
-			}
-			else {
-				candidate = candidate.leftState;
-			}
 		}
-		// logger.log("getStateByDistance returning " + candidate.toString());
 		return candidate;
 	}
 

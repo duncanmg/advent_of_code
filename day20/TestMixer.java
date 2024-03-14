@@ -2,10 +2,6 @@
 import java.util.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
-// import static org.junit.Assert.assertEquals;
-// import static org.junit.Assert.assertArrayEquals;
-// import static org.junit.Assert.assertTrue;
-// import static org.junit.Assert.assertFalse;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -64,207 +60,197 @@ public class TestMixer {
 		return mixer;
 	}
 
-//	@Test public void TestMoveOne01() {
-//
-//		Mixer mixer = setUpMixer();
-//
-//		assertEquals("leftV: 30 v: 10 rightV: 20", mixer.states.get(0).toString());
-//		assertEquals("leftV: 10 v: 20 rightV: 30", mixer.states.get(1).toString());
-//		assertEquals("leftV: 20 v: 30 rightV: 10", mixer.states.get(2).toString());
-//
-//	}
-//
-//	@Test public void TestMoveOneRight() {
-//
-//		Mixer mixer = setUpMixer(1, 20, 30);
-//
-//		mixer.moveByValue(mixer.states.get(0));
-//		ArrayList<State> states = mixer.states;
-//
-//		// Hasn't moved physically.
-//		// Has moved logically.
-//
-//		logger.log(states.get(1).toString());
-//		assertEquals("leftV: 30 v: 20 rightV: 1", states.get(1).toString());
-//		assertEquals("leftV: 20 v: 1 rightV: 30", states.get(0).toString());
-//		assertEquals("leftV: 1 v: 30 rightV: 20", states.get(2).toString());
-//
-//	}
-//
-//	@Test public void TestMoveOneLeft() {
-//
-//		Mixer mixer = setUpMixer(-1, 20, 30);
-//
-//		mixer.moveByValue(mixer.states.get(0));
-//		ArrayList<State> states = mixer.states;
-//
-//		// Hasn't moved physically.
-//		// Has moved logically.
-//
-//		logger.log(states.get(1).toString());
-//		assertEquals("leftV: -1 v: 30 rightV: 20", states.get(2).toString());
-//		assertEquals("leftV: 30 v: 20 rightV: -1", states.get(1).toString());
-//		assertEquals("leftV: 20 v: -1 rightV: 30", states.get(0).toString());
-//
-//	}
-//
+	@Test public void TestMoveOneRight() {
+
+		Mixer mixer = setUpMixer(1, 20, 30);
+
+		mixer.move(mixer.states.get(0));
+		ArrayList<State> states = mixer.states;
+
+		// Hasn't moved physically.
+		// Has moved logically.
+
+		logger.log(states.get(1).toString());
+		assertEquals("leftV: 30 v: 20 rightV: 1", states.get(1).toString());
+		assertEquals("leftV: 20 v: 1 rightV: 30", states.get(0).toString());
+		assertEquals("leftV: 1 v: 30 rightV: 20", states.get(2).toString());
+
+	}
+
+	@Test public void TestMoveOneLeft() {
+
+		Mixer mixer = setUpMixer(-1, 20, 30);
+
+		mixer.move(mixer.states.get(0));
+		ArrayList<State> states = mixer.states;
+
+		// Hasn't moved physically.
+		// Has moved logically.
+
+		logger.log(states.get(1).toString());
+		assertEquals("leftV: -1 v: 30 rightV: 20", states.get(2).toString());
+		assertEquals("leftV: 30 v: 20 rightV: -1", states.get(1).toString());
+		assertEquals("leftV: 20 v: -1 rightV: 30", states.get(0).toString());
+
+	}
+
 	// Move one element 2 steps to the right. No wrapping.
-	@Test public void TestSwapStates00() {
+	@Test public void TestSuperSwap00() {
 		Mixer mixer = new Mixer(new ArrayList<Integer>(Arrays.asList(10, 2, 30, 40, 50)));
 		ArrayList<State> states = mixer.states;
 
-		logger.log("Start TestSwapStates00()");
-		logChain(mixer, 10, "Before swapStates");
+		logger.log("Start TestSuperSwap00()");
+		logChain(mixer, 10, "Before moveState");
 
-		mixer.superSwap(states.get(1), states.get(3));
+		mixer.moveState(states.get(1), states.get(3));
 
-		logChain(mixer, 10, "After swapStates");
+		logChain(mixer, 10, "After moveState");
 
-		assertEquals("leftV: 50 v: 10 rightV: 40", states.get(0).toString());
-		assertEquals("leftV: 30 v: 2 rightV: 50", states.get(1).toString());
-		assertEquals("leftV: 40 v: 30 rightV: 2", states.get(2).toString());
-		assertEquals("leftV: 10 v: 40 rightV: 30", states.get(3).toString());
+		assertEquals("leftV: 50 v: 10 rightV: 30", states.get(0).toString());
+		assertEquals("leftV: 40 v: 2 rightV: 50", states.get(1).toString());
+		assertEquals("leftV: 10 v: 30 rightV: 40", states.get(2).toString());
+		assertEquals("leftV: 30 v: 40 rightV: 2", states.get(3).toString());
 		assertEquals("leftV: 2 v: 50 rightV: 10", states.get(4).toString());
 
-		logger.log("End TestSwapStates00()");
+		logger.log("End TestSuperSwap00()");
 	}
 
 	// Move one element 2 steps to the left. No wrapping.
-	@Test public void TestSwapStates01() {
+	@Test public void TestSuperSwap01() {
 		Mixer mixer = new Mixer(new ArrayList<Integer>(Arrays.asList(10, 20, 30, -2, 50)));
 		ArrayList<State> states = mixer.states;
 
-		logger.log("Start TestSwapStates01()");
-		logChain(mixer, 10, "Before swapStates");
+		logger.log("Start TestSuperSwap01()");
+		logChain(mixer, 10, "Before moveState");
 
-		mixer.superSwap(states.get(1), states.get(3));
+		mixer.move(states.get(3));
 
-		logChain(mixer, 10, "After swapStates");
+		logChain(mixer, 10, "After moveState");
 
 		assertEquals("leftV: 50 v: 10 rightV: -2", states.get(0).toString());
-		assertEquals("leftV: 30 v: 20 rightV: 50", states.get(1).toString());
-		assertEquals("leftV: -2 v: 30 rightV: 20", states.get(2).toString());
-		assertEquals("leftV: 10 v: -2 rightV: 30", states.get(3).toString());
-		assertEquals("leftV: 20 v: 50 rightV: 10", states.get(4).toString());
+		assertEquals("leftV: -2 v: 20 rightV: 30", states.get(1).toString());
+		assertEquals("leftV: 20 v: 30 rightV: 50", states.get(2).toString());
+		assertEquals("leftV: 10 v: -2 rightV: 20", states.get(3).toString());
+		assertEquals("leftV: 30 v: 50 rightV: 10", states.get(4).toString());
 
-		logger.log("End TestSwapStates01()");
+		logger.log("End TestSuperSwap01()");
 	}
 
 	// Move one element 2 steps to the right. With wrapping.
-	@Test public void TestSwapStates02() {
+	@Test public void TestSuperSwap02() {
 		Mixer mixer = new Mixer(new ArrayList<Integer>(Arrays.asList(10, 20, 30, 2, 50)));
 		ArrayList<State> states = mixer.states;
 
-		logger.log("Start TestSwapStates02()");
-		logChain(mixer, 10, "Before swapStates");
+		logger.log("Start TestSuperSwap02()");
+		logChain(mixer, 10, "Before moveState");
 
-		mixer.superSwap(states.get(3), states.get(0));
+		mixer.moveState(states.get(3), states.get(0));
 
-		logChain(mixer, 10, "After swapStates");
+		logChain(mixer, 10, "After moveState");
 
-		assertEquals("leftV: 30 v: 10 rightV: 50", states.get(0).toString());
+		assertEquals("leftV: 50 v: 10 rightV: 2", states.get(0).toString());
 		assertEquals("leftV: 2 v: 20 rightV: 30", states.get(1).toString());
-		assertEquals("leftV: 20 v: 30 rightV: 10", states.get(2).toString());
-		assertEquals("leftV: 50 v: 2 rightV: 20", states.get(3).toString());
-		assertEquals("leftV: 10 v: 50 rightV: 2", states.get(4).toString());
+		assertEquals("leftV: 20 v: 30 rightV: 50", states.get(2).toString());
+		assertEquals("leftV: 10 v: 2 rightV: 20", states.get(3).toString());
+		assertEquals("leftV: 30 v: 50 rightV: 10", states.get(4).toString());
 
-		logger.log("End TestSwapStates02()");
+		logger.log("End TestSuperSwap02()");
 	}
 
 	// Move one element 2 steps to the left. With wrapping.
-	@Test public void TestSwapStates03() {
+	@Test public void TestSuperSwap03() {
 		Mixer mixer = new Mixer(new ArrayList<Integer>(Arrays.asList(10, -2, 30, 40, 50)));
 		ArrayList<State> states = mixer.states;
 
-		logger.log("Start TestSwapStates03()");
-		logChain(mixer, 10, "Before swapStates");
+		logger.log("Start TestSuperSwap03()");
+		logChain(mixer, 10, "Before moveState");
 
-		mixer.superSwap(states.get(1), states.get(4));
+		mixer.move(states.get(1));
 
-		logChain(mixer, 10, "After swapStates");
+		logChain(mixer, 10, "After moveState");
 
-		assertEquals("leftV: -2 v: 10 rightV: 50", states.get(0).toString());
-		assertEquals("leftV: 40 v: -2 rightV: 10", states.get(1).toString());
-		assertEquals("leftV: 50 v: 30 rightV: 40", states.get(2).toString());
+		assertEquals("leftV: 50 v: 10 rightV: 30", states.get(0).toString());
+		assertEquals("leftV: 40 v: -2 rightV: 50", states.get(1).toString());
+		assertEquals("leftV: 10 v: 30 rightV: 40", states.get(2).toString());
 		assertEquals("leftV: 30 v: 40 rightV: -2", states.get(3).toString());
-		assertEquals("leftV: 10 v: 50 rightV: 30", states.get(4).toString());
+		assertEquals("leftV: -2 v: 50 rightV: 10", states.get(4).toString());
 
-		logger.log("End TestSwapStates03()");
+		logger.log("End TestSuperSwap03()");
 	}
 
 	// Same state.
-	@Test public void TestSwapStates04() {
+	@Test public void TestSuperSwap04() {
 		Mixer mixer = new Mixer(new ArrayList<Integer>(Arrays.asList(10, 2, 30)));
 		ArrayList<State> states = mixer.states;
 
-		logger.log("Start TestSwapStates04()");
-		logChain(mixer, 10, "Before swapStates");
+		logger.log("Start TestSuperSwap04()");
+		logChain(mixer, 10, "Before moveState");
 
-		mixer.superSwap(states.get(0), states.get(0));
+		mixer.moveState(states.get(0), states.get(0));
 
-		logChain(mixer, 10, "After swapStates");
+		logChain(mixer, 10, "After moveState");
 
 		assertEquals("leftV: 30 v: 10 rightV: 2", states.get(0).toString());
 		assertEquals("leftV: 10 v: 2 rightV: 30", states.get(1).toString());
 		assertEquals("leftV: 2 v: 30 rightV: 10", states.get(2).toString());
 
-		logger.log("End TestSwapStates04()");
+		logger.log("End TestSuperSwap04()");
 	}
 
 	// Move one element 2 steps to the right. Short list. With wrapping and overlap.
-	@Test public void TestSwapStates05() {
+	@Test public void TestSuperSwap05() {
 		Mixer mixer = new Mixer(new ArrayList<Integer>(Arrays.asList(10, 2, 30)));
 		ArrayList<State> states = mixer.states;
 
-		logger.log("Start TestSwapStates05()");
-		logChain(mixer, 10, "Before swapStates");
+		logger.log("Start TestSuperSwap05()");
+		logChain(mixer, 10, "Before moveState");
 
-		mixer.superSwap(states.get(1), states.get(0));
+		mixer.moveState(states.get(1), states.get(0));
 
-		logChain(mixer, 10, "After swapStates");
+		logChain(mixer, 10, "After moveState");
 
 		assertEquals("leftV: 30 v: 10 rightV: 2", states.get(0).toString());
 		assertEquals("leftV: 10 v: 2 rightV: 30", states.get(1).toString());
 		assertEquals("leftV: 2 v: 30 rightV: 10", states.get(2).toString());
 
-		logger.log("End TestSwapStates05()");
+		logger.log("End TestSuperSwap05()");
 	}
 
 	// Move one element 2 steps to the left. Short list. With wrapping and overlap.
-	@Test public void TestSwapStates06() {
+	@Test public void TestSuperSwap06() {
 		Mixer mixer = new Mixer(new ArrayList<Integer>(Arrays.asList(10, -2, 30)));
 		ArrayList<State> states = mixer.states;
 
-		logger.log("Start TestSwapStates06()");
-		logChain(mixer, 10, "Before swapStates");
+		logger.log("Start TestSuperSwap06()");
+		logChain(mixer, 10, "Before moveState");
 
-		mixer.superSwap(states.get(1), states.get(0));
+		mixer.move(states.get(1));
 
-		logChain(mixer, 10, "After swapStates");
+		logChain(mixer, 10, "After moveState");
 
 		assertEquals("leftV: 30 v: 10 rightV: -2", states.get(0).toString());
 		assertEquals("leftV: 10 v: -2 rightV: 30", states.get(1).toString());
 		assertEquals("leftV: -2 v: 30 rightV: 10", states.get(2).toString());
 
-		logger.log("End TestSwapStates06()");
+		logger.log("End TestSuperSwap06()");
 	}
 
-// This follows the chain (linked list) thus giving a more readable output.
-void logChain(Mixer mixer, int startValue, String msg) {
-	int startIndex = -1;
-	for (int i=0; i<mixer.states.size(); i++) {
-		State candidate = mixer.states.get(i);
-		if (candidate.value == startValue) {
-			startIndex = i;
+	// This follows the chain (linked list) thus giving a more readable output.
+	void logChain(Mixer mixer, int startValue, String msg) {
+		int startIndex = -1;
+		for (int i=0; i<mixer.states.size(); i++) {
+			State candidate = mixer.states.get(i);
+			if (candidate.value == startValue) {
+				startIndex = i;
+			}
 		}
+		State state = mixer.states.get(startIndex);
+		logger.log("---- " + msg);
+		for (int i=0; i<mixer.states.size(); i++) {
+			logger.log(state.toString());
+			state = state.rightState;
+		}
+		logger.log("----");
 	}
-	State state = mixer.states.get(startIndex);
-	logger.log("---- " + msg);
-	for (int i=0; i<mixer.states.size(); i++) {
-		logger.log(state.toString());
-		state = state.rightState;
-	}
-	logger.log("----");
-}
 
 }
