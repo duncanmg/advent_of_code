@@ -12,25 +12,28 @@ class Mixer {
 	public Mixer() {
 	}
 
-	public Mixer(ArrayList<Integer> nums) {
+	public Mixer(ArrayList<Long> nums) {
 		initStates(nums);
 	}
+
+	long encryptionKey = 811589153;
 
 	public Mixer(String dataFile) {
 		dataObj = new Data(dataFile);
 		ArrayList<String> dataStrings = dataObj.getData(dataFile);
-		ArrayList<Integer> nums = new ArrayList<Integer>(0);
+		ArrayList<Long> nums = new ArrayList<Long>(0);
 
 		for (String s : dataStrings) {
-			nums.add(Integer.parseInt(s));
+			nums.add(Long.parseLong(s));
 		}
 
 		initStates(nums);
 	}
 
-	void initStates(ArrayList<Integer> nums) {
+	void initStates(ArrayList<Long> nums) {
 		for (int i=0; i < nums.size(); i++) {
-			State state = new State(i+1, nums.get(i));
+			long num =  nums.get(i) * encryptionKey;
+			State state = new State(i+1, num);
 			if (i>0) {
 				state.leftState = states.get(i-1);
 				states.get(i-1).rightState = state;
@@ -42,16 +45,20 @@ class Mixer {
 		states.get(size - 1).rightState = states.get(0);
 	}
 
+	// The maximum value of long is 9,223,372,036,854,775,807
+
 	ArrayList<State> states = new ArrayList<State>();
 
 	Data dataObj;
 
 	Logger logger = new Logger(this, true);
 
+	// Mixes the set of numbers exactly once. Does not change the physical order of the numbers, so
+	// if it is run for a second time, it will mix the numbers in the same order.
 	void mix() throws Exception{
 		for (State state : states) {
 			move(state);
-			logChain(1, "CURRENT");
+			logChain(state.value, "CURRENT");
 		}
 
 		int indexOfValueZero = getIndexOfState(0);
@@ -69,7 +76,7 @@ class Mixer {
 
 	void move(State state) {
 
-		int distance = calculateDistance(state);
+		long distance = calculateDistance(state);
 
 		State newNeighbour = getStateByDistance(state, distance);
 
@@ -84,12 +91,12 @@ class Mixer {
 		}
 	}
 
-	int calculateDistance(State state) {
+	long calculateDistance(State state) {
 
 		// Don't count the one which will be moved.
 		int circumference = states.size() - 1;
 
-		int distance = Math.abs(state.value);
+		long distance = Math.abs(state.value);
 
 		// Don't go round and round!
 		while (distance > circumference) {
@@ -153,7 +160,7 @@ class Mixer {
 			state.leftState = destinationState;
 	}
 
-	State getStateByDistance(State state, int distance) {
+	State getStateByDistance(State state, long distance) {
 		State candidate = state;
 		for (int i=0; i<Math.abs(distance); i++) {
 				candidate = candidate.rightState;
@@ -162,7 +169,7 @@ class Mixer {
 	}
 
 	// Beware! Only value 0 is guaranteed to be unique.
-	int getIndexOfState(int target) throws Exception {
+	int getIndexOfState(long target) throws Exception {
 		for (int i=0; i<states.size(); i++) {
 			State state = states.get(i);
 			if (state.value == target) {
@@ -173,7 +180,7 @@ class Mixer {
 	}
 
 	// This follows the chain (linked list) thus giving a more readable output.
-	void logChain(int startValue, String msg) {
+	void logChain(long startValue, String msg) {
 
 		ArrayList<State> states = getChain(startValue, msg);
 
@@ -186,7 +193,7 @@ class Mixer {
 
 	}
 
-	ArrayList<State> getChain(int startValue, String msg) {
+	ArrayList<State> getChain(long startValue, String msg) {
 		ArrayList<State> out = new ArrayList<State>();
 
 		int startIndex = -1;
@@ -205,9 +212,9 @@ class Mixer {
 		return out;
 	}
 
-	ArrayList<Integer> getChainAsIntegers(int startValue, String msg) {
+	ArrayList<Long> getChainAsIntegers(long startValue, String msg) {
 
-		ArrayList<Integer> out = new ArrayList<Integer>();
+		ArrayList<Long> out = new ArrayList<Long>();
 
 		ArrayList<State> states = getChain(startValue, msg);
 

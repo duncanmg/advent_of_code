@@ -19,19 +19,37 @@ public class TestExampleData {
 
 	Logger logger = new Logger(this, true);
 
-	ArrayList<ArrayList<Integer>> data = new ArrayList<ArrayList<Integer>>(
-			Arrays.asList(new ArrayList<Integer>(Arrays.asList(1, 2, -3, 3, -2, 0, 4)),
-				new ArrayList<Integer>(Arrays.asList(2, 1, -3, 3, -2, 0, 4)),
-				new ArrayList<Integer>(Arrays.asList(1, -3, 2, 3, -2, 0, 4)),
-				new ArrayList<Integer>(Arrays.asList(1, 2, 3, -2, -3, 0, 4)),
-				new ArrayList<Integer>(Arrays.asList(1, 2, -2, -3, 0, 3, 4)),
-				new ArrayList<Integer>(Arrays.asList(1, 2, -3, 0, 3, 4, -2)),
-				new ArrayList<Integer>(Arrays.asList(1, 2, -3, 0, 3, 4, -2)),
-				new ArrayList<Integer>(Arrays.asList(1, 2, -3, 4, 0, 3, -2)))
-			);
+	ArrayList<ArrayList<Long>> data = new ArrayList<ArrayList<Long>>();
 
 	// Stes in their original order. Used to determine which state to mix next.
 	ArrayList<State> baseStates = new ArrayList<State>();
+
+	void setUpData() {
+		long[] nums = {1, 2, -3, 3, -2, 0, 4};
+		data.add(arrayListLong(nums));
+
+		nums = new long[] {2, 1, -3, 3, -2, 0, 4};
+		data.add(arrayListLong(nums));
+
+		nums = new long[] {1, -3, 2, 3, -2, 0, 4};
+		data.add(arrayListLong(nums));
+
+		nums = new long[] {1, 2, 3, -2, -3, 0, 4};
+		data.add(arrayListLong(nums));
+
+		nums = new long[] {1, 2, -2, -3, 0, 3, 4};
+		data.add(arrayListLong(nums));
+
+		nums = new long[] {1, 2, -3, 0, 3, 4, -2};
+		data.add(arrayListLong(nums));
+
+		nums = new long[] {1, 2, -3, 0, 3, 4, -2};
+		data.add(arrayListLong(nums));
+
+		nums = new long[] {1, 2, -3, 4, 0, 3, -2};
+		data.add(arrayListLong(nums));
+		
+	}
 
 	@Before
 		public void setUp() throws Exception {
@@ -74,11 +92,11 @@ public class TestExampleData {
 		testSingleStep(6, 1);
 	}
 
-	void testSingleStep(int dataIndex, int startValue) throws Exception {
+	void testSingleStep(int dataIndex, long startValue) throws Exception {
 
 		Mixer mixer = setUpMixer(dataIndex);
 
-		ArrayList<Integer> input = data.get(dataIndex);
+		ArrayList<Long> input = data.get(dataIndex);
 
 		// baseStates gives us the State to mix next. value is correct
 		// but links may be out of date.
@@ -93,10 +111,10 @@ public class TestExampleData {
 
 		logger.log("Input:\t\t" + input.toString());
 
-		ArrayList<Integer> expected = data.get(dataIndex+1);
+		ArrayList<Long> expected = data.get(dataIndex+1);
 		logger.log("Expected:\t" +expected.toString());
 
-		ArrayList<Integer> got = mixer.getChainAsIntegers(startValue, "");
+		ArrayList<Long> got = mixer.getChainAsIntegers(startValue, "");
 		logger.log("Got:\t\t" +got.toString());
 
 		assertEquals(expected, got);
@@ -113,5 +131,13 @@ public class TestExampleData {
 
 		return mixer;
 	}
+
+        ArrayList<Long> arrayListLong(long[] nums) {
+                ArrayList<Long> out = new ArrayList<Long>();
+                for (int i=0; i<nums.length; i++) {
+                        out.add(nums[i]);
+                }
+                return out;
+        }
 
 }

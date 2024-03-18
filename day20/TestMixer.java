@@ -33,10 +33,10 @@ public class TestMixer {
 	}
 
 	@Test public void TestConstructor03() {
-		ArrayList<Integer> nums = new ArrayList<Integer>();
+		ArrayList<Long> nums = new ArrayList<Long>();
 
-		nums.add(1);
-		nums.add(2);
+		nums.add((long)1);
+		nums.add((long)2);
 
 		Mixer mixer = new Mixer(nums);
 		assertEquals("Mixer", mixer.getClass().getName());
@@ -47,8 +47,8 @@ public class TestMixer {
 		return setUpMixer(10, 20, 30);
 	}
 
-	Mixer setUpMixer(int x, int y, int z) {
-		ArrayList<Integer> nums = new ArrayList<Integer>();
+	Mixer setUpMixer(long x, long y, long z) {
+		ArrayList<Long> nums = new ArrayList<Long>();
 
 		nums.add(x);
 		nums.add(y);
@@ -96,7 +96,8 @@ public class TestMixer {
 
 	// Move one element 2 steps to the right. No wrapping.
 	@Test public void TestSuperSwap00() {
-		Mixer mixer = new Mixer(new ArrayList<Integer>(Arrays.asList(10, 2, 30, 40, 50)));
+		long[] nums = {10, 2, 30, 40, 50};
+		Mixer mixer = new Mixer(arrayListLong(nums));
 		ArrayList<State> states = mixer.states;
 
 		logger.log("Start TestSuperSwap00()");
@@ -117,7 +118,8 @@ public class TestMixer {
 
 	// Move one element 2 steps to the left. No wrapping.
 	@Test public void TestSuperSwap01() {
-		Mixer mixer = new Mixer(new ArrayList<Integer>(Arrays.asList(10, 20, 30, -2, 50)));
+		long[] nums = {10, 20, 30, -2, 50};
+		Mixer mixer = new Mixer(arrayListLong(nums));
 		ArrayList<State> states = mixer.states;
 
 		logger.log("Start TestSuperSwap01()");
@@ -138,7 +140,8 @@ public class TestMixer {
 
 	// Move one element 2 steps to the right. With wrapping.
 	@Test public void TestSuperSwap02() {
-		Mixer mixer = new Mixer(new ArrayList<Integer>(Arrays.asList(10, 20, 30, 2, 50)));
+		long[] nums = {10, 20, 30, 2, 50};
+		Mixer mixer = new Mixer(arrayListLong(nums));
 		ArrayList<State> states = mixer.states;
 
 		logger.log("Start TestSuperSwap02()");
@@ -159,7 +162,8 @@ public class TestMixer {
 
 	// Move one element 2 steps to the left. With wrapping.
 	@Test public void TestSuperSwap03() {
-		Mixer mixer = new Mixer(new ArrayList<Integer>(Arrays.asList(10, -2, 30, 40, 50)));
+		long[] nums = {10, -2, 30, 40, 50};
+		Mixer mixer = new Mixer(arrayListLong(nums));
 		ArrayList<State> states = mixer.states;
 
 		logger.log("Start TestSuperSwap03()");
@@ -180,7 +184,8 @@ public class TestMixer {
 
 	// Same state.
 	@Test public void TestSuperSwap04() {
-		Mixer mixer = new Mixer(new ArrayList<Integer>(Arrays.asList(10, 2, 30)));
+		long[] nums = {10, 2, 30};
+		Mixer mixer = new Mixer(arrayListLong(nums));
 		ArrayList<State> states = mixer.states;
 
 		logger.log("Start TestSuperSwap04()");
@@ -199,7 +204,8 @@ public class TestMixer {
 
 	// Move one element 2 steps to the right. Short list. With wrapping and overlap.
 	@Test public void TestSuperSwap05() {
-		Mixer mixer = new Mixer(new ArrayList<Integer>(Arrays.asList(10, 2, 30)));
+		long[] nums = {10, 2, 30};
+		Mixer mixer = new Mixer(arrayListLong(nums));
 		ArrayList<State> states = mixer.states;
 
 		logger.log("Start TestSuperSwap05()");
@@ -218,7 +224,8 @@ public class TestMixer {
 
 	// Move one element 2 steps to the left. Short list. With wrapping and overlap.
 	@Test public void TestSuperSwap06() {
-		Mixer mixer = new Mixer(new ArrayList<Integer>(Arrays.asList(10, -2, 30)));
+		long[] nums = {10, -2, 30};
+		Mixer mixer = new Mixer(arrayListLong(nums));
 		ArrayList<State> states = mixer.states;
 
 		logger.log("Start TestSuperSwap06()");
@@ -253,4 +260,11 @@ public class TestMixer {
 		logger.log("----");
 	}
 
+	ArrayList<Long> arrayListLong(long[] nums) {
+		ArrayList<Long> out = new ArrayList<Long>();
+		for (int i=0; i<nums.length; i++) {
+			out.add(nums[i]);
+		}
+		return out;
+	}
 }

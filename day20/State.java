@@ -4,12 +4,12 @@ class State {
 		State obj = new State(0, 1);
 	}
 
-	public State(int id, int v) {
+	public State(int id, long v) {
 		this.id = id;
 		value = v;
 	}
 
-	final int value;
+	final long value;
 
 	final int id;
 

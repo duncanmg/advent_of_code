@@ -13,7 +13,9 @@ class RunMixer {
 		String dataFile = argMap.get("dataFile");
 
 		Mixer mixer = new Mixer(dataFile);
-		mixer.mix();
+		for (int i=0; i<10; i++) {
+			mixer.mix();
+		}
 
 		mixer.logChain(0, "");
 	}
