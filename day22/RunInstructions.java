@@ -15,11 +15,23 @@ class RunInstructions {
 			return;
 		}
 		loadData(args);
+
+		layout.moveToOrigin();
+
 		run();
 	}
 
+	// This is the Layout object. The layout data can be accessed as layout.layout.
 	Layout layout = new Layout();
 
+	// The string of instructions eg 10R5L2
+	String instructions = "";
+
+	// Pointer used by getNextInstruction().
+	// Holds the index of the current position in the instructions string.
+	int instructionsIndex = 0;
+
+	// This loads both the dataFile and the layoutFile.
 	void loadData(String[] args) {
 
 		ArgumentProcessor argProcessor = new ArgumentProcessor(args);
@@ -46,12 +58,10 @@ class RunInstructions {
 
 		String currentInstruction = getNextInstruction();
 		int distance = 0;
-		String direction = "R";
+		String direction = layout.currentDirection;
 
 		boolean hasDirection = true;
 		boolean hasDistance = false;
-
-		layout.moveToOrigin();
 
 		while (!currentInstruction.equals("")) {
 
@@ -83,9 +93,6 @@ class RunInstructions {
 		System.out.println("currentColumnPos=" + layout.currentColumnPos + " currentRowPos=" + layout.currentRowPos + " currentDirection=" + layout.currentDirection);
 		System.out.println("Answer=" + ( (layout.currentColumnPos + 1) * 1000 + (layout.currentRowPos +1) * 4 + layout.directionScore()));
 	}
-
-	String instructions = "";
-	int instructionsIndex = 0;
 
 	// If the string "instructions" is "U123D", this will return "U", "123", "D", ""
 	// on successive calls.

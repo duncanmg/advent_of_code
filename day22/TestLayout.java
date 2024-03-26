@@ -117,4 +117,31 @@ public class TestLayout {
 		assertEquals(8, layout.currentRowPos);
 	}
 
+	@Test public void TestWithinBounds() throws Exception {
+
+		logger.log("Start TestWithinBounds");
+		assertEquals(11, layout.maxCol);
+		assertEquals(15, layout.maxRow);
+
+		assertEquals(false, layout.withinBounds(100, 100));
+		assertEquals(false, layout.withinBounds(12, 100));
+		assertEquals(false, layout.withinBounds(11, 16));
+		assertEquals(false, layout.withinBounds(12, 15));
+		assertEquals(true, layout.withinBounds(11, 15));
+
+		assertEquals(true, layout.withinBounds(0, 0));
+		assertEquals(false, layout.withinBounds(0, -1));
+		assertEquals(false, layout.withinBounds(-1, 0));
+		logger.log("End TestWithinBounds");
+
+	}
+
+	@Test public void TestSizes(){
+		assertEquals(12, layout.layout.size());
+		for (ArrayList<Character> row : layout.layout) {
+			assertEquals(16, row.size());
+		}
+	}
+
+
 }

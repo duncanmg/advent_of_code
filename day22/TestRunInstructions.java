@@ -80,17 +80,23 @@ public class TestRunInstructions {
 		logger.log("Start TestRun03");
 		instructions.instructions = "10R5L5";
 		instructions.run();		
-		testPosition(5,3);
+		testPosition(5,3,"R");
 		logger.log("End TestRun03");
 	}
 
 	// Move down
 	@Test public void TestRun04() throws Exception{
 
+		logger.log("Prepare TestRun04");
+		setPosition(5,3,"R");
+		testPosition(5,3,"R");
+
 		logger.log("Start TestRun04");
-		instructions.instructions = "10R5L5R10";
+		instructions.instructions = "R10";
+		instructions.instructionsIndex = 0;
+
 		instructions.run();		
-		testPosition(7,3);
+		testPosition(7,3,"D");
 		logger.log("End TestRun04");
 	}
 
@@ -125,9 +131,29 @@ public class TestRunInstructions {
 		logger.log("End TestRun07");
 	}
 
+//	@Test public void TestRunExtra01() throws Exception{
+//
+//		logger.log("Start TestRunExtra01");
+//		instructions.instructions = "2R6R1L3L4L3";
+//		instructions.run();		
+//		testPosition(5,7);
+//		logger.log("End TestRunExtra01");
+//	}
+
+	void testPosition(int expectedCol, int expectedRow, String expectedDirection) {
+		testPosition(expectedCol, expectedRow);
+		assertEquals(expectedDirection, instructions.layout.currentDirection);
+	}
+
 	void testPosition(int expectedCol, int expectedRow) {
 		assertEquals(expectedCol, instructions.layout.currentColumnPos);
 		assertEquals(expectedRow, instructions.layout.currentRowPos);
+	}
+
+	void setPosition(int newCol, int newRow, String newDirection) {
+		instructions.layout.currentColumnPos = newCol;
+		instructions.layout.currentRowPos = newRow;
+		instructions.layout.currentDirection = newDirection;
 	}
 
 }

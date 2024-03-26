@@ -1,6 +1,23 @@
 import java.io.IOException;
 import java.util.*;
 
+// Row no increases --------------->> Column no increases
+//        ...#                                  |
+//        .#..                                  |
+//        #...                                  |
+//        ....                                  |
+//...#.......#                                  |
+//........#...                                  |
+//..#....#....                                  v
+//..........#.                                  v
+//        ...#....
+//        .....#..
+//        .#......
+//        ......#.
+//
+// The columns and rows are padded to be equal lengths. So in the above example
+// the range of the column index is 0-11 and that of the row index is 0-15.
+
 class Layout {
 
 	public static void main(String[] args) {
@@ -30,24 +47,37 @@ class Layout {
 
 	int minCol = 0;
 
-	int maxCol = 0;
+	// Max index of any column. 0 based.
+	int maxCol = -1;
 
 	int minRow = 0;
 
+	// Max index of any row. 0 based.
 	int maxRow = 0;
 
 	// Missing coordinates within these bounds are treated as NOTHING.
 	boolean withinBounds(int col, int row) {
+		logger.log("Start withinBounds col=" + col + " row=" + row);
+		logger.log("maxCol=" + maxCol + " maxRow= " + maxRow);
 		if (col < minCol || col > maxCol) {
 			return false;
 		}
 		if (row < minRow || row > maxRow) {
 			return false;
 		}
+		logger.log("withinBounds returning true");
 		return true;
 	}
 
 	void parseData(ArrayList<String> data) {
+
+		for (String line : data) {
+			logger.log("line.length=" + line.length());
+			if (line.length() > maxRow) {
+				logger.log("Set maxRow to " + (line.length()-1));
+				maxRow = line.length() - 1;
+			}
+		}
 
 		for (String line : data) {
 			logger.log("line: " + line);
@@ -65,11 +95,11 @@ class Layout {
 						break;
 				}
 			}
+			while (row.size() <= maxRow) {
+				row.add(NOTHING);
+			}
 			layout.add(row);
 			maxCol++;
-			if (row.size() > maxRow) {
-				maxRow = row.size();
-			}
 		}
 
 	}
@@ -104,9 +134,16 @@ class Layout {
 		return contents;
 		}
 		catch(IndexOutOfBoundsException e) {
+			logger.log("getContents IndexOutOfBoundsException");
 			if (withinBounds(col, row)) {
+				logger.log("getContents return " + NOTHING);
 				return NOTHING;
 			}
+			logger.log("withinBounds() returned false. maxCol=" + maxCol + " maxRow=" + maxRow);
+			throw e;
+		}
+		catch(Exception e) {
+			logger.log("getContents general exception");
 			throw e;
 		}
 	}
@@ -114,12 +151,12 @@ class Layout {
 	int getNextRight() {
 		int next = currentRowPos + 1;
 		// logger.log("next " + next + " currentColumnPos.size() " + layout.get(currentColumnPos).size());
-		return next >= layout.get(currentColumnPos).size() ? 0 : next;
+		return next >= layout.get(currentColumnPos).size() - 1 ? 0 : next;
 	}
 
 	int getNextDown() {
 		int next = currentColumnPos + 1;
-		return next >= layout.get(currentRowPos).size() ? 0 : next;
+		return next > layout.size() - 1 ? 0 : next;
 	}
 
 	int getNextLeft() {
@@ -129,7 +166,7 @@ class Layout {
 
 	int getNextUp() {
 		int next = currentColumnPos - 1;
-		return next < 0 ? layout.get(currentRowPos).size() - 1 : next;
+		return next < 0 ? layout.size() - 1 : next;
 	}
 
 	void move(int distance) throws Exception {
@@ -269,6 +306,7 @@ class Layout {
 		while (i<distance) {
 			int newColumnPos = getNextUp();
 			char contents = getContents(newColumnPos, currentRowPos);
+			logger.log("moveUp contents=" + String.valueOf(contents));
 			switch (contents) {
 				case TILE:
 					currentColumnPos = newColumnPos;
@@ -283,7 +321,9 @@ class Layout {
 					currentColumnPos = newColumnPos;
 					break;
 			}
+			logger.log("End loop");
 		}
+		logger.log("End moveUp");
 	}
 
 	// Assume the origin is in column zero. However, row zero might be NOTHING. Move
