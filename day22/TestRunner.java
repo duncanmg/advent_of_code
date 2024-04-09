@@ -10,7 +10,8 @@ public class TestRunner {
 
 	  HashMap<String, Class> testClasses = new HashMap<String, Class>();
 
-	  testClasses.put("TestLayout", TestLayout.class);
+	  // testClasses.put("TestLayout", TestLayout.class);
+	  testClasses.put("TestCubeFactory", TestCubeFactory.class);
 	  testClasses.put("TestRunInstructions", TestRunInstructions.class);
 
 	  if (args.length > 0) {

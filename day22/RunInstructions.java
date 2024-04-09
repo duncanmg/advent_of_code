@@ -16,13 +16,10 @@ class RunInstructions {
 		}
 		loadData(args);
 
-		layout.moveToOrigin();
-
 		run();
 	}
 
-	// This is the Layout object. The layout data can be accessed as layout.layout.
-	Layout layout = new Layout();
+	Cube cube = new Cube();
 
 	// The string of instructions eg 10R5L2
 	String instructions = "";
@@ -32,7 +29,7 @@ class RunInstructions {
 	int instructionsIndex = 0;
 
 	// This loads both the dataFile and the layoutFile.
-	void loadData(String[] args) {
+	void loadData(String[] args) throws Exception{
 
 		ArgumentProcessor argProcessor = new ArgumentProcessor(args);
 		HashMap<String, String> argMap = argProcessor.process();
@@ -43,8 +40,8 @@ class RunInstructions {
 		ArrayList<String> layoutData = data.getData(layoutFile);
 		logger.log(layoutFile + " contains " + layoutData.size() + " lines.");
 
-		layout = new Layout();
-		layout.parseData(layoutData);
+		CubeFactory cubeFactory = new CubeFactory();
+		cube = cubeFactory.buildCube(layoutData);
 
 		data = new Data();
 		ArrayList<String> instructionData = data.getData(dataFile);
@@ -58,40 +55,49 @@ class RunInstructions {
 
 		String currentInstruction = getNextInstruction();
 		int distance = 0;
-		String direction = layout.currentDirection;
+		String direction;
 
 		boolean hasDirection = true;
 		boolean hasDistance = false;
 
 		while (!currentInstruction.equals("")) {
 
-			logger.log("currentInstruction=" + currentInstruction + " distance=" + distance);
+			logger.log("currentInstruction=" + currentInstruction);
 			if (currentInstruction.matches("^\\d+$")) {
 				distance = Integer.parseInt(currentInstruction);
 				hasDistance = true;
-				logger.log("Set distance to " + distance + " hasDistance=" + hasDistance);
+				logger.log("Set distance to " + distance);
 			}
 			else {
-				logger.log("About to set direction. Current direction is " + layout.currentDirection);
-				layout.setDirection(currentInstruction);
+				logger.log("Set direction to " + currentInstruction);
+				cube.setDirection(currentInstruction);
 				hasDirection = true;
-				logger.log("Set direction is now " + layout.currentDirection + " hasDirection=" + hasDirection);
 			}
 
 			if (hasDirection && hasDistance) {
-				logger.log("hasDirection and hasDistance are both true.");
-				layout.move(distance);
+				logger.log("About to call cube.move(" + distance + ")");
+				logger.log("Before cube.move(distance). currentColumnPo=" 
+					+ cube.getCurrentSide().currentCol + " currentRowPos=" + cube.getCurrentSide().currentRow);
+				cube.move(distance);
+				logger.log("After cube.move(" + distance + "). currentColumnPos=" 
+					+ cube.getCurrentSide().currentCol + " currentRowPos=" + cube.getCurrentSide().currentRow);
 
 				hasDirection = false;
 				hasDistance = false;
 			}
 			currentInstruction = getNextInstruction();
-			logger.log("currentColumnPos=" + layout.currentColumnPos + " currentRowPos=" + layout.currentRowPos);
 			logger.log("+++");
 		}
 
-		System.out.println("currentColumnPos=" + layout.currentColumnPos + " currentRowPos=" + layout.currentRowPos + " currentDirection=" + layout.currentDirection);
-		System.out.println("Answer=" + ( (layout.currentColumnPos + 1) * 1000 + (layout.currentRowPos +1) * 4 + layout.directionScore()));
+		System.out.println("Done. What was the answer?");
+		Side currentSide = cube.getCurrentSide();
+		int absCol = currentSide.colOffset + currentSide.currentCol;
+		int absRow = currentSide.rowOffset + currentSide.currentRow;
+		System.out.println("Answer=" + ( (absCol + 1) * 1000 + (absRow +1) * 4 + currentSide.directionScore()));
+
+		// System.out.println("currentColumnPos=" + cube.getCurrentSide().currentCol + " currentRowPos=" + cube.getCurrentSide().currentRow 
+		// + " currentDirection=" + cube.getCurrentSide().currentDirection);
+		// System.out.println("Answer=" + ( (cube.getCurrentSide().currentCol + 1) * 1000 + (cube.getCurrentSide().currentRow +1) * 4 +cube.getCurrentSide()layout.directionScore()));
 	}
 
 	// If the string "instructions" is "U123D", this will return "U", "123", "D", ""
