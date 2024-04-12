@@ -13,6 +13,8 @@ public class TestRunner {
 	  // testClasses.put("TestLayout", TestLayout.class);
 	  testClasses.put("TestCubeFactory", TestCubeFactory.class);
 	  testClasses.put("TestRunInstructions", TestRunInstructions.class);
+	  testClasses.put("TestSideChanges", TestSideChanges.class);
+	  testClasses.put("TestSideChanges2", TestSideChanges2.class);
 
 	  if (args.length > 0) {
 	  	for (int i=0; i<args.length; i++) {

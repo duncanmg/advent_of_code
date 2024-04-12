@@ -77,10 +77,10 @@ class RunInstructions {
 			if (hasDirection && hasDistance) {
 				logger.log("About to call cube.move(" + distance + ")");
 				logger.log("Before cube.move(distance). currentColumnPo=" 
-					+ cube.getCurrentSide().currentCol + " currentRowPos=" + cube.getCurrentSide().currentRow);
+						+ cube.getCurrentSide().currentCol + " currentRowPos=" + cube.getCurrentSide().currentRow);
 				cube.move(distance);
 				logger.log("After cube.move(" + distance + "). currentColumnPos=" 
-					+ cube.getCurrentSide().currentCol + " currentRowPos=" + cube.getCurrentSide().currentRow);
+						+ cube.getCurrentSide().currentCol + " currentRowPos=" + cube.getCurrentSide().currentRow);
 
 				hasDirection = false;
 				hasDistance = false;
@@ -93,6 +93,9 @@ class RunInstructions {
 		Side currentSide = cube.getCurrentSide();
 		int absCol = currentSide.colOffset + currentSide.currentCol;
 		int absRow = currentSide.rowOffset + currentSide.currentRow;
+		System.out.println("currentSideNo=" + currentSide.id + " colOffset=" + currentSide.colOffset + " currentCol=" + currentSide.currentCol);
+		System.out.println("currentSideNo=" + currentSide.id + " rowOffset=" + currentSide.rowOffset + " currentRow=" + currentSide.currentRow);
+		System.out.println("currentDirection=" + currentSide.currentDirection + " directionScore=" + currentSide.directionScore());
 		System.out.println("Answer=" + ( (absCol + 1) * 1000 + (absRow +1) * 4 + currentSide.directionScore()));
 
 		// System.out.println("currentColumnPos=" + cube.getCurrentSide().currentCol + " currentRowPos=" + cube.getCurrentSide().currentRow 

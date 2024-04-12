@@ -144,7 +144,7 @@ public class TestRunInstructions {
 		logger.log("Start TestRun07");
 		instructions.instructions = "L5";
 		instructions.run();		
-		testPosition(1,1,0,"R");
+		testPosition(3,0,2,"U");
 		logger.log("End TestRun07");
 	}
 
@@ -165,7 +165,7 @@ public class TestRunInstructions {
 
 	void testPosition(int expectedCol, int expectedRow, String expectedDirection) {
 		testPosition(expectedCol, expectedRow);
-		assertEquals(expectedDirection.charAt(0), instructions.cube.getCurrentSide().currentDirection);
+		assertEquals(expectedDirection, Character.toString(instructions.cube.getCurrentSide().currentDirection));
 		logger.log("04 testPosition direction ok");
 	}
 
@@ -177,7 +177,7 @@ public class TestRunInstructions {
 		logger.log("03 testPosition currentRow ok");
 	}
 
-	void setPosition(int newSideNo, int newCol, int newRow, String newDirection) {
+	void setPosition(int newSideNo, int newCol, int newRow, String newDirection) throws Exception {
 		// Chosen a random mapping.
 		instructions.cube.changeCurrentSideTo(newSideNo, newDirection.charAt(0), "BOTTOMLEFT->BOTTOMLEFT:BOTTOMRIGHT->TOPLEFT");
 		instructions.cube.getCurrentSide().currentCol = newCol;

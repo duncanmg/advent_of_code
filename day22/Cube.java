@@ -72,7 +72,7 @@ class Cube {
 	//
 	// A concrete example is moving down from 3,3 on side 6 to side 2. The landing place
 	// on side 6 is 0,0 not 3,0.
-	void changeCurrentSideTo(int newSideNo, char newDirection, String mapping) {
+	void changeCurrentSideTo(int newSideNo, char newDirection, String mapping) throws Exception {
 		Side lastSide = getCurrentSide();
 		int col = lastSide.currentCol;
 		int row = lastSide.currentRow;
@@ -81,32 +81,45 @@ class Cube {
 		logger.log("changeCurrentSideTo() newSideNo=" + newSideNo + " newDirection=" + newDirection + " mapping=" + mapping);
 		switch (mapping) {
 			case "BOTTOMLEFT->BOTTOMLEFT:BOTTOMRIGHT->TOPLEFT":
-				col = maxSideNo - col;
-				row = maxSideNo - row;
+				col = maxSideNo - row;
+				row = 0;
 				break;
 			case "BOTTOMLEFT->BOTTOMRIGHT:BOTTOMRIGHT->BOTTOMLEFT":
 				row = maxSideNo - row;
 				break;
+			case "BOTTOMLEFT->BOTTOMRIGHT:BOTTOMRIGHT->TOPLEFT":
+				col = maxSideNo - row;
+				row = 0;
+				break;
 			case "BOTTOMLEFT->TOPLEFT:BOTTOMRIGHT->TOPRIGHT":
 				col = maxSideNo - col;
+				break;
+			case "BOTTOMLEFT->TOPRIGHT:BOTTOMRIGHT->BOTTOMRIGHT":
+				col = row;
+				row = maxSideNo - row;
 				break;
 			case "BOTTOMLEFT->TOPRIGHT:BOTTOMRIGHT->TOPLEFT":
 				row = maxSideNo - row;
 				break;
 			case "TOPLEFT->BOTTOMLEFT:TOPRIGHT->BOTTOMRIGHT":
+				row = row;
+				col = maxSideNo;
+				break;
+			case "TOPLEFT->BOTTOMLEFT:BOTTOMLEFT->TOPLEFT":
+				row = 0;
 				col = maxSideNo - col;
-				row = maxSideNo - row;
 				break;
 			case "TOPLEFT->BOTTOMRIGHT:BOTTOMLEFT->BOTTOMLEFT":
-				col = maxSideNo - col;
-				row = maxSideNo - row;
+				row = maxSideNo - col;
+				col = maxSideNo;
 				break;
 			case "TOPLEFT->BOTTOMRIGHT:TOPRIGHT->TOPRIGHT":
-				col = maxSideNo - col;
-				row = maxSideNo - row;
+				col = maxSideNo - row;
+				row = maxSideNo;
 				break;
 			case "TOPLEFT->TOPLEFT:BOTTOMLEFT->TOPRIGHT":
-				col = maxSideNo - col;
+				row = col;
+				col = 0;
 				break;
 			case "TOPLEFT->TOPLEFT:TOPRIGHT->BOTTOMLEFT":
 				col = row;
@@ -127,10 +140,18 @@ class Cube {
 			case "TOPRIGHT->BOTTOMRIGHT:BOTTOMRIGHT->TOPRIGHT":
 				col = maxSideNo - col;
 				break;
+			case "TOPRIGHT->BOTTOMLEFT:BOTTOMRIGHT->BOTTOMRIGHT":
+				row = col;
+				col = maxSideNo;
+				break;
 			case "TOPRIGHT->TOPLEFT:BOTTOMRIGHT->BOTTOMLEFT":
 				row = maxSideNo - row;
 				break;
+			case "NOMAPPING":
+				// Useful when testing.
+				break;
 			default:
+				throw new Exception("changeCurrentSideTo() mapping " + mapping + " not found");
 		}
 
 		currentSide = newSideNo - 1;
@@ -195,7 +216,7 @@ class Cube {
 	}
 
 
-	void move(int distance) {
+	void move(int distance) throws Exception {
 		int remaining = distance;
 		logger.log("move() Start of move. remaining=" + remaining);
 		while (remaining > 0) {
@@ -209,10 +230,8 @@ class Cube {
 					return;
 				case NOTHING:
 					remaining--;
-					if (remaining > 0) {
-						logger.log("NOTHING remaining=" + remaining);
-						changeSides();
-					}
+					logger.log("NOTHING remaining=" + remaining);
+					changeSides();
 					break;
 			}
 		}
@@ -220,7 +239,7 @@ class Cube {
 		getCurrentSide().logSide();
 	}
 
-	void changeSides() {
+	void changeSides() throws Exception {
 		logger.log("changeSides() current side=" + getCurrentSideNo() + " currentDirection " + getCurrentSide().currentDirection);
 		switch (getCurrentSide().currentDirection) {
 			case 'R':
@@ -238,128 +257,15 @@ class Cube {
 		}
 	}
 
-	void nextSideRight() {
-		logger.log("nextSideRight()");
-		switch(getCurrentSideNo()) {
-			case 1:
-				// "6L". Mapping for 4*4 cube.
-				changeCurrentSideTo(6, 'L', "TOPRIGHT->BOTTOMRIGHT:BOTTOMRIGHT->TOPRIGHT");
-				break;
-			case 2:
-				// "3R"
-				changeCurrentSideTo(3, 'R', "TOPRIGHT->TOPLEFT:BOTTOMRIGHT->BOTTOMLEFT");
-				break;
-			case 3:
-				// "4R"
-				changeCurrentSideTo(4, 'R', "TOPRIGHT->TOPLEFT:BOTTOMRIGHT->BOTTOMLEFT");
-				break;
-			case 4:
-				// "6D"
-				changeCurrentSideTo(6, 'D', "TOPRIGHT->TOPRIGHT:BOTTOMRIGHT->TOPLEFT");
-				break;
-			case 5:
-				// "6R"
-				changeCurrentSideTo(6, 'R', "TOPRIGHT->TOPLEFT:BOTTOMRIGHT->BOTTOMLEFT");
-				break;
-			case 6:
-				// "1L"
-				changeCurrentSideTo(1, 'L', "TOPRIGHT->BOTTOMRIGHT:BOTTOMRIGHT->TOPRIGHT");
-				break;
-
-		}
-		// Error
+	void nextSideRight() throws Exception {
 	}	
 
-	void nextSideDown() {
-		switch(getCurrentSideNo()) {
-			case 1:
-				// "4D"
-				changeCurrentSideTo(4, 'D', "BOTTOMLEFT->TOPLEFT:BOTTOMRIGHT->TOPRIGHT");
-				break;
-			case 2:
-				// "5U"
-				changeCurrentSideTo(5, 'U', "BOTTOMLEFT->BOTTOMRIGHT:BOTTOMRIGHT->BOTTOMLEFT");
-				break;
-			case 3:
-				// "5R"
-				changeCurrentSideTo(5, 'R', "BOTTOMLEFT->TOPRIGHT:BOTTOMRIGHT->TOPLEFT");
-				break;
-			case 4:
-				// "5D"
-				changeCurrentSideTo(5, 'D', "BOTTOMLEFT->TOPLEFT:BOTTOMRIGHT->TOPRIGHT");
-				break;
-			case 5:
-				// "2U"
-				changeCurrentSideTo(2, 'U', "BOTTOMLEFT->BOTTOMRIGHT:BOTTOMRIGHT->BOTTOMLEFT");
-				break;
-			case 6:
-				// "2R"
-				changeCurrentSideTo(2, 'R', "BOTTOMLEFT->BOTTOMLEFT:BOTTOMRIGHT->TOPLEFT");
-				break;
-
-		}
-		// Error
+	void nextSideDown() throws Exception {
 	}	
 
-	void nextSideLeft() {
-		switch(getCurrentSideNo()) {
-			case 1:
-				// "3D"
-				changeCurrentSideTo(3, 'D', "TOPLEFT->TOPLEFT:BOTTOMLEFT->TOPRIGHT");
-				break;
-			case 2:
-				// "6U"
-				changeCurrentSideTo(6, 'U', "TOPLEFT->BOTTOMRIGHT:BOTTOMLEFT->BOTTOMLEFT");
-				break;
-			case 3:
-				// "2L"
-				changeCurrentSideTo(2, 'L', "TOPLEFT->TOPRIGHT:BOTTOMLEFT->BOTTOMRIGHT");
-				break;
-			case 4:
-				// "3L"
-				changeCurrentSideTo(3, 'L', "TOPLEFT->TOPRIGHT:BOTTOMLEFT->BOTTOMRIGHT");
-				break;
-			case 5:
-				// "3U"
-				changeCurrentSideTo(3, 'U', "TOPLEFT->BOTTOMRIGHT:BOTTOMLEFT->BOTTOMLEFT");
-				break;
-			case 6:
-				// "5L"
-				changeCurrentSideTo(5, 'L', "TOPLEFT->TOPRIGHT:BOTTOMLEFT->BOTTOMRIGHT");
-				break;
-
-		}
-		// Error
+	void nextSideLeft() throws Exception {
 	}	
 
-	void nextSideUp() {
-		switch(getCurrentSideNo()) {
-			case 1:
-				// "2D"
-				changeCurrentSideTo(2, 'D', "TOPLEFT->TOPRIGHT:TOPRIGHT->TOPLEFT");
-				break;
-			case 2:
-				// "1D"
-				changeCurrentSideTo(1, 'D', "TOPLEFT->BOTTOMLEFT:TOPRIGHT->BOTTOMRIGHT");
-				break;
-			case 3:
-				// "1R"
-				changeCurrentSideTo(1, 'R', "TOPLEFT->TOPLEFT:TOPRIGHT->BOTTOMLEFT");
-				break;
-			case 4:
-				// "1U"
-				changeCurrentSideTo(1, 'U', "TOPLEFT->BOTTOMLEFT:TOPRIGHT->BOTTOMRIGHT");
-				break;
-			case 5:
-				// "4U"
-				changeCurrentSideTo(4, 'U', "TOPLEFT->BOTTOMLEFT:TOPRIGHT->BOTTOMRIGHT");
-				break;
-			case 6:
-				// "4L"
-				changeCurrentSideTo(4, 'L', "TOPLEFT->BOTTOMRIGHT:TOPRIGHT->TOPRIGHT");
-				break;
-
-		}
-		// Error
+	void nextSideUp() throws Exception {
 	}	
 }

@@ -4,17 +4,25 @@ export CLASSPATH=.:${JAR_DIR}/junit/junit-4.10.jar:${JAR_DIR}/junit/junit-jupite
 
 all: application_classes test_classes TestRunner.class
 
-application_classes: Layout.class RunInstructions.class
+application_classes: RunInstructions.class Cube.class CubeOne.class CubeTwo.class Side.class CubeFactory.class
 
-test_classes: TestLayout.class TestRunInstructions.class
+test_classes: TestRunInstructions.class TestCubeFactory.class TestSideChanges.class TestSideChanges2.class
 
 .SUFFIXES: .java .class
 
 .java.class:
 	javac $< -classpath ${CLASSPATH} -Xlint
 
+CubeOne.class: CubeOne.java Cube.class Side.class
+
+CubeTwo.class: CubeTwo.java Cube.class Side.class
+
 TestRunner.class: 	TestRunner.java test_classes
 
-TestLayout.class:	TestLayout.java Layout.class
-
 TestRunInstructions.class: TestRunInstructions.java RunInstructions.class
+
+TestSideChanges.class: TestSideChanges.java RunInstructions.class
+
+TestSideChanges2.class: TestSideChanges2.java RunInstructions.class
+
+TestCubeFactory.class: TestCubeFactory.java CubeFactory.class
